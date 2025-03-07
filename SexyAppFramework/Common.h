@@ -165,7 +165,6 @@ time_t				GetFileDate(const std::string& theFileName);
 std::string			GetCurDir();
 std::string			GetFullPath(const std::string& theRelPath);
 std::string			GetPathFrom(const std::string& theRelPath, const std::string& theDir);
-bool				AllowAllAccess(const std::string& theFileName);
 
 
 inline void			inlineUpper(std::string &theData)
