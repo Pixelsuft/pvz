@@ -1295,10 +1295,10 @@ void LawnApp::ShowResourceError(bool doExit)
 
 void BetaSubmitFunc()
 {
-	if (gLawnApp)
+	/*if (gLawnApp)
 	{
 		gLawnApp->BetaSubmit(false);
-	}
+	}*/
 }
 
 void LawnApp::Init()
@@ -1330,7 +1330,6 @@ void LawnApp::Init()
 	SexyApp::Init();
 #ifdef _DEBUG
 	TodAssertInitForApp();
-	gBetaSubmitFunc = BetaSubmitFunc;
 	bool is3dRecomended = SexyAppBase::Is3DAccelerationRecommended();
 	bool is3dSupported = SexyAppBase::Is3DAccelerationSupported();
 	TodLog("session id: %u", mSessionID);

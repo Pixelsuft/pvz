@@ -197,7 +197,7 @@ void TodTraceAndLog(const char* theFormat, ...)
 
 void TodTraceWithoutSpamming(const char* theFormat, ...)
 {
-#ifdef _DEBUG
+#if _DEBUG
 	static __time64_t gLastTraceTime = 0i64;
 	__time64_t aTime = _time64(nullptr);
 	if (aTime < gLastTraceTime)
@@ -233,6 +233,7 @@ void TodReportError(LPEXCEPTION_POINTERS exceptioninfo, const char* theMessage)
 {
 }
 
+/*
 long __stdcall TodUnhandledExceptionFilter(LPEXCEPTION_POINTERS exceptioninfo)
 {
 	if (gInAssert)
@@ -249,8 +250,9 @@ long __stdcall TodUnhandledExceptionFilter(LPEXCEPTION_POINTERS exceptioninfo)
 
 	return EXCEPTION_EXECUTE_HANDLER;
 }
+*/
 
-void (*gBetaSubmitFunc)() = nullptr;
+// void (*gBetaSubmitFunc)() = nullptr;
 
 void TodAssertInitForApp()
 {
@@ -263,6 +265,4 @@ void TodAssertInitForApp()
 
 	__time64_t aclock = _time64(nullptr);
 	TodLog("Started %s\n", asctime(_localtime64(&aclock)));
-
-	SetUnhandledExceptionFilter(TodUnhandledExceptionFilter);
 }

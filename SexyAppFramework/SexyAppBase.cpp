@@ -12,7 +12,6 @@
 #include "D3DTester.h"
 #include "DDImage.h"
 #include "MemoryImage.h"
-#include "HTTPTransfer.h"
 #include "Dialog.h"
 #include "..\ImageLib\ImageLib.h"
 #include "DSoundManager.h"

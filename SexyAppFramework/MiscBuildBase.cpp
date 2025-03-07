@@ -6,7 +6,6 @@
 #include "PerfTimer.cpp"
 #include "MTRand.cpp"
 #include "KeyCodes.cpp"
-#include "HTTPTransfer.cpp"
 #include "DirectXErrorString.cpp"
 #include "Debug.cpp"
 #include "CritSect.cpp"

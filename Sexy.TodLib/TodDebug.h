@@ -26,13 +26,13 @@ void				TodHesitationTrace(...);
 void				TodReportError(LPEXCEPTION_POINTERS exceptioninfo, const char* theMessage);
 void				TodAssertFailed(const char* theCondition, const char* theFile, int theLine, const char* theMsg = "", ...);
 /*inline*/ void		TodErrorMessageBox(const char* theMessage, const char* theTitle);
-long __stdcall		TodUnhandledExceptionFilter(LPEXCEPTION_POINTERS exceptioninfo);
+// long __stdcall		TodUnhandledExceptionFilter(LPEXCEPTION_POINTERS exceptioninfo);
 
 /*inline*/ void*	TodMalloc(int theSize);
 /*inline*/ void		TodFree(void* theBlock);
 void				TodAssertInitForApp();
 
-extern void (*gBetaSubmitFunc)();
+// extern void (*gBetaSubmitFunc)();
 
 #ifdef _DEBUG
 #define TOD_ASSERT(condition, ...) { \

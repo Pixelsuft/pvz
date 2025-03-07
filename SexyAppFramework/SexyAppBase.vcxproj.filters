@@ -195,9 +195,6 @@
     <ClCompile Include="Flags.cpp">
       <Filter>Sexy\Misc\Misc Source</Filter>
     </ClCompile>
-    <ClCompile Include="HTTPTransfer.cpp">
-      <Filter>Sexy\Misc\Misc Source</Filter>
-    </ClCompile>
     <ClCompile Include="KeyCodes.cpp">
       <Filter>Sexy\Misc\Misc Source</Filter>
     </ClCompile>
@@ -632,9 +629,6 @@
       <Filter>Sexy\Misc\Misc Include</Filter>
     </ClInclude>
     <ClInclude Include="Flags.h">
-      <Filter>Sexy\Misc\Misc Include</Filter>
-    </ClInclude>
-    <ClInclude Include="HTTPTransfer.h">
       <Filter>Sexy\Misc\Misc Include</Filter>
     </ClInclude>
     <ClInclude Include="KeyCodes.h">

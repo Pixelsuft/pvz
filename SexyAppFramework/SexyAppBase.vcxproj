@@ -428,12 +428,6 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="GraphicsBuild.cpp" />
-    <ClCompile Include="HTTPTransfer.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="HyperlinkWidget.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
@@ -753,7 +747,6 @@
     <ClInclude Include="FModSoundManager.h" />
     <ClInclude Include="Font.h" />
     <ClInclude Include="Graphics.h" />
-    <ClInclude Include="HTTPTransfer.h" />
     <ClInclude Include="HyperlinkWidget.h" />
     <ClInclude Include="Image.h" />
     <ClInclude Include="ImageFont.h" />
