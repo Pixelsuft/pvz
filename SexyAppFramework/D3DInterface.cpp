@@ -41,8 +41,6 @@ static void DisplayError(HRESULT theError, const char *theMsg)
 		int aResult = MessageBoxA(NULL,aMsg.c_str(),"Error",MB_ABORTRETRYIGNORE);
 		if (aResult==IDABORT)
 			exit(0);
-		else if (aResult==IDRETRY)
-			_asm int 3;
 	}
 }
 
