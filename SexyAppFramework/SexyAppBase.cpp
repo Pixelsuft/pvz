@@ -3203,35 +3203,6 @@ static bool ScreenSaverWindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lP
 		GetCursorPos(&aMousePoint);
 		gLastMouseX = aMousePoint.x;
 		gLastMouseY = aMousePoint.y;
-
-		// Password checking stuff for 95/98/ME
-		OSVERSIONINFO aVersion;
-		aVersion.dwOSVersionInfoSize = sizeof(aVersion);
-		GetVersionEx(&aVersion);
-		if (aVersion.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS)
-		{
-			HKEY hKey;
-			if (RegOpenKey(HKEY_CURRENT_USER, REGSTR_PATH_SCREENSAVE, &hKey) == ERROR_SUCCESS)
-			{
-				DWORD aCheckPwd = 0;
-				DWORD aSize = sizeof(DWORD);
-				DWORD aType;
-				LONG aResult = RegQueryValueEx(hKey, REGSTR_VALUE_USESCRPASSWORD, NULL, &aType, (PBYTE)&aCheckPwd, &aSize);
-				if (aResult == ERROR_SUCCESS && aCheckPwd)
-				{
-					aPasswordLib = LoadLibrary(TEXT("PASSWORD.CPL"));
-					if (aPasswordLib)
-					{
-						aPasswordFunc = (VERIFYPWDPROC)GetProcAddress(aPasswordLib, "VerifyScreenSavePwd");
-						// prevents user from ctrl-alt-deleting the screensaver etc to avoid typing in a password
-						int aPrev;
-						SystemParametersInfo(SPI_SCREENSAVERRUNNING, TRUE, &aPrev, 0);
-					}
-
-				}
-				RegCloseKey(hKey);
-			}
-		}
 		return false;
 	}
 	break;
@@ -4743,38 +4714,19 @@ void SexyAppBase::MakeWindow()
 				aPlaceY = aDesktopRect.bottom - aHeight;
 		}
 
-		if (CheckFor98Mill())
-		{
-			mHWnd = CreateWindowExA(
-				0,
-				"MainWindow",
-				SexyStringToStringFast(mTitle).c_str(),
-				aWindowStyle,
-				aPlaceX,
-				aPlaceY,
-				aWidth,
-				aHeight,
-				NULL,
-				NULL,
-				gHInstance,
-				0);
-		}
-		else
-		{
-			mHWnd = CreateWindowEx(
-				0,
-				_S("MainWindow"),
-				mTitle.c_str(),
-				aWindowStyle,
-				aPlaceX,
-				aPlaceY,
-				aWidth,
-				aHeight,
-				NULL,
-				NULL,
-				gHInstance,
-				0);
-		}
+		mHWnd = CreateWindowEx(
+			0,
+			_S("MainWindow"),
+			mTitle.c_str(),
+			aWindowStyle,
+			aPlaceX,
+			aPlaceY,
+			aWidth,
+			aHeight,
+			NULL,
+			NULL,
+			gHInstance,
+			0);
 
 		if (mPreferredX == -1)
 		{
@@ -4788,38 +4740,19 @@ void SexyAppBase::MakeWindow()
 	}
 	else
 	{
-		if (CheckFor98Mill())
-		{
-			mHWnd = CreateWindowExA(
-				WS_EX_TOPMOST,
-				"MainWindow",
-				SexyStringToStringFast(mTitle).c_str(),
-				WS_POPUP | WS_VISIBLE,
-				0,
-				0,
-				mWidth,
-				mHeight,
-				NULL,
-				NULL,
-				gHInstance,
-				0);
-		}
-		else
-		{
-			mHWnd = CreateWindowEx(
-				WS_EX_TOPMOST,
-				_S("MainWindow"),
-				mTitle.c_str(),
-				WS_POPUP | WS_VISIBLE,
-				0,
-				0,
-				mWidth,
-				mHeight,
-				NULL,
-				NULL,
-				gHInstance,
-				0);
-		}
+		mHWnd = CreateWindowEx(
+			WS_EX_TOPMOST,
+			_S("MainWindow"),
+			mTitle.c_str(),
+			WS_POPUP | WS_VISIBLE,
+			0,
+			0,
+			mWidth,
+			mHeight,
+			NULL,
+			NULL,
+			gHInstance,
+			0);
 
 		mIsPhysWindowed = false;
 	}
@@ -6200,98 +6133,49 @@ void SexyAppBase::Init()
 
 	srand(GetTickCount());
 
-	if (CheckFor98Mill())
-	{
-		mIsWideWindow = false;
+	mIsWideWindow = sizeof(SexyChar) == sizeof(wchar_t);
 
-		WNDCLASSA wc;
-		wc.style = CS_DBLCLKS;
-		wc.cbClsExtra = 0;
-		wc.cbWndExtra = 0;
-		wc.hbrBackground = NULL;
-		wc.hCursor = NULL;
-		wc.hIcon = ::LoadIconA(gHInstance, "IDI_MAIN_ICON");
-		wc.hInstance = gHInstance;
-		wc.lpfnWndProc = WindowProc;
-		wc.lpszClassName = "MainWindow";
-		wc.lpszMenuName = NULL;
-		bool success = RegisterClassA(&wc) != 0;
-		DBG_ASSERTE(success);
+	WNDCLASS wc;
+	wc.style = CS_DBLCLKS;
+	wc.cbClsExtra = 0;
+	wc.cbWndExtra = 0;
+	wc.hbrBackground = NULL;
+	wc.hCursor = NULL;
+	wc.hIcon = ::LoadIconA(gHInstance, "IDI_MAIN_ICON");
+	wc.hInstance = gHInstance;
+	wc.lpfnWndProc = WindowProc;
+	wc.lpszClassName = _S("MainWindow");
+	wc.lpszMenuName = NULL;
+	bool success = RegisterClass(&wc) != 0;
+	DBG_ASSERTE(success);
 
-		wc.style = 0;
-		wc.cbClsExtra = 0;
-		wc.cbWndExtra = 0;
-		wc.hbrBackground = NULL;
-		wc.hCursor = NULL;
-		wc.hIcon = NULL;
-		wc.hInstance = gHInstance;
-		wc.lpfnWndProc = WindowProc;
-		wc.lpszClassName = "InvisWindow";
-		wc.lpszMenuName = NULL;
-		success = RegisterClassA(&wc) != 0;
-		DBG_ASSERTE(success);
+	wc.style = 0;
+	wc.cbClsExtra = 0;
+	wc.cbWndExtra = 0;
+	wc.hbrBackground = NULL;
+	wc.hCursor = NULL;
+	wc.hIcon = NULL;
+	wc.hInstance = gHInstance;
+	wc.lpfnWndProc = WindowProc;
+	wc.lpszClassName = _S("InvisWindow");
+	wc.lpszMenuName = NULL;
+	success = RegisterClass(&wc) != 0;
+	DBG_ASSERTE(success);
 
-		mInvisHWnd = CreateWindowExA(
-			0,
-			"InvisWindow",
-			SexyStringToStringFast(mTitle).c_str(),
-			0,
-			0,
-			0,
-			0,
-			0,
-			NULL,
-			NULL,
-			gHInstance,
-			0);
-		SetWindowLong(mInvisHWnd, GWL_USERDATA, (LONG)this);
-	}
-	else
-	{
-		mIsWideWindow = sizeof(SexyChar) == sizeof(wchar_t);
-
-		WNDCLASS wc;
-		wc.style = CS_DBLCLKS;
-		wc.cbClsExtra = 0;
-		wc.cbWndExtra = 0;
-		wc.hbrBackground = NULL;
-		wc.hCursor = NULL;
-		wc.hIcon = ::LoadIconA(gHInstance, "IDI_MAIN_ICON");
-		wc.hInstance = gHInstance;
-		wc.lpfnWndProc = WindowProc;
-		wc.lpszClassName = _S("MainWindow");
-		wc.lpszMenuName = NULL;
-		bool success = RegisterClass(&wc) != 0;
-		DBG_ASSERTE(success);
-
-		wc.style = 0;
-		wc.cbClsExtra = 0;
-		wc.cbWndExtra = 0;
-		wc.hbrBackground = NULL;
-		wc.hCursor = NULL;
-		wc.hIcon = NULL;
-		wc.hInstance = gHInstance;
-		wc.lpfnWndProc = WindowProc;
-		wc.lpszClassName = _S("InvisWindow");
-		wc.lpszMenuName = NULL;
-		success = RegisterClass(&wc) != 0;
-		DBG_ASSERTE(success);
-
-		mInvisHWnd = CreateWindowEx(
-			0,
-			_S("InvisWindow"),
-			mTitle.c_str(),
-			0,
-			0,
-			0,
-			0,
-			0,
-			NULL,
-			NULL,
-			gHInstance,
-			0);
-		SetWindowLong(mInvisHWnd, GWL_USERDATA, (LONG)this);
-	}
+	mInvisHWnd = CreateWindowEx(
+		0,
+		_S("InvisWindow"),
+		mTitle.c_str(),
+		0,
+		0,
+		0,
+		0,
+		0,
+		NULL,
+		NULL,
+		gHInstance,
+		0);
+	SetWindowLong(mInvisHWnd, GWL_USERDATA, (LONG)this);
 
 	mHandCursor = CreateCursor(gHInstance, 11, 4, 32, 32, gFingerCursorData, gFingerCursorData + sizeof(gFingerCursorData) / 2);
 	mDraggingCursor = CreateCursor(gHInstance, 15, 10, 32, 32, gDraggingCursorData, gDraggingCursorData + sizeof(gDraggingCursorData) / 2);
