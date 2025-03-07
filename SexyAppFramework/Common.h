@@ -121,7 +121,6 @@ extern std::string	vformat(const char* fmt, va_list argPtr);
 extern std::wstring	vformat(const wchar_t* fmt, va_list argPtr);
 extern std::string	StrFormat(const char* fmt ...);
 extern std::wstring	StrFormat(const wchar_t* fmt ...);
-bool				CheckForVista();
 std::string			GetAppDataFolder();
 void				SetAppDataFolder(const std::string& thePath);
 std::string			URLEncode(const std::string& theString);

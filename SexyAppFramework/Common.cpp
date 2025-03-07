@@ -38,32 +38,6 @@ void Sexy::SRand(ulong theSeed)
 	gMTRand.SRand(theSeed);
 }
 
-bool Sexy::CheckForVista()
-{
-	static bool needOsCheck = true;
-	static bool isVista = false;
-
-	if (needOsCheck)
-	{
-		bool invalid = false;
-		OSVERSIONINFOEXA osvi;
-		ZeroMemory(&osvi, sizeof(OSVERSIONINFOEXA));
-
-		osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFOEXA);
-		if( GetVersionExA((LPOSVERSIONINFOA)&osvi) == 0)
-		{
-			osvi.dwOSVersionInfoSize = sizeof (OSVERSIONINFOA);
-			if ( GetVersionExA((LPOSVERSIONINFOA)&osvi) == 0)
-				return false;
-		}
-
-		needOsCheck = false;
-		isVista = osvi.dwMajorVersion >= 6;
-	}
-
-	return isVista;
-}
-
 std::string Sexy::GetAppDataFolder()
 {
 	return Sexy::gAppDataFolder;
