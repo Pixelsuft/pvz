@@ -3,7 +3,6 @@
 //#define SEXY_MEMTRACE
 
 #include "SexyAppBase.h"
-#include "SEHCatcher.h"
 #include "WidgetManager.h"
 #include "Widget.h"
 #include "Debug.h"
@@ -48,8 +47,6 @@ const int DEMO_FILE_ID = 0x42BEEF78;
 const int DEMO_VERSION = 2;
 
 SexyAppBase* Sexy::gSexyAppBase = NULL;
-
-SEHCatcher Sexy::gSEHCatcher;
 
 HMODULE gDDrawDLL = NULL;
 HMODULE gDSoundDLL = NULL;
@@ -350,8 +347,6 @@ SexyAppBase::SexyAppBase()
 	}
 	else
 		mTabletPC = false;
-
-	gSEHCatcher.mApp = this;
 
 	//std::wifstream stringsFile(_wfopen(L".\\properties\\fstrings", L"rb"));
 	//

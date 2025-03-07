@@ -2,7 +2,6 @@
 #include "TodDebug.h"
 #include "TodCommon.h"
 #include "../SexyAppFramework/Debug.h"
-#include "../SexyAppFramework/SEHCatcher.h"
 #include "../SexyAppFramework/SexyAppBase.h"
 
 using namespace Sexy;
@@ -232,7 +231,6 @@ void TodTraceWithoutSpamming(const char* theFormat, ...)
 
 void TodReportError(LPEXCEPTION_POINTERS exceptioninfo, const char* theMessage)
 {
-	Sexy::SEHCatcher::UnhandledExceptionFilter(exceptioninfo);
 }
 
 long __stdcall TodUnhandledExceptionFilter(LPEXCEPTION_POINTERS exceptioninfo)

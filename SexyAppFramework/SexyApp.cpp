@@ -1,7 +1,6 @@
 #include "SexyApp.h"
 
 //#include "..\Crypt\RegKey.h"
-#include "SEHCatcher.h"
 //#include "InternetManager.h"
 #include <time.h>
 #include <fstream>
@@ -600,25 +599,6 @@ void SexyApp::InitPropertiesHook()
 
 void SexyApp::Init()
 {
-	SEHCatcher::mCrashMessage = 
-		L"An unexpected error has occured!  Pressing 'Send Report' "
-		"will send us helpful debugging information that may help "
-		"us resolve this issue in the future.\r\n\r\n"
-		"You can also contact us directly at feedback@popcap.com.";
-
-	SEHCatcher::mSubmitMessage = 
-		L"Please help us out by providing as much information as "
-		"you can about this crash. Is this the first time it happened? "
-		"Have you used other PopCap Deluxe games successfully before? "
-		"Have you upgraded your drivers or any software recently that "
-		"may be interfering with this program?";
-
-	SEHCatcher::mSubmitErrorMessage = 
-		L"Failed to connect to PopCap servers.  Please check your Internet connection.\n"
-		"If you are on a dial-up connection, you may have to manually connect to your ISP.";
-
-	SEHCatcher::mSubmitHost = "www.popcap.com";
-
 	OutputDebugString(StrFormat("Product: %s\r\n", mProdName.c_str()).c_str());	
 	OutputDebugString(StrFormat("BuildNum: %d\r\n", mBuildNum).c_str());
 	OutputDebugString(StrFormat("BuildDate: %s\r\n", mBuildDate.c_str()).c_str());	

@@ -219,9 +219,6 @@
     <ClCompile Include="ResourceManager.cpp">
       <Filter>Sexy\Misc\Misc Source</Filter>
     </ClCompile>
-    <ClCompile Include="SEHCatcher.cpp">
-      <Filter>Sexy\Misc\Misc Source</Filter>
-    </ClCompile>
     <ClCompile Include="SexyMatrix.cpp">
       <Filter>Sexy\Misc\Misc Source</Filter>
     </ClCompile>
@@ -665,9 +662,6 @@
       <Filter>Sexy\Misc\Misc Include</Filter>
     </ClInclude>
     <ClInclude Include="ResourceManager.h">
-      <Filter>Sexy\Misc\Misc Include</Filter>
-    </ClInclude>
-    <ClInclude Include="SEHCatcher.h">
       <Filter>Sexy\Misc\Misc Include</Filter>
     </ClInclude>
     <ClInclude Include="SexyMatrix.h">

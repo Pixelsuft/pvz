@@ -552,12 +552,6 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="SEHCatcher.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="SexyApp.cpp" />
     <ClCompile Include="SexyAppBase.cpp" />
     <ClCompile Include="SexyMatrix.cpp">
@@ -800,7 +794,6 @@
     <ClInclude Include="ScrollbarWidget.h" />
     <ClInclude Include="ScrollbuttonWidget.h" />
     <ClInclude Include="ScrollListener.h" />
-    <ClInclude Include="SEHCatcher.h" />
     <ClInclude Include="SexyApp.h" />
     <ClInclude Include="SexyAppBase.h" />
     <ClInclude Include="SexyMatrix.h" />
