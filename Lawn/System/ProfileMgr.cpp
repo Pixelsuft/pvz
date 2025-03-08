@@ -45,9 +45,9 @@ void ProfileMgr::SyncState(DataSync& theSync)
                 PlayerInfo aProfile;
                 aProfile.SyncSummary(theSync);
 
-                if (aProfile.mId > aMaxProfileId)
+                if ((int)aProfile.mId > aMaxProfileId)
                     aMaxProfileId = aProfile.mId;
-                if (aProfile.mUseSeq > aMaxUseSeq)
+                if ((int)aProfile.mUseSeq > aMaxUseSeq)
                     aMaxUseSeq = aProfile.mUseSeq;
 
                 mProfileMap[aProfile.mName] = aProfile;

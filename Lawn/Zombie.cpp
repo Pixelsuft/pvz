@@ -2978,7 +2978,7 @@ bool Zombie::ZombiquariumFindClosestBrain()
         mVelZ = atan2(aRangeY, aRangeX);
         if (mVelZ < 0.0f)
         {
-            mVelZ += PI * 2;
+            mVelZ += (float)PI * 2.f;
         }
 
         mZombiePhase = ZombiePhase::PHASE_ZOMBIQUARIUM_ACCEL;
@@ -3012,7 +3012,7 @@ void Zombie::UpdateZombiquarium()
         if (aPhaseHit <= 4)
         {
             mZombiePhase = ZombiePhase::PHASE_ZOMBIQUARIUM_ACCEL;
-            mVelZ = RandRangeFloat(0.0f, PI * 2);
+            mVelZ = RandRangeFloat(0.0f, (float)PI * 2.f);
             mPhaseCounter = RandRangeInt(300, 1000);
             aBodyReanim->mAnimRate = RandRangeFloat(15.0f, 20.0f);
         }
@@ -3033,7 +3033,7 @@ void Zombie::UpdateZombiquarium()
         else
         {
             mZombiePhase = ZombiePhase::PHASE_ZOMBIQUARIUM_BACK_AND_FORTH;
-            mVelZ = PI;
+            mVelZ = (float)PI;
             mPhaseCounter = RandRangeInt(300, 1000);
             aBodyReanim->mAnimRate = RandRangeFloat(15.0f, 20.0f);
         }
@@ -3078,7 +3078,7 @@ void Zombie::UpdateZombiquarium()
 
         if (mPosX > BOARD_WIDTH - 250 || aVelX > 0.0f)
         {
-            mVelZ = PI;
+            mVelZ = (float)PI;
         }
 
         aMaxSpeed = 0.3f;
