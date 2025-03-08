@@ -284,6 +284,7 @@ Font* MessageWidget::GetFont()
 	}
 
 	TOD_ASSERT();
+	return Sexy::FONT_HOUSEOFTERROR28;
 }
 
 void MessageWidget::Draw(Graphics* g)

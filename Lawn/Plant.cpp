@@ -1973,6 +1973,7 @@ bool Plant::DrawMagnetItemsOnTop()
 
         return false;
     }
+    return false;
 }
 
 void Plant::UpdateMagnetShroom()

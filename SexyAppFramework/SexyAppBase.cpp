@@ -36,7 +36,7 @@
 #include "../PakLib/PakInterface.h"
 #include <string>
 #include <shlobj.h>
-#include "../GameConstants.h";
+#include "../GameConstants.h"
 
 #include "memmgr.h"
 
@@ -679,7 +679,7 @@ void SexyAppBase::WriteDemoBuffer()
 
 			fwrite(&mRandSeed, 4, 1, aFP);
 
-			ushort aStrLen = mProductVersion.length();
+			ushort aStrLen = (ushort)mProductVersion.length();
 			fwrite(&aStrLen, 2, 1, aFP);
 			fwrite(mProductVersion.c_str(), 1, mProductVersion.length(), aFP);
 
@@ -3694,7 +3694,7 @@ LRESULT CALLBACK SexyAppBase::WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LP
 	case WM_DESTROY:
 	{
 		char aStr[256];
-		sprintf(aStr, "DESTROYED HWND: %d\r\n", hWnd);
+		sprintf(aStr, "DESTROYED HWND: %p\r\n", hWnd);
 		OutputDebugStringA(aStr);
 	}
 	break;

@@ -45,8 +45,6 @@ SexyApp::SexyApp()
 	mDemoFileName = mDemoPrefix + ".dmo";	
 	mCompanyName = "PopCap";
 	mFullCompanyName= "PopCap Games";
-	mInternetManager = nullptr;//new InternetManager();
-	mBetaSupport = NULL;
 	mBetaValidate = false;	
 
 	SetString("UPDATE_CHECK_BODY", L"Contacting PopCap.com to determine if there are any updates available for this product ...");
@@ -61,8 +59,6 @@ SexyApp::SexyApp()
 
 SexyApp::~SexyApp()
 {
-	delete mBetaSupport;
-	delete mInternetManager;
 }
 
 bool SexyApp::Validate(const std::string& theUserName, const std::string& theRegCode)
@@ -269,7 +265,7 @@ void SexyApp::WriteToRegistry()
 			
 		if (fp != NULL)
 		{
-			ushort aLen = mProdName.length();
+			ushort aLen = (ushort)mProdName.length();
 			fwrite(&aLen, 1, sizeof(short), fp);
 			fwrite(mProdName.c_str(), aLen, sizeof(char), fp);
 
@@ -536,15 +532,19 @@ std::string SexyApp::GetGameSEHInfo()
 	char aGamesPlayedStr[16];
 	sprintf(aGamesPlayedStr, "%d", mTimesPlayed);
 
-	std::string anInfoString = SexyAppBase::GetGameSEHInfo() + 
+	/*
+	std::string anInfoString = SexyAppBase::GetGameSEHInfo() +
 		"Times Played: " + std::string(aGamesPlayedStr) + "\r\n";
 		"Build Num: " + StrFormat("%d", mBuildNum) + "\r\n" +
 		"Build Date: " + mBuildDate + "\r\n";
+		*/
+
+	std::string anInfoString = "undefined";
 
 	if (mReferId.length() != 0)
 	{
-		anInfoString +=
-			"ReferId: " + mReferId + "\r\n";
+		// anInfoString +=
+		//	"ReferId: " + mReferId + "\r\n";
 	}
 
 	return anInfoString;
@@ -589,7 +589,6 @@ void SexyApp::InitPropertiesHook()
 		mTitle = aNewTitle + " " + mProductVersion;	
 		
 	//mInternetManager->Init();
-	mBetaSupport = nullptr;//new BetaSupport(this);
 
 #ifdef ZYLOM
 	LoadProperties();

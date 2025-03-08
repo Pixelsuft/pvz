@@ -200,6 +200,7 @@ int SeedChooserScreen::PickFromWeightedArrayUsingSpecialRandSeed(TodWeightedArra
 		if (aWeight > aRndResult) return theArray[j].mItem;
 	}
 	DBG_ASSERT(false);
+	return 0;
 }
 
 void SeedChooserScreen::CrazyDavePickSeeds()

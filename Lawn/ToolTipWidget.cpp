@@ -71,7 +71,7 @@ void ToolTipWidget::CalculateSize()
 	mGetsLinesWidth = max(aMaxWidth - 30, 100);
 	GetLines(aLines);
 
-	for (int i = 0; i < aLines.size(); i++)
+	for (int i = 0; i < (int)aLines.size(); i++)
 	{
 		int aLineWidth = FONT_BRIANNETOD12->StringWidth(aLines[i]);
 		aMaxWidth = max(aMaxWidth, aLineWidth);
@@ -175,7 +175,7 @@ void ToolTipWidget::Draw(Graphics* g)
 	GetLines(aLines);
 
 	g->SetFont(FONT_BRIANNETOD12);
-	for (int i = 0; i < aLines.size(); i++)
+	for (int i = 0; i < (int)aLines.size(); i++)
 	{
 		SexyString aLine = aLines[i];
 		g->DrawString(aLine, aPosX + (mWidth - FONT_BRIANNETOD12->StringWidth(aLine)) / 2, aPosY + FONT_BRIANNETOD12->GetAscent());

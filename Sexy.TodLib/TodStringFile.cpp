@@ -82,7 +82,7 @@ bool TodStringListReadName(const char*& thePtr, std::string& theName)
 
 void TodStringRemoveReturnChars(std::string& theString)
 {
-	for (int i = 0; i < theString.size(); )
+	for (int i = 0; i < (int)theString.size(); )
 	{
 		if (theString[i] == '\r')
 			theString.replace(i, 1, "", 0);  
@@ -250,7 +250,7 @@ int TodWriteString(Graphics* g, const SexyString& theString, int theX, int theY,
 		}
 	}
 
-	if (theLength < 0 || theOffset + theLength > theString.size())
+	if (theLength < 0 || theOffset + theLength >(int)theString.size())
 		theLength = theString.size();
 	else
 		theLength = theOffset + theLength;  
@@ -330,7 +330,7 @@ int TodDrawStringWrappedHelper(Graphics* g, const SexyString& theText, const Rec
 	SexyChar aPrevChar = '\0';
 	int aSpacePos = -1;
 	int aMaxWidth = 0;
-	while (aCurPos < theText.size())
+	while (aCurPos < (int)theText.size())
 	{
 		aCurChar = theText[aCurPos];
 		if (aCurChar == '{')  
@@ -392,7 +392,7 @@ int TodDrawStringWrappedHelper(Graphics* g, const SexyString& theText, const Rec
 
 				aCurPos = aSpacePos + 1;  
 				if (aCurChar != '\n')
-					while (aCurPos < theText.size() && CharIsSpaceInFormat(theText[aCurPos], aCurrentFormat))
+					while (aCurPos < (int)theText.size() && CharIsSpaceInFormat(theText[aCurPos], aCurrentFormat))
 						aCurPos++;  
 			}
 			else
@@ -431,7 +431,7 @@ int TodDrawStringWrappedHelper(Graphics* g, const SexyString& theText, const Rec
 		}
 	}
 
-	if (aLineFeedPos < theText.size())
+	if (aLineFeedPos < (int)theText.size())
 	{
 		int aLastLineLength = TodWriteWordWrappedHelper(
 			g,

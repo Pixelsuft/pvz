@@ -909,7 +909,7 @@ bool DSoundManager::WriteWAV(unsigned int theSfxID, const std::string& theFilena
 	memset(&aFileTime, 0, sizeof(FILETIME));
 	GetTheFileTime(theDepFile, &aFileTime);
 
-	ushort aStrLen = theDepFile.length();
+	ushort aStrLen = (ushort)theDepFile.length();
 	aChunkSize = 2 + aStrLen + sizeof(FILETIME);
 	fwrite("dep ", 1, 4, fp);
 	fwrite(&aChunkSize,4, 1, fp);

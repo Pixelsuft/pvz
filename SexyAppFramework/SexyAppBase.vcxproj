@@ -86,7 +86,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <AdditionalOptions>/wd4996 /wd4996 /wd4244 /wd4091  /wd4003</AdditionalOptions>
+      <AdditionalOptions>/wd4996 /wd4996 /wd4244 /wd4091 /wd4003 /wd4838</AdditionalOptions>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;_WINDOWS;_VISUALC_;_JPEGLIB_;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
@@ -113,7 +113,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalOptions>/wd4996 /wd4996 /wd4244 /wd4091  /wd4003</AdditionalOptions>
+      <AdditionalOptions>/wd4996 /wd4996 /wd4244 /wd4091 /wd4003 /wd4838</AdditionalOptions>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;_WINDOWS;_VISUALC_;_JPEGLIB_;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
@@ -141,7 +141,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <AdditionalOptions>/Oy- /wd4996 /wd4996 /wd4244 /wd4091  /wd4003</AdditionalOptions>
+      <AdditionalOptions>/Oy- /wd4996 /wd4996 /wd4244 /wd4091 /wd4003 /wd4838</AdditionalOptions>
       <InlineFunctionExpansion>Default</InlineFunctionExpansion>
       <WholeProgramOptimization>true</WholeProgramOptimization>
       <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;_WINDOWS;_VISUALC_;_JPEGLIB_;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -167,7 +167,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalOptions>/Oy- /wd4996 /wd4996 /wd4244 /wd4091  /wd4003</AdditionalOptions>
+      <AdditionalOptions>/Oy- /wd4996 /wd4996 /wd4244 /wd4091 /wd4003 /wd4838</AdditionalOptions>
       <InlineFunctionExpansion>Default</InlineFunctionExpansion>
       <WholeProgramOptimization>true</WholeProgramOptimization>
       <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;_WINDOWS;_VISUALC_;_JPEGLIB_;%(PreprocessorDefinitions)</PreprocessorDefinitions>

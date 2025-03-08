@@ -777,6 +777,8 @@ Reanimation* FindReanimAttachment(AttachmentID& theAttachmentID)
 			}
 		}
 	}
+	TOD_ASSERT();
+	return nullptr;
 }
 
 AttachEffect* FindFirstAttachment(AttachmentID& theAttachmentID)

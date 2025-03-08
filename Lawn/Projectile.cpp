@@ -76,12 +76,12 @@ void Projectile::ProjectileInitialize(int theX, int theY, int theRenderOrder, in
 
 	if (mProjectileType == ProjectileType::PROJECTILE_CABBAGE || mProjectileType == ProjectileType::PROJECTILE_BUTTER)
 	{
-		mRotation = -7 * PI / 25;  // DEG_TO_RAD(-50.4f);
+		mRotation = -7.f * (float)PI / 25.f;  // DEG_TO_RAD(-50.4f);
 		mRotationSpeed = RandRangeFloat(-0.08f, -0.02f);
 	}
 	else if (mProjectileType == ProjectileType::PROJECTILE_MELON || mProjectileType == ProjectileType::PROJECTILE_WINTERMELON)
 	{
-		mRotation = -2 * PI / 5;  // DEG_TO_RAD(-72.0f);
+		mRotation = -2.f * (float)PI / 5.f;  // DEG_TO_RAD(-72.0f);
 		mRotationSpeed = RandRangeFloat(-0.08f, -0.02f);
 	}
 	else if (mProjectileType == ProjectileType::PROJECTILE_KERNEL)
@@ -102,7 +102,7 @@ void Projectile::ProjectileInitialize(int theX, int theY, int theRenderOrder, in
 	{
 		mWidth = IMAGE_REANIM_COBCANNON_COB->GetWidth();
 		mHeight = IMAGE_REANIM_COBCANNON_COB->GetHeight();
-		mRotation = PI / 2;
+		mRotation = (float)PI / 2.f;
 	}
 	else if (mProjectileType == ProjectileType::PROJECTILE_PUFF)
 	{
@@ -111,7 +111,7 @@ void Projectile::ProjectileInitialize(int theX, int theY, int theRenderOrder, in
 	}
 	else if (mProjectileType == ProjectileType::PROJECTILE_BASKETBALL)
 	{
-		mRotation = RandRangeFloat(0.0f, 2 * PI);
+		mRotation = RandRangeFloat(0.0f, 2.f * (float)PI);
 		mRotationSpeed = RandRangeFloat(0.05f, 0.1f);
 	}
 	else if (mProjectileType == ProjectileType::PROJECTILE_STAR)
@@ -486,7 +486,7 @@ void Projectile::UpdateLobMotion()
 		int aCobTargetCol = mBoard->PixelToGridXKeepOnBoard(mCobTargetX, 0);
 		mPosY = mBoard->GridToPixelY(aCobTargetCol, mCobTargetRow);
 		mShadowY = mPosY + 67.0f;
-		mRotation = -PI / 2;
+		mRotation = -(float)PI / 2.f;
 	}
 
 	mVelZ += mAccZ;
