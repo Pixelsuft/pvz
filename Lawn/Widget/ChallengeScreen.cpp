@@ -344,6 +344,7 @@ int ChallengeScreen::MoreTrophiesNeeded(int theChallengeIndex)
 			return aIdxInPage >= aNumTrophies ? aIdxInPage - aNumTrophies + 1 : 0;
 		}
 	}
+	return 0;
 }
 
 bool ChallengeScreen::ShowPageButtons()

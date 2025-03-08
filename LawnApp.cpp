@@ -2901,7 +2901,7 @@ void LawnApp::CrazyDaveTalkMessage(const SexyString& theMessage)
 
 	int aWordsCount = 0;
 	bool isControlWord = false;
-	for (int i = 0; i < theMessage.size(); i++)
+	for (int i = 0; i < (int)theMessage.size(); i++)
 	{
 		if (theMessage[i] == _S('{'))
 		{

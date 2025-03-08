@@ -8,7 +8,7 @@ TypingCheck::TypingCheck(const std::string& thePhrase)
 
 void TypingCheck::SetPhrase(const std::string& thePhrase)
 {
-	for (int i = 0; i < thePhrase.size(); i++)
+	for (int i = 0; i < (int)thePhrase.size(); i++)
 		AddChar(thePhrase[i]);
 }
 
@@ -41,7 +41,7 @@ bool TypingCheck::Check(Sexy::KeyCode theKeyCode)
 	if (aLength == 0)
 		return false;
 
-	if (mRecentTyping.size() > aLength)
+	if ((int)mRecentTyping.size() > aLength)
 		mRecentTyping = mRecentTyping.substr(1, aLength);
 	
 	return Check();

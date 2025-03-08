@@ -9454,6 +9454,7 @@ int Zombie::GetBobsledPosition()
     }
 
     TOD_ASSERT();
+    return 0;
 }
 
 bool Zombie::IsBobsledTeamWithSled()

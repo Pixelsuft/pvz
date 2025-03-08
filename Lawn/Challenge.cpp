@@ -2845,6 +2845,7 @@ bool Challenge::UpdateZombieSpawning()
 	if (mApp->IsWhackAZombieLevel())
 	{
 		WhackAZombieSpawning();
+		return false;
 	}
 	else return
 		mApp->IsFinalBossLevel() ||
@@ -4247,6 +4248,7 @@ ZombieType Challenge::IZombieSeedTypeToZombieType(SeedType theSeedType)
 	case SEED_ZOMBIE_IMP:			return ZOMBIE_IMP;
 	default:						TOD_ASSERT();
 	}
+	return ZOMBIE_NORMAL;
 }
 
 void Challenge::IZombiePlaceZombie(ZombieType theZombieType, int theGridX, int theGridY)

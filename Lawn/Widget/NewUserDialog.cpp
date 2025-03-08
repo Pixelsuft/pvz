@@ -70,7 +70,7 @@ SexyString NewUserDialog::GetName()
 	SexyString aString;
 	SexyChar aLastChar = _S(' ');
 
-	for (int i = 0; i < mNameEditWidget->mString.size(); i++)
+	for (int i = 0; i < (int)mNameEditWidget->mString.size(); i++)
 	{
 		SexyChar aChar = mNameEditWidget->mString[i];
 		if (aChar != _S(' '))

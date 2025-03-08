@@ -418,6 +418,7 @@ int ZenGarden::GetPlantSellPrice(Plant* thePlant)
         return 800;
     }
     TOD_ASSERT();
+    return 0;
 }
 
 void ZenGarden::MouseDownWithMoneySign(Plant* thePlant)

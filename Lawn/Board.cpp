@@ -2305,6 +2305,7 @@ Plant* Board::GetTopPlantAt(int theGridX, int theGridY, PlantPriority thePriorit
 	case PlantPriority::TOPPLANT_ONLY_UNDER_PLANT:				return aPlantOnLawn.mUnderPlant;
 	default:													TOD_ASSERT();
 	}
+	return NULL;
 }
 
 int Board::CountSunFlowers()
@@ -8972,6 +8973,7 @@ int Board::LeftFogColumn()
 	if (mLevel >= 32 && mLevel <= 36)									return 5;
 	if (mLevel >= 37 && mLevel <= 40)									return 4;
 	TOD_ASSERT();
+	return 0;
 }
 
 int Board::GetSeedPacketPositionX(int theIndex)
@@ -9820,6 +9822,7 @@ int Board::GetNumWavesPerSurvivalStage()
 	}
 
 	TOD_ASSERT();
+	return 0;
 }
 
 void Board::RemoveParticleByType(ParticleEffect theEffectType)
@@ -9905,6 +9908,7 @@ bool Board::CanUseGameObject(GameObjectType theGameObject)
 	}
 
 	TOD_ASSERT();
+	return false;
 }
 
 void Board::ShakeBoard(int theShakeAmountX, int theShakeAmountY)
