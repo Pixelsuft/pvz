@@ -45,6 +45,7 @@ using namespace Sexy;
 const int DEMO_FILE_ID = 0x42BEEF78;
 const int DEMO_VERSION = 2;
 
+SexyAppBase* global_sexy_handle = NULL;
 SexyAppBase* Sexy::gSexyAppBase = NULL;
 
 HMODULE gDDrawDLL = NULL;
@@ -445,7 +446,7 @@ SexyAppBase::~SexyAppBase()
 	{
 		HWND aWindow = mInvisHWnd;
 		mInvisHWnd = NULL;
-		SetWindowLong(aWindow, GWLP_USERDATA, NULL);
+		global_sexy_handle = NULL;
 		DestroyWindow(aWindow);
 	}
 
@@ -472,7 +473,7 @@ SexyAppBase::~SexyAppBase()
 		HWND aWindow = mHWnd;
 		mHWnd = NULL;
 
-		SetWindowLong(aWindow, GWLP_USERDATA, NULL);
+		global_sexy_handle = NULL;
 
 		/*char aStr[256];
 		sprintf(aStr, "HWND: %d\r\n", aWindow);
@@ -3350,7 +3351,7 @@ LRESULT CALLBACK SexyAppBase::WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LP
 			return aResult;
 	}
 
-	SexyAppBase* aSexyApp = (SexyAppBase*)GetWindowLong(hWnd, GWLP_USERDATA);
+	SexyAppBase* aSexyApp = (SexyAppBase*)global_sexy_handle;
 	switch (uMsg)
 	{
 		//  TODO: switch to killfocus/setfocus?
@@ -4656,7 +4657,7 @@ void SexyAppBase::MakeWindow()
 
 	if (mHWnd != NULL)
 	{
-		SetWindowLong(mHWnd, GWLP_USERDATA, NULL);
+		global_sexy_handle = NULL;
 		HWND anOldWindow = mHWnd;
 		mHWnd = NULL;
 		DestroyWindow(anOldWindow);
@@ -4755,7 +4756,7 @@ void SexyAppBase::MakeWindow()
 	sprintf(aStr, "HWND: %d\r\n", mHWnd);
 	OutputDebugString(aStr);*/
 
-	SetWindowLong(mHWnd, GWLP_USERDATA, (LONG)this);
+	global_sexy_handle = this;
 
 	if (mDDInterface == NULL)
 	{
@@ -6169,7 +6170,7 @@ void SexyAppBase::Init()
 		NULL,
 		gHInstance,
 		0);
-	SetWindowLong(mInvisHWnd, GWLP_USERDATA, (LONG)this);
+	global_sexy_handle = this;
 
 	mHandCursor = CreateCursor(gHInstance, 11, 4, 32, 32, gFingerCursorData, gFingerCursorData + sizeof(gFingerCursorData) / 2);
 	mDraggingCursor = CreateCursor(gHInstance, 15, 10, 32, 32, gDraggingCursorData, gDraggingCursorData + sizeof(gDraggingCursorData) / 2);
