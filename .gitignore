@@ -6,6 +6,7 @@ __pycache__
 Debug
 Release
 x64
+SDL3*
 push.bat
 *.dll
 *.exe

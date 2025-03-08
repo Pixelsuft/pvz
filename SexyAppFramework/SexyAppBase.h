@@ -10,6 +10,7 @@
 #include "CritSect.h"
 #include "SharedImage.h"
 #include "Ratio.h"
+#include <SDL3/SDL.h>
 
 namespace ImageLib
 {
@@ -171,6 +172,7 @@ namespace Sexy
 		bool					mInitialized;
 		bool					mProcessInTimer;
 		DWORD					mTimeLoaded;
+		SDL_Window*             win;
 		HWND					mHWnd;
 		HWND					mInvisHWnd;
 		bool					mIsScreenSaver;

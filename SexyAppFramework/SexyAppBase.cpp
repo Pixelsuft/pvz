@@ -32,7 +32,6 @@
 #include "ResourceManager.h"
 #include "BassMusicInterface.h"
 #include "AutoCrit.h"
-#include "Debug.h"
 #include "../PakLib/PakInterface.h"
 #include <string>
 #include <shlobj.h>
@@ -136,6 +135,10 @@ void* GetSHGetFolderPath(const char* theDLL, HMODULE* theMod)
 SexyAppBase::SexyAppBase()
 {
 	gSexyAppBase = this;
+	if (!SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS)) {
+		MessageBoxA(NULL, "Failed to init SDL", "Error!", MB_ICONERROR);
+		exit(0);
+	}
 
 	gVersionDLL = LoadLibraryA("version.dll");
 	gDDrawDLL = LoadLibraryA("ddraw.dll");
@@ -177,6 +180,7 @@ SexyAppBase::SexyAppBase()
 	mPreferredY = -1;
 	mIsScreenSaver = false;
 	mAllowMonitorPowersave = true;
+	win = NULL;
 	mHWnd = NULL;
 	mDDInterface = NULL;
 	mMusicInterface = NULL;
@@ -479,7 +483,11 @@ SexyAppBase::~SexyAppBase()
 		sprintf(aStr, "HWND: %d\r\n", aWindow);
 		OutputDebugString(aStr);*/
 
-		DestroyWindow(aWindow);
+		// DestroyWindow(aWindow);
+	}
+	if (win != NULL) {
+		SDL_DestroyWindow(win);
+		win = NULL;
 	}
 
 	WaitForLoadingThread();
@@ -497,6 +505,7 @@ SexyAppBase::~SexyAppBase()
 	FreeLibrary(gDDrawDLL);
 	FreeLibrary(gDSoundDLL);
 	FreeLibrary(gVersionDLL);
+	SDL_Quit();
 }
 
 static BOOL CALLBACK ChangeDisplayWindowEnumProc(HWND hwnd, LPARAM lParam)
@@ -2124,7 +2133,6 @@ bool SexyAppBase::EraseFile(const std::string& theFileName)
 void SexyAppBase::SEHOccured()
 {
 	SetMusicVolume(0);
-	::ShowWindow(mHWnd, SW_HIDE);
 	mSEHOccured = true;
 	EnforceCursor();
 }
@@ -2195,10 +2203,7 @@ void SexyAppBase::Shutdown()
 			mDDInterface->mDD->RestoreDisplayMode();
 		}
 
-		if (mHWnd != NULL)
-		{
-			ShowWindow(mHWnd, SW_HIDE);
-		}
+		SDL_HideWindow(win);
 
 		RestoreScreenResolution();
 
@@ -4660,8 +4665,12 @@ void SexyAppBase::MakeWindow()
 		global_sexy_handle = NULL;
 		HWND anOldWindow = mHWnd;
 		mHWnd = NULL;
-		DestroyWindow(anOldWindow);
+		// DestroyWindow(anOldWindow);
 		mWidgetManager->mImage = NULL;
+	}
+	if (win != NULL) {
+		SDL_DestroyWindow(win);
+		win = NULL;
 	}
 
 
@@ -4709,19 +4718,13 @@ void SexyAppBase::MakeWindow()
 				aPlaceY = aDesktopRect.bottom - aHeight;
 		}
 
-		mHWnd = CreateWindowEx(
-			0,
-			_S("MainWindow"),
-			mTitle.c_str(),
-			aWindowStyle,
-			aPlaceX,
-			aPlaceY,
+		win = SDL_CreateWindow(
+			"MainWindow",
 			aWidth,
 			aHeight,
-			NULL,
-			NULL,
-			gHInstance,
-			0);
+			0
+		);
+		mHWnd = (HWND)SDL_GetPointerProperty(SDL_GetWindowProperties(win), SDL_PROP_WINDOW_WIN32_HWND_POINTER, NULL);
 
 		if (mPreferredX == -1)
 		{
@@ -4735,6 +4738,7 @@ void SexyAppBase::MakeWindow()
 	}
 	else
 	{
+		/*
 		mHWnd = CreateWindowEx(
 			WS_EX_TOPMOST,
 			_S("MainWindow"),
@@ -4748,8 +4752,22 @@ void SexyAppBase::MakeWindow()
 			NULL,
 			gHInstance,
 			0);
+		*/
+
+		win = SDL_CreateWindow(
+			"MainWindow",
+			mWidth,
+			mHeight,
+			0
+		);
+		mHWnd = (HWND)SDL_GetPointerProperty(SDL_GetWindowProperties(win), SDL_PROP_WINDOW_WIN32_HWND_POINTER, NULL);
+
 
 		mIsPhysWindowed = false;
+	}
+	if (!win) {
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error!", "Failed to create window!", win);
+		exit(0);
 	}
 
 	/*char aStr[256];
@@ -5611,8 +5629,7 @@ void SexyAppBase::Start()
 	if (mAutoStartLoadingThread)
 		StartLoadingThread();
 
-	::ShowWindow(mHWnd, SW_SHOW);
-	::SetFocus(mHWnd);
+	SDL_ShowWindow(win);
 
 	timeBeginPeriod(1);
 
@@ -6129,47 +6146,8 @@ void SexyAppBase::Init()
 	srand(GetTickCount());
 
 	mIsWideWindow = sizeof(SexyChar) == sizeof(wchar_t);
+	mInvisHWnd = NULL;
 
-	WNDCLASS wc;
-	wc.style = CS_DBLCLKS;
-	wc.cbClsExtra = 0;
-	wc.cbWndExtra = 0;
-	wc.hbrBackground = NULL;
-	wc.hCursor = NULL;
-	wc.hIcon = ::LoadIconA(gHInstance, "IDI_MAIN_ICON");
-	wc.hInstance = gHInstance;
-	wc.lpfnWndProc = WindowProc;
-	wc.lpszClassName = _S("MainWindow");
-	wc.lpszMenuName = NULL;
-	bool success = RegisterClass(&wc) != 0;
-	DBG_ASSERTE(success);
-
-	wc.style = 0;
-	wc.cbClsExtra = 0;
-	wc.cbWndExtra = 0;
-	wc.hbrBackground = NULL;
-	wc.hCursor = NULL;
-	wc.hIcon = NULL;
-	wc.hInstance = gHInstance;
-	wc.lpfnWndProc = WindowProc;
-	wc.lpszClassName = _S("InvisWindow");
-	wc.lpszMenuName = NULL;
-	success = RegisterClass(&wc) != 0;
-	DBG_ASSERTE(success);
-
-	mInvisHWnd = CreateWindowEx(
-		0,
-		_S("InvisWindow"),
-		mTitle.c_str(),
-		0,
-		0,
-		0,
-		0,
-		0,
-		NULL,
-		NULL,
-		gHInstance,
-		0);
 	global_sexy_handle = this;
 
 	mHandCursor = CreateCursor(gHInstance, 11, 4, 32, 32, gFingerCursorData, gFingerCursorData + sizeof(gFingerCursorData) / 2);
@@ -6182,18 +6160,6 @@ void SexyAppBase::Init()
 	PreDisplayHook();
 
 	mWidgetManager->Resize(Rect(0, 0, mWidth, mHeight), Rect(0, 0, mWidth, mHeight));
-
-	// Check to see if we CAN run windowed or not...
-	if (mIsWindowed && !mFullScreenWindow && 0)
-	{
-		// How can we be windowed if our screen isn't even big enough?
-		if ((mWidth >= GetSystemMetrics(SM_CXFULLSCREEN)) ||
-			(mHeight >= GetSystemMetrics(SM_CYFULLSCREEN)))
-		{
-			mIsWindowed = false;
-			mForceFullscreen = true;
-		}
-	}
 
 	if (mFullScreenWindow) // change resoultion using ChangeDisplaySettings
 	{
@@ -6243,7 +6209,7 @@ void SexyAppBase::Init()
 
 	SetSfxVolume(mSfxVolume);
 
-	mMusicInterface = CreateMusicInterface(mInvisHWnd);
+	mMusicInterface = CreateMusicInterface(NULL);
 
 	SetMusicVolume(mMusicVolume);
 
