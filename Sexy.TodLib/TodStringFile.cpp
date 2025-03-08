@@ -94,7 +94,7 @@ void TodStringRemoveReturnChars(std::string& theString)
 bool TodStringListReadValue(const char*& thePtr, std::string& theValue)
 {
 	const char* aValueEnd = strchr(thePtr, '[');
-	int aLen = aValueEnd ? aValueEnd - thePtr : strlen(thePtr);
+	int aLen = (int)(aValueEnd ? aValueEnd - thePtr : strlen(thePtr));
 	theValue = Sexy::Trim(string(thePtr, aLen));  
 	TodStringRemoveReturnChars(theValue);  
 	thePtr += aLen;  
@@ -185,7 +185,7 @@ SexyString TodStringTranslate(const SexyChar* theString)
 {
 	if (theString != nullptr)
 	{
-		int aLen = strlen(theString);
+		int aLen = (int)strlen(theString);
 		if (aLen >= 3 && theString[0] == '[')
 		{
 			SexyString aName(theString, 1, aLen - 2);  
@@ -251,7 +251,7 @@ int TodWriteString(Graphics* g, const SexyString& theString, int theX, int theY,
 	}
 
 	if (theLength < 0 || theOffset + theLength >(int)theString.size())
-		theLength = theString.size();
+		theLength = (int)theString.size();
 	else
 		theLength = theOffset + theLength;  
 
@@ -312,7 +312,7 @@ int TodWriteWordWrappedHelper(Graphics* g, const SexyString& theString, int theX
 
 int TodDrawStringWrappedHelper(Graphics* g, const SexyString& theText, const Rect& theRect, Font* theFont, const Color& theColor, DrawStringJustification theJustification, bool drawString)
 {
-	int theMaxChars = theText.size();
+	int theMaxChars = (int)theText.size();
 	TodStringListFormat aCurrentFormat;
 	aCurrentFormat.mNewFont = &theFont;
 	aCurrentFormat.mNewColor = theColor;
@@ -443,7 +443,7 @@ int TodDrawStringWrappedHelper(Graphics* g, const SexyString& theText, const Rec
 			theJustification,
 			drawString,
 			aLineFeedPos, 
-			theText.size() - aLineFeedPos, 
+			(int)theText.size() - aLineFeedPos,
 			theMaxChars
 		);  
 		if (aLastLineLength >= 0)

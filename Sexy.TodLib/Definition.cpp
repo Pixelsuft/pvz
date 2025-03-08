@@ -293,7 +293,7 @@ bool DefinitionLoadXML(const SexyString& theFileName, DefMap* theDefMap, void* t
 void SMemR(void*& _Src, void* _Dst, size_t _Size)
 {
     memcpy(_Dst, _Src, _Size);
-    _Src = (void*)((unsigned int)_Src + _Size);
+    _Src = (void*)((size_t)_Src + _Size);
 }
 bool DefReadFromCacheArray(void*& theReadPtr, DefinitionArrayDef* theArray, DefMap* theDefMap)
 {
@@ -312,7 +312,7 @@ bool DefReadFromCacheArray(void*& theReadPtr, DefinitionArrayDef* theArray, DefM
     theArray->mArrayData = pData;
     SMemR(theReadPtr, pData, aArraySize);  
     for (int i = 0; i < theArray->mArrayCount; i++)
-        if (!DefMapReadFromCache(theReadPtr, theDefMap, (void*)((int)pData + theDefMap->mDefSize * i)))  
+        if (!DefMapReadFromCache(theReadPtr, theDefMap, (void*)((size_t)pData + theDefMap->mDefSize * i)))  
             return false;
     return true;
 }
@@ -377,7 +377,7 @@ bool DefMapReadFromCache(void*& theReadPtr, DefMap* theDefMap, void* theDefiniti
     for (DefField* aField = theDefMap->mMapFields; *aField->mFieldName != '\0'; aField++)
     {
         bool aSucceed = true;
-        void* aDest = (void*)((int)theDefinition + aField->mFieldOffset);  
+        void* aDest = (void*)((size_t)theDefinition + aField->mFieldOffset);  
         switch (aField->mFieldType)
         {
         case DefFieldType::DT_STRING:
@@ -464,7 +464,7 @@ void* DefinitionUncompressCompiledBuffer(void* theCompressedBuffer, size_t theCo
     }
     Bytef* aUncompressedBuffer = (Bytef*)DefinitionAlloc(aHeader->mUncompressedSize);
     theCompressedBufferSize=aHeader->mUncompressedSize; //my addition
-    Bytef* aSrc = (Bytef*)((int)theCompressedBuffer + sizeof(CompressedDefinitionHeader));  
+    Bytef* aSrc = (Bytef*)((size_t)theCompressedBuffer + sizeof(CompressedDefinitionHeader));  
     int aResult = uncompress(aUncompressedBuffer, (uLongf*)&theCompressedBufferSize, aSrc, sz - sizeof(CompressedDefinitionHeader));
     TOD_ASSERT(aResult == Z_OK);
     TOD_ASSERT(theCompressedBufferSize == aHeader->mUncompressedSize);
@@ -482,9 +482,9 @@ bool DefinitionReadCompiledFile(const SexyString& theCompiledFilePath, DefMap* t
         p_fseek(pFile, 0, 2);  // Move the pointer to the read location to the end of the file
         size_t aCompressedSize = p_ftell(pFile);  // The offset obtained at this time is the size of the entire file
         p_fseek(pFile, 0, 0);  // Then move the pointer to the read position back to the beginning of the file
-        void* aCompressedBuffer = DefinitionAlloc(aCompressedSize);
+        void* aCompressedBuffer = DefinitionAlloc((int)aCompressedSize);
         // Read the file, and determine whether the actual read size is the complete file size, if it is not equal, it is determined that the read failed
-        bool aReadCompressedFailed = p_fread(aCompressedBuffer, sizeof(char), aCompressedSize, pFile) != aCompressedSize;
+        bool aReadCompressedFailed = p_fread(aCompressedBuffer, sizeof(char), (int)aCompressedSize, pFile) != aCompressedSize;
         p_fclose(pFile);  // Close the resource file stream and free up the memory occupied by pFile
         if (aReadCompressedFailed)  // Determine whether the reading is successful
         {
@@ -518,7 +518,7 @@ bool DefinitionReadCompiledFile(const SexyString& theCompiledFilePath, DefMap* t
                         SMemR(aBufferPtr, theDefinition, theDefMap->mDefSize);
                         // Repair the wild pointer and flag data, and save the result of whether it is successful, and use it as the return value later
                         bool aResult = DefMapReadFromCache(aBufferPtr, theDefMap, theDefinition);
-                        size_t aReadMemSize = (uint)aBufferPtr - (uint)aUncompressedBuffer;
+                        size_t aReadMemSize = (size_t)aBufferPtr - (size_t)aUncompressedBuffer;
                         delete[] aUncompressedBuffer;
                         if (aResult && aReadMemSize != aUncompressedSize)
                             TodTrace(_S("Compiled file wrong size: %s\n"), theCompiledFilePath.c_str());
@@ -574,7 +574,7 @@ void DefinitionFillWithDefaults(DefMap* theDefMap, void* theDefinition)
     memset(theDefinition, NULL, theDefMap->mDefSize);  
     for (DefField* aField = theDefMap->mMapFields; *aField->mFieldName != '\0'; aField++)  
         if (aField->mFieldType == DefFieldType::DT_STRING)
-            *(char**)((uint)theDefinition + aField->mFieldOffset) = "";  
+            *(char**)((size_t)theDefinition + aField->mFieldOffset) = "";
 }
 
 void DefinitionXmlError(XMLParser* theXmlParser, const char* theFormat, ...)
@@ -672,7 +672,7 @@ bool DefinitionReadStringField(XMLParser* theXmlParser, char** theValue)
     }
     else
     {
-        *theValue = (char*)DefinitionAlloc(aStringValue.size());
+        *theValue = (char*)DefinitionAlloc((int)aStringValue.size());
         strcpy(*theValue, aStringValue.c_str());
     }
     return true;
@@ -825,7 +825,7 @@ bool DefinitionReadField(XMLParser* theXmlParser, DefMap* theDefMap, void* theDe
 
     for (DefField* aField = theDefMap->mMapFields; *aField->mFieldName != '\0'; aField++)
     {
-        void* pVar = (void*)((uint)theDefinition + aField->mFieldOffset);
+        void* pVar = (void*)((size_t)theDefinition + aField->mFieldOffset);
         if (aField->mFieldType == DefFieldType::DT_FLAGS && DefinitionReadFlagField(theXmlParser, aXMLElement.mValue, nullptr, (DefSymbol*)aField->mExtraData))
             return true;
         
@@ -1014,7 +1014,7 @@ float FloatTrackEvaluateFromLastTime(FloatParameterTrack& theTrack, float theTim
 void DefinitionFreeArrayField(DefinitionArrayDef* theArray, DefMap* theDefMap)
 {
     for (int i = 0; i < theArray->mArrayCount; i++)
-        DefinitionFreeMap(theDefMap, (void*)((int)theArray->mArrayData + theDefMap->mDefSize * i));  
+        DefinitionFreeMap(theDefMap, (void*)((size_t)theArray->mArrayData + theDefMap->mDefSize * i));
     delete[] theArray->mArrayData;
     theArray->mArrayData = nullptr;
 }
@@ -1023,7 +1023,7 @@ void DefinitionFreeMap(DefMap* theDefMap, void* theDefinition)
 {
     for (DefField* aField = theDefMap->mMapFields; *aField->mFieldName != '\0'; aField++)
     {
-        void* aVar = (void*)((int)theDefinition + aField->mFieldOffset);  
+        void* aVar = (void*)((size_t)theDefinition + aField->mFieldOffset);
         switch (aField->mFieldType)
         {
         case DefFieldType::DT_STRING:

@@ -56,6 +56,7 @@ BassMusicInterface::BassMusicInterface(HWND theHWnd)
 
 	BOOL success;
 
+#if 0
 	if (gBass->mVersion2)
 	{
 		success = gBass->BASS_Init2(1, 44100, 0, theHWnd, NULL);
@@ -63,28 +64,30 @@ BassMusicInterface::BassMusicInterface(HWND theHWnd)
 	}
 	else
 		success = gBass->BASS_Init(-1, 44100, 0, theHWnd);
+#endif
 
 	mixerSetControlDetails(phmx, &mcd, 0L);
 
-	gBass->BASS_Start();
+	// gBass->BASS_Start();
 
 	mixerClose((HMIXER) phmx);
 
 	mMaxMusicVolume = 40;
 
-	mMusicLoadFlags = gBass->mVersion2 ? BASS_MUSIC_LOOP | BASS2_MUSIC_RAMP : BASS_MUSIC_LOOP;
+	// mMusicLoadFlags = gBass->mVersion2 ? BASS_MUSIC_LOOP | BASS2_MUSIC_RAMP : BASS_MUSIC_LOOP;
 }
 
 BassMusicInterface::~BassMusicInterface()
 {
-	gBass->BASS_Stop();
-	gBass->BASS_Free();
+	// gBass->BASS_Stop();
+	// gBass->BASS_Free();
 
 	FreeBassDLL();
 }
 
 bool BassMusicInterface::LoadMusic(int theSongId, const std::string& theFileName)
 {
+	return true;
 	HMUSIC aHMusic = NULL;
 	HSTREAM aStream = NULL;
 	
@@ -130,6 +133,7 @@ bool BassMusicInterface::LoadMusic(int theSongId, const std::string& theFileName
 
 void BassMusicInterface::PlayMusic(int theSongId, int theOffset, bool noLoop)
 {
+	return;
 	BassMusicMap::iterator anItr = mMusicMap.find(theSongId);
 	if (anItr != mMusicMap.end())
 	{
@@ -159,6 +163,7 @@ void BassMusicInterface::PlayMusic(int theSongId, int theOffset, bool noLoop)
 
 void BassMusicInterface::StopMusic(int theSongId)
 {
+	return;
 	BassMusicMap::iterator anItr = mMusicMap.find(theSongId);
 	if (anItr != mMusicMap.end())
 	{
@@ -170,6 +175,7 @@ void BassMusicInterface::StopMusic(int theSongId)
 
 void BassMusicInterface::StopAllMusic()
 {
+	return;
 	BassMusicMap::iterator anItr = mMusicMap.begin();
 	while (anItr != mMusicMap.end())
 	{
@@ -182,6 +188,7 @@ void BassMusicInterface::StopAllMusic()
 
 void BassMusicInterface::UnloadMusic(int theSongId)
 {
+	return;
 	StopMusic(theSongId);
 	
 	BassMusicMap::iterator anItr = mMusicMap.find(theSongId);
@@ -199,6 +206,7 @@ void BassMusicInterface::UnloadMusic(int theSongId)
 
 void BassMusicInterface::UnloadAllMusic()
 {
+	return;
 	StopAllMusic();
 	for (BassMusicMap::iterator anItr = mMusicMap.begin(); anItr != mMusicMap.end(); ++anItr)
 	{
@@ -213,6 +221,7 @@ void BassMusicInterface::UnloadAllMusic()
 
 void BassMusicInterface::PauseMusic(int theSongId)
 {
+	return;
 	BassMusicMap::iterator anItr = mMusicMap.find(theSongId);
 	if (anItr != mMusicMap.end())
 	{
@@ -223,6 +232,7 @@ void BassMusicInterface::PauseMusic(int theSongId)
 
 void BassMusicInterface::PauseAllMusic()
 {
+	return;
 	for (BassMusicMap::iterator anItr = mMusicMap.begin(); anItr != mMusicMap.end(); ++anItr)
 	{
 		BassMusicInfo* aMusicInfo = &anItr->second;
@@ -233,6 +243,7 @@ void BassMusicInterface::PauseAllMusic()
 
 void BassMusicInterface::ResumeAllMusic()
 {
+	return;
 	for (BassMusicMap::iterator anItr = mMusicMap.begin(); anItr != mMusicMap.end(); ++anItr)
 	{
 		BassMusicInfo* aMusicInfo = &anItr->second;
@@ -244,6 +255,7 @@ void BassMusicInterface::ResumeAllMusic()
 
 void BassMusicInterface::ResumeMusic(int theSongId)
 {
+	return;
 	BassMusicMap::iterator anItr = mMusicMap.find(theSongId);
 	if (anItr != mMusicMap.end())
 	{
@@ -254,6 +266,7 @@ void BassMusicInterface::ResumeMusic(int theSongId)
 
 void BassMusicInterface::FadeIn(int theSongId, int theOffset, double theSpeed, bool noLoop)
 {
+	return;
 	BassMusicMap::iterator anItr = mMusicMap.find(theSongId);
 	if (anItr != mMusicMap.end())
 	{
@@ -289,6 +302,7 @@ void BassMusicInterface::FadeIn(int theSongId, int theOffset, double theSpeed, b
 
 void BassMusicInterface::FadeOut(int theSongId, bool stopSong, double theSpeed)
 {
+	return;
 	BassMusicMap::iterator anItr = mMusicMap.find(theSongId);
 	if (anItr != mMusicMap.end())
 	{		
@@ -305,6 +319,7 @@ void BassMusicInterface::FadeOut(int theSongId, bool stopSong, double theSpeed)
 
 void BassMusicInterface::FadeOutAll(bool stopSong, double theSpeed)
 {
+	return;
 	BassMusicMap::iterator anItr = mMusicMap.begin();
 	while (anItr != mMusicMap.end())
 	{
@@ -319,6 +334,7 @@ void BassMusicInterface::FadeOutAll(bool stopSong, double theSpeed)
 
 void BassMusicInterface::SetVolume(double theVolume)
 {
+	return;
 	int aVolume = (int) (theVolume * mMaxMusicVolume);
 	
 	if (gBass->mVersion2)
@@ -332,6 +348,7 @@ void BassMusicInterface::SetVolume(double theVolume)
 
 void BassMusicInterface::SetSongVolume(int theSongId, double theVolume)
 {
+	return;
 	BassMusicMap::iterator anItr = mMusicMap.find(theSongId);
 	if (anItr != mMusicMap.end())
 	{		
@@ -344,6 +361,7 @@ void BassMusicInterface::SetSongVolume(int theSongId, double theVolume)
 
 void BassMusicInterface::SetSongMaxVolume(int theSongId, double theMaxVolume)
 {
+	return;
 	BassMusicMap::iterator anItr = mMusicMap.find(theSongId);
 	if (anItr != mMusicMap.end())
 	{		
@@ -357,6 +375,7 @@ void BassMusicInterface::SetSongMaxVolume(int theSongId, double theMaxVolume)
 
 bool BassMusicInterface::IsPlaying(int theSongId)
 {
+	return false;
 	BassMusicMap::iterator anItr = mMusicMap.find(theSongId);
 	if (anItr != mMusicMap.end())
 	{		
@@ -369,6 +388,7 @@ bool BassMusicInterface::IsPlaying(int theSongId)
 
 void BassMusicInterface::SetMusicAmplify(int theSongId, double theAmp)
 {
+	return;
 	BassMusicMap::iterator anItr = mMusicMap.find(theSongId);
 	if (anItr != mMusicMap.end())
 	{		
@@ -379,6 +399,7 @@ void BassMusicInterface::SetMusicAmplify(int theSongId, double theAmp)
 
 void BassMusicInterface::Update()
 {
+	return;
 	BassMusicMap::iterator anItr = mMusicMap.begin();
 	while (anItr != mMusicMap.end())
 	{
@@ -414,6 +435,7 @@ void BassMusicInterface::Update()
 // MODs are broken up into several orders or patterns. This returns the current order a song is on.
 int BassMusicInterface::GetMusicOrder(int theSongId)
 {
+	return 0;
 	BassMusicMap::iterator anItr = mMusicMap.find(theSongId);
 	if (anItr != mMusicMap.end())
 	{		

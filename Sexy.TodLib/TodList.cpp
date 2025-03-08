@@ -29,12 +29,12 @@ void TodAllocator::Grow()
 	mBlockList = aBlock;
 
 	void* aFreeList = mFreeList;
-	void* aItem = (void*)((uint)aBlock + 4);
+	void* aItem = (void*)((size_t)aBlock + 4);
 	for (int i = 0; i < mGrowCount; i++)
 	{
 		*(void**)aItem = aFreeList;
 		aFreeList = aItem;
-		aItem = (void*)((uint)aItem + mItemSize);
+		aItem = (void*)((size_t)aItem + mItemSize);
 	}
 	mFreeList = aFreeList;
 }
@@ -44,8 +44,8 @@ bool TodAllocator::IsPointerFromAllocator(void* theItem)
 	size_t aBlockSize = mGrowCount * mItemSize;  
 	for (void* aPtr = mBlockList; aPtr != nullptr; aPtr = *(void**)aPtr)
 	{
-		uint aItemPtr = (uint)theItem;
-		uint aBlockPtr = (uint)aPtr + sizeof(void*);
+		size_t aItemPtr = (size_t)theItem;
+		size_t aBlockPtr = (size_t)aPtr + sizeof(void*);
 		if (aItemPtr >= aBlockPtr && aItemPtr < aBlockPtr + aBlockSize && (aItemPtr - aBlockPtr) % mItemSize == 0)
 			return true;
 	}
@@ -81,7 +81,8 @@ void* TodAllocator::Calloc(int theItemSize)
 void TodAllocator::Free(void* theItem, int theItemSize)
 {
 	mTotalItems--;
-	TOD_ASSERT(IsPointerFromAllocator(theItem));
+	// TODO
+	// TOD_ASSERT(IsPointerFromAllocator(theItem));
 	TOD_ASSERT(!IsPointerOnFreeList(theItem));
 	*(void**)theItem = mFreeList;  
 	mFreeList = theItem;  

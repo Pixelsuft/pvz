@@ -23,6 +23,7 @@ static void CheckBassFunction(unsigned int theFunc, const char *theName)
 ///////////////////////////////////////////////////////////////////////////////
 BASS_INSTANCE::BASS_INSTANCE(const char *dllName)
 {
+#if 0
     mModule = LoadLibrary(dllName);
 	if (!mModule)
 		return;
@@ -116,32 +117,41 @@ BASS_INSTANCE::BASS_INSTANCE(const char *dllName)
 	}
 
 #undef GETPROC
+#endif
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 BASS_INSTANCE::~BASS_INSTANCE()
 {
+#if 0
     if (mModule)
         FreeLibrary(mModule);
+#endif
 }
 
 
 BOOL BASS_INSTANCE::BASS_MusicSetAmplify(HMUSIC handle, DWORD amp)
 {
+#if 0
 	BASS_MusicSetAttribute(handle, BASS_MUSIC_ATTRIB_AMPLIFY, amp);
+#endif
 	return true;
 }
 
 
 BOOL BASS_INSTANCE::BASS_MusicPlay(HMUSIC handle)
 {
+#if 0
 	return BASS_ChannelPlay(handle, true);
+#endif
+	return FALSE;
 }
 
 
 BOOL BASS_INSTANCE::BASS_MusicPlayEx(HMUSIC handle, DWORD pos, int flags, BOOL reset)
 {
+#if 0
 	int anOffset = MAKEMUSICPOS(pos,0);
 
 	BASS_ChannelStop(handle);
@@ -149,18 +159,26 @@ BOOL BASS_INSTANCE::BASS_MusicPlayEx(HMUSIC handle, DWORD pos, int flags, BOOL r
 	BASS_ChannelSetFlags(handle, flags);
 
 	return BASS_ChannelPlay(handle, false/*reset*/);
+#endif
+	return FALSE;
 }
 
 
 BOOL BASS_INSTANCE::BASS_ChannelResume(DWORD handle)
 {
+#if 0
 	return BASS_ChannelPlay(handle, false);
+#endif
+	return FALSE;
 }
 
 BOOL BASS_INSTANCE::BASS_StreamPlay(HSTREAM handle, BOOL flush, DWORD flags)
 {
+#if 0
 	BASS_ChannelSetFlags(handle, flags);
 	return BASS_ChannelPlay(handle, flush);
+#endif
+	return FALSE;
 }
 
 
@@ -168,6 +186,7 @@ BOOL BASS_INSTANCE::BASS_StreamPlay(HSTREAM handle, BOOL flush, DWORD flags)
 ///////////////////////////////////////////////////////////////////////////////
 void Sexy::LoadBassDLL()
 {
+#if 0
 	InterlockedIncrement(&gBassLoadCount);
 	if (gBass!=NULL)
 		return;
@@ -178,12 +197,14 @@ void Sexy::LoadBassDLL()
 		MessageBoxA(NULL,"Can't find bass.dll." ,"Error",MB_OK | MB_ICONERROR);
 		exit(0);
 	}
+#endif
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 void Sexy::FreeBassDLL()
 {
+#if 0
 	if (gBass!=NULL)
 	{
 		if (InterlockedDecrement(&gBassLoadCount) <= 0)
@@ -192,6 +213,7 @@ void Sexy::FreeBassDLL()
 			gBass = NULL;
 		}
 	}
+#endif
 }
 
 

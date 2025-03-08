@@ -96,6 +96,6 @@ SexyString NewUserDialog::GetName()
 void NewUserDialog::SetName(const SexyString& theName)
 {
 	mNameEditWidget->SetText(theName, true);
-	mNameEditWidget->mCursorPos = theName.size();
+	mNameEditWidget->mCursorPos = (int)theName.size();
 	mNameEditWidget->mHilitePos = 0;
 }

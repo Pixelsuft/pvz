@@ -989,7 +989,8 @@ SeedType Challenge::BeghouledPickSeed(int theGridX, int theGridY, BeghouledBoard
 	}
 	
 	theBoardState->mSeedType[theGridX][theGridY] = SEED_NONE;
-	return (SeedType)TodPickFromArray(aPickArray, aCount);
+	int pick_id = aCount > 0 ? aPickArray[Sexy::Rand(aCount)] : 0;
+	return (SeedType)aPickArray[pick_id];
 }
 
 void Challenge::BeghouledFillHoles(BeghouledBoardState* theBoardState, bool theAllowMatches)

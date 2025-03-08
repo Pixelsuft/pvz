@@ -429,7 +429,7 @@ void ChallengeScreen::DrawButton(Graphics* g, int theChallengeIndex)
 				aName = _S("?");
 			}
 
-			int aNameLen = aName.size();
+			int aNameLen = (int)aName.size();
 			TodDrawStringWrapped(g, aName, Rect(aPosX + 6, aPosY + 74, 94, 33), Sexy::FONT_BRIANNETOD12, aTextColor, DS_ALIGN_CENTER_VERTICAL_MIDDLE);
 
 			int aRecord = mApp->mPlayerInfo->mChallengeRecords[theChallengeIndex];

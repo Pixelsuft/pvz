@@ -1886,8 +1886,8 @@ void ZenGarden::MouseDownWithFullWheelBarrow(int x, int y)
     aPottedPlant->mWhichZenGarden = mGardenType;
     aPottedPlant->mX = aGridX;
     aPottedPlant->mY = aGridY;
-    int aPottedPlantIndex = ((int)aPottedPlant - (int)mApp->mPlayerInfo->mPottedPlant) / (int)sizeof(PottedPlant);
-    Plant* aPlant = PlacePottedPlant(aPottedPlantIndex);
+    size_t aPottedPlantIndex = ((size_t)aPottedPlant - (size_t)mApp->mPlayerInfo->mPottedPlant) / (size_t)sizeof(PottedPlant);
+    Plant* aPlant = PlacePottedPlant((int)aPottedPlantIndex);
     mBoard->DoPlantingEffects(aPottedPlant->mX, aPottedPlant->mY, aPlant);
 }
 

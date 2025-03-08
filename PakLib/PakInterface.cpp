@@ -96,7 +96,7 @@ bool PakInterface::AddPakFile(const std::string& theFileName)
 	for (;;)
 	{
 		uchar aFlags = 0;
-		int aCount = FRead(&aFlags, 1, 1, aFP);
+		int aCount = (int)FRead(&aFlags, 1, 1, aFP);
 		if ((aFlags & FILEFLAGS_END) || (aCount == 0))
 			break;
 
@@ -145,7 +145,7 @@ static void FixFileName(const char* theFileName, char* theUpperName)
 	{
 		char aDir[256];
 		getcwd(aDir, 256);  
-		int aLen = strlen(aDir);
+		int aLen = (int)strlen(aDir);
 		aDir[aLen++] = '\\';
 		aDir[aLen] = 0;
 

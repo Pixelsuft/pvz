@@ -86,10 +86,10 @@ void ToolTipWidget::CalculateSize()
 	{
 		aHeight += FONT_BRIANNETOD12->GetAscent() + 2;
 	}
-	aHeight += aLines.size() * FONT_BRIANNETOD12->GetAscent();
+	aHeight += (int)aLines.size() * FONT_BRIANNETOD12->GetAscent();
 
 	mWidth = aMaxWidth + 10;
-	mHeight = aHeight + aLines.size() * 2 - 2;
+	mHeight = aHeight + (int)aLines.size() * 2 - 2;
 }
 
 void ToolTipWidget::SetLabel(const SexyString& theLabel)

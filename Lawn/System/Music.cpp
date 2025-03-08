@@ -58,10 +58,12 @@ bool Music::TodLoadMusic(MusicFile theMusicFile, const std::string& theFileName)
 		p_fread(aData, sizeof(char), aSize, pFile);  
 		p_fclose(pFile);  
 
+#if 0
 		if (gBass->mVersion2)
 			aHMusic = gBass->BASS_MusicLoad2(true, aData, 0, 0, aBass->mMusicLoadFlags, 0);
 		else
 			aHMusic = gBass->BASS_MusicLoad(true, aData, 0, 0, aBass->mMusicLoadFlags);
+#endif
 		delete[] aData;
 
 		if (aHMusic == NULL)
@@ -80,7 +82,9 @@ bool Music::TodLoadMusic(MusicFile theMusicFile, const std::string& theFileName)
 		p_fread(aData, sizeof(char), aSize, pFile);  
 		p_fclose(pFile);  
 
+#if 0
 		aStream = gBass->BASS_StreamCreateFile(true, aData, 0, aSize, 0);
+#endif
 		TOD_ASSERT(gMusicFileData[theMusicFile].mFileData == nullptr);
 		gMusicFileData[theMusicFile].mFileData = (unsigned int*)aData;
 
@@ -146,8 +150,7 @@ void Music::SetupMusicFileForTune(MusicFile theMusicFile, MusicTune theMusicTune
 			aVolume = 100;
 		else
 			aVolume = 0;
-
-		gBass->BASS_MusicSetAttribute(aHMusic, BASS_MUSIC_ATTRIB_VOL_CHAN + aTrack, aVolume);  
+		// gBass->BASS_MusicSetAttribute(aHMusic, BASS_MUSIC_ATTRIB_VOL_CHAN + aTrack, aVolume);  
 	}
 }
 
@@ -161,7 +164,7 @@ void Music::LoadSong(MusicFile theMusicFile, const std::string& theFileName)
 	}
 	else
 	{
-		gBass->BASS_MusicSetAttribute(GetBassMusicHandle(theMusicFile), BASS_MUSIC_ATTRIB_PSCALER, 4);  
+		// gBass->BASS_MusicSetAttribute(GetBassMusicHandle(theMusicFile), BASS_MUSIC_ATTRIB_PSCALER, 4);  
 		TodHesitationTrace("song '%s'", theFileName.c_str());
 	}
 }
@@ -235,6 +238,8 @@ HMUSIC Music::GetBassMusicHandle(MusicFile theMusicFile)
 
 void Music::PlayFromOffset(MusicFile theMusicFile, int theOffset, double theVolume)
 {
+	// TODO
+	return;
 	if (mApp == nullptr) mApp = (LawnApp*)gSexyApp;
 	BassMusicInterface* aBass = (BassMusicInterface*)mApp->mMusicInterface;
 	auto anItr = aBass->mMusicMap.find((int)theMusicFile);
@@ -248,20 +253,22 @@ void Music::PlayFromOffset(MusicFile theMusicFile, int theOffset, double theVolu
 	}
 	else
 	{
-		gBass->BASS_ChannelStop(aMusicInfo->mHMusic);  
+		// gBass->BASS_ChannelStop(aMusicInfo->mHMusic);  
 		SetupMusicFileForTune(theMusicFile, mCurMusicTune);  
 		aMusicInfo->mStopOnFade = false;
 		aMusicInfo->mVolume = aMusicInfo->mVolumeCap * theVolume;
 		aMusicInfo->mVolumeAdd = 0.0;
-		gBass->BASS_ChannelSetAttributes(aMusicInfo->mHMusic, -1, aMusicInfo->mVolume * 100.0, -101);  
-		gBass->BASS_ChannelSetFlags(aMusicInfo->mHMusic, BASS_MUSIC_POSRESET | BASS_MUSIC_RAMP | BASS_MUSIC_LOOP);
-		gBass->BASS_ChannelSetPosition(aMusicInfo->mHMusic, theOffset | 0x80000000);  
-		gBass->BASS_ChannelPlay(aMusicInfo->mHMusic, false);  
+		// gBass->BASS_ChannelSetAttributes(aMusicInfo->mHMusic, -1, aMusicInfo->mVolume * 100.0, -101);  
+		// gBass->BASS_ChannelSetFlags(aMusicInfo->mHMusic, BASS_MUSIC_POSRESET | BASS_MUSIC_RAMP | BASS_MUSIC_LOOP);
+		// gBass->BASS_ChannelSetPosition(aMusicInfo->mHMusic, theOffset | 0x80000000);  
+		// gBass->BASS_ChannelPlay(aMusicInfo->mHMusic, false);  
 	}
 }
 
 void Music::PlayMusic(MusicTune theMusicTune, int theOffset, int theDrumsOffset)
 {
+	// TODO
+	return;
 	if (mMusicDisabled)
 		return;
 
@@ -392,6 +399,7 @@ void Music::PlayMusic(MusicTune theMusicTune, int theOffset, int theDrumsOffset)
 
 	if (aRestartingSong)
 	{
+		/*
 		if (mCurMusicFileMain != MusicFile::MUSIC_FILE_NONE)
 		{
 			HMUSIC aHMusic = GetBassMusicHandle(mCurMusicFileMain);
@@ -410,12 +418,13 @@ void Music::PlayMusic(MusicTune theMusicTune, int theOffset, int theDrumsOffset)
 			gBass->BASS_MusicSetAttribute(aHMusic, BASS_MUSIC_ATTRIB_BPM, mBaseBPM);
 			gBass->BASS_MusicSetAttribute(aHMusic, BASS_MUSIC_ATTRIB_SPEED, mBaseModSpeed);
 		}
+		*/
 	}
 	else
 	{
-		HMUSIC aHMusic = GetBassMusicHandle(mCurMusicFileMain);
-		mBaseBPM = gBass->BASS_MusicGetAttribute(aHMusic, BASS_MUSIC_ATTRIB_BPM);
-		mBaseModSpeed = gBass->BASS_MusicGetAttribute(aHMusic, BASS_MUSIC_ATTRIB_SPEED);
+		//HMUSIC aHMusic = GetBassMusicHandle(mCurMusicFileMain);
+		//mBaseBPM = gBass->BASS_MusicGetAttribute(aHMusic, BASS_MUSIC_ATTRIB_BPM);
+		//mBaseModSpeed = gBass->BASS_MusicGetAttribute(aHMusic, BASS_MUSIC_ATTRIB_SPEED);
 	}
 }
 
@@ -444,7 +453,7 @@ void Music::MusicResyncChannel(MusicFile theMusicFileToMatch, MusicFile theMusic
 		else if (aDiff < 0)
 			aBPM -= 1;
 
-		gBass->BASS_MusicSetAttribute(aHMusic, BASS_MUSIC_ATTRIB_BPM, aBPM);  
+		//gBass->BASS_MusicSetAttribute(aHMusic, BASS_MUSIC_ATTRIB_BPM, aBPM);  
 	}
 }
 
@@ -636,8 +645,8 @@ void Music::UpdateMusicBurst()
 	{
 		mMusicInterface->SetSongVolume(mCurMusicFileMain, aMainTrackVolume);
 		mMusicInterface->SetSongVolume(mCurMusicFileDrums, aDrumsVolume);
-		if (aDrumsJumpOrder != -1)
-			gBass->BASS_ChannelSetPosition(GetBassMusicHandle(mCurMusicFileDrums), LOWORD(aDrumsJumpOrder) | 0x80000000);
+		//if (aDrumsJumpOrder != -1)
+		//	gBass->BASS_ChannelSetPosition(GetBassMusicHandle(mCurMusicFileDrums), LOWORD(aDrumsJumpOrder) | 0x80000000);
 	}
 }
 
@@ -718,7 +727,7 @@ void Music::GameMusicPause(bool thePause)
 
 			if (aMusicInfo->mHStream)
 			{
-				mPauseOffset = gBass->BASS_ChannelGetPosition(aMusicInfo->mHStream);
+				//mPauseOffset = gBass->BASS_ChannelGetPosition(aMusicInfo->mHStream);
 				mMusicInterface->StopMusic(mCurMusicFileMain);
 			}
 			else

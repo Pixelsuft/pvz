@@ -4664,7 +4664,8 @@ void Board::PickSpecialGraveStone()
 
 	if (aPickCount > 0)
 	{
-		((GridItem*)TodPickFromArray((int*)aPicks, aPickCount))->mGridItemState = GridItemState::GRIDITEM_STATE_GRAVESTONE_SPECIAL;
+		int pick_id = (aPickCount > 0) ? Sexy::Rand(aPickCount) : 0;
+		aPicks[pick_id]->mGridItemState = GridItemState::GRIDITEM_STATE_GRAVESTONE_SPECIAL;
 	}
 }
 

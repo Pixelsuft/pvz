@@ -1234,7 +1234,7 @@ void Reanimation::ParseAttacherTrack(const ReanimatorTransform& theTransform, At
 		return;
 	const char* aTags = strstr(aReanimName + 2, "[");  
 	const char* aTrackName = strstr(aReanimName + 2, "__");  
-	if (aTags && aTrackName && (unsigned int)aTags < (unsigned int)aTrackName)  
+	if (aTags && aTrackName && (size_t)aTags < (size_t)aTrackName)
 		return;
 
 	if (aTrackName)  

@@ -90,7 +90,7 @@ Image* ImageLib::GetImage(const std::string& theFilename, bool lookForAlphaImage
 	if (!gAutoLoadAlpha)
 		lookForAlphaImage = false;
 
-	int aLastDotPos = theFilename.rfind('.');
+	int aLastDotPos = (int)theFilename.rfind('.');
 	int aLastSlashPos = max((int)theFilename.rfind('\\'), (int)theFilename.rfind('/'));
 
 	std::string anExt;
