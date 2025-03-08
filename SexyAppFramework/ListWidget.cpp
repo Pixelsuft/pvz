@@ -70,7 +70,7 @@ SexyString ListWidget::GetSortKey(int theIdx)
 	
 void ListWidget::Sort(bool ascending) 
 {
-	int aCount = mLines.size();
+	int aCount = (int)mLines.size();
 	int* aMap = new int[aCount];
 	SexyString* aKeys = new SexyString[aCount];
 
@@ -183,7 +183,7 @@ int ListWidget::AddLine(const SexyString& theLine, bool alphabetical)
 		
 	if (!inserted) 
 	{
-		anIdx = mLines.size();
+		anIdx = (int)mLines.size();
 			
 		ListWidget *aListWidget = this;
 		
@@ -219,7 +219,7 @@ void ListWidget::SetLine(int theIdx, const SexyString& theString)
 	
 int ListWidget::GetLineCount() 
 {
-	return mLines.size();	
+	return (int)mLines.size();
 }
 	
 int ListWidget::GetLineIdx(const SexyString& theLine) 
@@ -320,7 +320,7 @@ int ListWidget::GetOptimalHeight()
 {
 	int anItemHeight = (mItemHeight != -1) ? mItemHeight : mFont->GetHeight();
 
-	return anItemHeight * mLines.size() + 8;
+	return anItemHeight * (int)mLines.size() + 8;
 }
 	
 void ListWidget::OrderInManagerChanged()

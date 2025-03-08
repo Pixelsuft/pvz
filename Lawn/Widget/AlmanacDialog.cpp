@@ -924,7 +924,7 @@ SexyString AlmanacDialog::TranslateAndSanitize(SexyString str)
 	for (int i = 0; i < WEIRD_CHARACTERS_COUNT; ++i) {
 		char weirdChar = weirdCharacters[i][0];
 		int pos = 0;
-		while ((pos = ret.find(weirdChar, pos)) != SexyString::npos) {
+		while ((pos = (int)ret.find(weirdChar, pos)) != SexyString::npos) {
 			if (pos > 0) {
 				ret.erase(pos - 1, 1);
 				pos--;

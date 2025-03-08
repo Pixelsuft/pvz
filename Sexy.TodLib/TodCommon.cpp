@@ -1210,7 +1210,7 @@ SexyString TodReplaceString(const SexyString& theText, const SexyChar* theString
 SexyString TodReplaceNumberString(const SexyString& theText, const SexyChar* theStringToFind, int theNumber)
 {
 	SexyString aFinalString = TodStringTranslate(theText);
-	int aPos = aFinalString.find(theStringToFind);
+	int aPos = (int)aFinalString.find(theStringToFind);
 	if (aPos != SexyString::npos)
 	{
 		SexyString aNumberString = StrFormat(_S("%d"), theNumber);

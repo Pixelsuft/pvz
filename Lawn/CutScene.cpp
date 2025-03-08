@@ -1679,7 +1679,7 @@ void CutScene::KeyDown(KeyCode theKey)
 int CutScene::ParseDelayTimeFromMessage()
 {
 	SexyString aCrazyDaveText = mApp->GetCrazyDaveText(mCrazyDaveLastTalkIndex);
-	int anIndex = aCrazyDaveText.find(_S("{DELAY_"));
+	int anIndex = (int)aCrazyDaveText.find(_S("{DELAY_"));
 	if (anIndex != SexyString::npos)
 	{
 		SexyString aDelayTimeStr = aCrazyDaveText.substr(anIndex + 7, aCrazyDaveText.find(_S("}")) - anIndex - 7);
@@ -1692,7 +1692,7 @@ int CutScene::ParseDelayTimeFromMessage()
 int CutScene::ParseTalkTimeFromMessage()
 {
 	SexyString aCrazyDaveText = mApp->GetCrazyDaveText(mCrazyDaveLastTalkIndex);
-	int anIndex = aCrazyDaveText.find(_S("{TIME_"));
+	int anIndex = (int)aCrazyDaveText.find(_S("{TIME_"));
 	if (anIndex != -1)
 	{
 		SexyString aTalkTimeStr = aCrazyDaveText.substr(anIndex + 6, aCrazyDaveText.find(_S("}")) - anIndex - 6);

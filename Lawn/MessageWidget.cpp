@@ -124,7 +124,7 @@ void MessageWidget::LayoutReanimText()
 	float aMaxWidth = 0;
 	int aCurLine = 0, aCurPos = 0;
 	Font* aFont = GetFont();
-	int aLabelLen = strlen(mLabel);
+	int aLabelLen = (int)strlen(mLabel);
 	mSlideOffTime = aLabelLen + 100;
 
 	float aLineWidth[MAX_REANIM_LINES];
@@ -185,7 +185,7 @@ void MessageWidget::Update()
 		}
 	}
 
-	int aLabelLen = strlen(mLabel);
+	int aLabelLen = (int)strlen(mLabel);
 	for (int aPos = 0; aPos < aLabelLen; aPos++)
 	{
 		Reanimation* aTextReanim = mApp->ReanimationTryToGet(mTextReanimID[aPos]);
@@ -221,7 +221,7 @@ void MessageWidget::Update()
 
 void MessageWidget::DrawReanimatedText(Graphics* g, Font* theFont, const Color& theColor, float thePosY)
 {
-	int aLabelLen = strlen(mLabel);
+	int aLabelLen = (int)strlen(mLabel);
 	for (int aPos = 0; aPos < aLabelLen; aPos++)
 	{
 		Reanimation* aTextReanim = mApp->ReanimationTryToGet(mTextReanimID[aPos]);

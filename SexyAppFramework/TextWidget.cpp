@@ -149,7 +149,7 @@ void TextWidget::Resize(int theX, int theY, int theWidth, int theHeight)
 	for (int i = 0; i < (int)mLogicalLines.size(); i++)
 	{
 		if (i == aLogValue)
-			aNewPhysValue = mPhysicalLines.size();
+			aNewPhysValue = (int)mPhysicalLines.size();
 		
 		AddToPhysicalLines(i, mLogicalLines[i]);
 	}
@@ -168,7 +168,7 @@ void TextWidget::Resize(int theX, int theY, int theWidth, int theHeight)
 //UNICODE
 Color TextWidget::GetLastColor(const SexyString& theString)
 {
-	int anIdx = theString.rfind((char)0xFF);
+	int anIdx = (int)theString.rfind((char)0xFF);
 	if (anIdx < 0)
 		return Color(0, 0, 0);
 	
@@ -193,9 +193,9 @@ void TextWidget::AddToPhysicalLines(int theIdx, const SexyString& theLine)
 			while ((aNextCheckPos < (int)theLine.length()) && (theLine[aNextCheckPos] == ' '))
 				aNextCheckPos++;
 			
-			int aSpacePos = theLine.find(_S(" "), aNextCheckPos);
+			int aSpacePos = (int)theLine.find(_S(" "), aNextCheckPos);
 			if (aSpacePos == -1)
-				aSpacePos = theLine.length();
+				aSpacePos = (int)theLine.length();
 			
 			SexyString aNewString = aCurString + theLine.substr(aCurPos, aSpacePos - aCurPos);
 			if (GetColorStringWidth(aNewString) > mWidth-8)
@@ -235,7 +235,7 @@ void TextWidget::AddLine(const SexyString& theLine)
 	if ((int)mLogicalLines.size() > mMaxLines)
 	{
 		// Remove an extra 10 lines, for safty
-		int aNumLinesToRemove = mLogicalLines.size() - mMaxLines + 10;
+		int aNumLinesToRemove = (int)mLogicalLines.size() - mMaxLines + 10;
 				
 		mLogicalLines.erase(mLogicalLines.begin(), mLogicalLines.begin() + aNumLinesToRemove);
 		
@@ -272,7 +272,7 @@ void TextWidget::AddLine(const SexyString& theLine)
 		mScrollbar->SetValue(mScrollbar->mValue - aNumLinesToRemove);
 	}
 	
-	AddToPhysicalLines(mLogicalLines.size()-1, aLine);
+	AddToPhysicalLines((int)mLogicalLines.size()-1, aLine);
 	
 	mScrollbar->SetMaxValue(mPhysicalLines.size());
 	
@@ -301,7 +301,7 @@ void TextWidget::GetSelectedIndices(int theLineIdx, int* theIndices)
 		else if (mHiliteArea[aPosIdx][1] == theLineIdx)
 			aVal = mHiliteArea[aPosIdx][0];
 		else 
-			aVal = mPhysicalLines[theLineIdx].length();
+			aVal = (int)mPhysicalLines[theLineIdx].length();
 					
 		theIndices[aPosIdx ^ aXor] = aVal;			
 	}			
@@ -355,8 +355,8 @@ void TextWidget::GetTextIndexAt(int x, int y, int* thePosArray)
 	{
 		if (mPhysicalLines.size() > 0)
 		{		
-			thePosArray[0] = mPhysicalLines[mPhysicalLines.size()-1].length();
-			thePosArray[1] = mPhysicalLines.size() - 1;				
+			thePosArray[0] = (int)mPhysicalLines[mPhysicalLines.size()-1].length();
+			thePosArray[1] = (int)mPhysicalLines.size() - 1;
 		}
 	}
 }

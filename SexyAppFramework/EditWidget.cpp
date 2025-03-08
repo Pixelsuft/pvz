@@ -64,7 +64,7 @@ void EditWidget::AddWidthCheckFont(Font *theFont, int theMaxPixels)
 void EditWidget::SetText(const SexyString& theText, bool leftPosToZero)
 {
 	mString = theText;
-	mCursorPos = mString.length();
+	mCursorPos = (int)mString.length();
 	mHilitePos = 0;
 	if (leftPosToZero)
 		mLeftPos = 0;
@@ -340,7 +340,7 @@ void EditWidget::ProcessKey(KeyCode theKey, SexyChar theChar)
 				mHilitePos = -1;
 			}
 		
-			mCursorPos += aString.length();
+			mCursorPos += (int)aString.length();
 		
 			bigChange = true;
 		}
@@ -459,7 +459,7 @@ void EditWidget::ProcessKey(KeyCode theKey, SexyChar theChar)
 	}
 	else if (theKey == KEYCODE_END)
 	{
-		mCursorPos = mString.length();	
+		mCursorPos = (int)mString.length();
 	}
 	else if (theKey == KEYCODE_RETURN)
 	{
@@ -511,8 +511,8 @@ void EditWidget::ProcessKey(KeyCode theKey, SexyChar theChar)
 
 	if (mCursorPos < 0)
 		mCursorPos = 0;
-	else if (mCursorPos > (int) mString.length())
-		mCursorPos = mString.length();
+	else if (mCursorPos > (int)mString.length())
+		mCursorPos = (int)mString.length();
 	
 	if (anOldCursorPos != mCursorPos)
 	{

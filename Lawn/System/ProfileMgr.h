@@ -35,7 +35,7 @@ public:
 	/*inline*/ void		Clear();
 	void				Load();
 	void				Save();
-	inline int			GetNumProfiles() const { return mProfileMap.size(); }
+	inline int			GetNumProfiles() const { return (int)mProfileMap.size(); }
 	PlayerInfo*			GetProfile(const SexyString& theName);
 	PlayerInfo*			AddProfile(const SexyString& theName);
 	PlayerInfo*			GetAnyProfile();

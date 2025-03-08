@@ -259,8 +259,8 @@ bool DefinitionLoadImage(Image** theImage, const SexyString& theName)
 
     for (const DefLoadResPath& aLoadResPath : gDefLoadResPaths)
     {
-        int aNameLen = theName.size();
-        int aPrefixLen = strlen(aLoadResPath.mPrefix);
+        int aNameLen = (int)theName.size();
+        int aPrefixLen = (int)strlen(aLoadResPath.mPrefix);
         if (aPrefixLen < aNameLen)
         {
             SexyString aPathToTry = aLoadResPath.mDirectory + theName.substr(aPrefixLen, aNameLen);

@@ -41,7 +41,7 @@ bool Music::TodLoadMusic(MusicFile theMusicFile, const std::string& theFileName)
 	BassMusicInterface* aBass = (BassMusicInterface*)mApp->mMusicInterface;
 	std::string anExt;
 
-	int aDot = theFileName.rfind('.');
+	int aDot = (int)theFileName.rfind('.');
 	if (aDot != std::string::npos)  
 		anExt = StringToLower(theFileName.substr(aDot + 1));  
 
