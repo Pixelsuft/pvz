@@ -52,11 +52,8 @@ BassMusicInterface::BassMusicInterface(HWND theHWnd)
 	
 	mixerGetControlDetails(phmx, &mcd, 0L);
 
-	//return mxcd_u.dwValue;	
-
-	BOOL success;
-
 #if 0
+	BOOL success;
 	if (gBass->mVersion2)
 	{
 		success = gBass->BASS_Init2(1, 44100, 0, theHWnd, NULL);

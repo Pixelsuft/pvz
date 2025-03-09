@@ -136,7 +136,9 @@ SexyAppBase::SexyAppBase()
 {
 	gSexyAppBase = this;
 	if (!SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS)) {
+#ifdef SDL_PLATFORM_WINDOWS
 		MessageBoxA(NULL, "Failed to init SDL", "Error!", MB_ICONERROR);
+#endif
 		exit(0);
 	}
 
@@ -178,7 +180,6 @@ SexyAppBase::SexyAppBase()
 	mFullScreenWindow = false;
 	mPreferredX = -1;
 	mPreferredY = -1;
-	mIsScreenSaver = false;
 	mAllowMonitorPowersave = true;
 	win = NULL;
 	mHWnd = NULL;
@@ -344,6 +345,7 @@ SexyAppBase::SexyAppBase()
 
 	mPrimaryThreadId = 0;
 
+#ifdef SDL_PLATFORM_WINDOWS 
 	if (GetSystemMetrics(86)) // check for tablet pc
 	{
 		mTabletPC = true;
@@ -351,30 +353,7 @@ SexyAppBase::SexyAppBase()
 	}
 	else
 		mTabletPC = false;
-
-	//std::wifstream stringsFile(_wfopen(L".\\properties\\fstrings", L"rb"));
-	//
-	//if(!stringsFile)
-	//{
-	//	MessageBox(NULL, "file missing: 'install-folder\\properties\\fstrings' Please re-install", "FATAL ERROR", MB_OK);
-	//	DoExit(1);
-	//}
-	//std::getline(stringsFile, mString_HardwareAccelSwitchedOn);
-	//std::getline(stringsFile, mString_HardwareAccelConfirm);
-	//std::getline(stringsFile, mString_HardwareAccelNotWorking);
-	//std::getline(stringsFile, mString_SetColorDepth);
-	//std::getline(stringsFile, mString_FailedInitDirectDrawColon);
-	//std::getline(stringsFile, mString_UnableOpenProperties);
-	//std::getline(stringsFile, mString_SigCheckFailed);
-	//std::getline(stringsFile, mString_InvalidCommandLineParam);
-	//std::getline(stringsFile, mString_RequiresDirectX);
-	//std::getline(stringsFile, mString_YouNeedDirectX);
-	//std::getline(stringsFile, mString_FailedInitDirectDraw);
-	//std::getline(stringsFile, mString_FatalError);
-	//std::getline(stringsFile, mString_UnexpectedErrorOccured);
-	//std::getline(stringsFile, mString_PleaseHelpBy);
-	//std::getline(stringsFile, mString_FailedConnectPopcap);
-	//stringsFile.close();
+#endif
 }
 
 SexyAppBase::~SexyAppBase()
@@ -395,17 +374,9 @@ SexyAppBase::~SexyAppBase()
 				if (Is3DAccelerated())
 				{
 					showedMsgBox = true;
-					/*int aResult = MessageBox(NULL,
-									GetString("HARDWARE_ACCEL_SWITCHED_ON",
-															_S("Hardware Acceleration was switched on during this session.\r\n")
-															_S("If this resulted in slower performance, it should be switched off.\r\n")
-															_S("Would you like to keep Hardware Acceleration switched on?")).c_str(),
-									(StringToSexyString(mCompanyName) + _S(" ") +
-									 GetString("HARDWARE_ACCEL_CONFIRMATION", _S("Hardware Acceleration Confirmation"))).c_str(),
-									MB_YESNO | MB_ICONQUESTION);*/
-					int aResult = IDYES;
-					mDDInterface->mIs3D = aResult == IDYES;
-					if (aResult!=IDYES)
+					int aResult = 1;
+					mDDInterface->mIs3D = aResult == 1;
+					if (aResult!=1)
 						writeToRegistry = false;
 				}
 				else
@@ -418,20 +389,12 @@ SexyAppBase::~SexyAppBase()
 	}
 
 	extern bool gD3DInterfacePreDrawError;
-	if (!showedMsgBox && gD3DInterfacePreDrawError && !IsScreenSaver())
+	if (!showedMsgBox && gD3DInterfacePreDrawError)
 	{
-		/*int aResult = MessageBox(NULL,
-						GetString("HARDWARE_ACCEL_NOT_WORKING",
-									_S("Hardware Acceleration may not have been working correctly during this session.\r\n")
-									_S("If you noticed graphics problems, you may want to turn off Hardware Acceleration.\r\n")
-									_S("Would you like to keep Hardware Acceleration switched on?")).c_str(),
-						(StringToSexyString(mCompanyName) + _S(" ") +
-						 GetString("HARDWARE_ACCEL_CONFIRMATION", _S("Hardware Acceleration Confirmation"))).c_str(),
-						MB_YESNO | MB_ICONQUESTION);*/
-		int aResult = IDYES;
-		mDDInterface->mIs3D = aResult == IDYES;
+		int aResult = 1;
+		mDDInterface->mIs3D = aResult == 1;
 
-		if (aResult==IDNO)
+		if (aResult==0)
 			RegistryWriteBoolean("Is3D", false);
 	}
 
@@ -548,11 +511,6 @@ void SexyAppBase::ClearUpdateBacklog(bool relaxForASecond)
 
 	if (relaxForASecond)
 		mRelaxUpdateBacklogCount = 1000;
-}
-
-bool SexyAppBase::IsScreenSaver()
-{
-	return mIsScreenSaver;
 }
 
 bool SexyAppBase::AppCanRestore()
@@ -1956,8 +1914,7 @@ void SexyAppBase::ReadFromRegistry()
 	if (RegistryReadInteger("InProgress", &anInt))
 		mLastShutdownWasGraceful = anInt == 0;
 
-	if (!IsScreenSaver())
-		RegistryWriteInteger("InProgress", 1);
+	RegistryWriteInteger("InProgress", 1);
 }
 
 bool SexyAppBase::WriteBytesToFile(const std::string& theFileName, const void* theData, unsigned long theDataLen)
@@ -2501,7 +2458,7 @@ static void CalculateDemoTimeLeft()
 
 static void UpdateScreenSaverInfo(DWORD theTick)
 {
-	if (gSexyAppBase->IsScreenSaver() || !gSexyAppBase->mIsPhysWindowed)
+	if (!gSexyAppBase->mIsPhysWindowed)
 		return;
 
 	// Get screen saver timeout		
@@ -2702,22 +2659,6 @@ bool SexyAppBase::DrawDirtyStuff()
 	}
 }
 
-void SexyAppBase::LogScreenSaverError(const std::string& theError)
-{
-	static bool firstTime = true;
-	char aBuf[512];
-
-	const char* aFlag = firstTime ? "w" : "a+";
-	firstTime = false;
-
-	FILE* aFile = fopen("ScrError.txt", aFlag);
-	if (aFile != NULL)
-	{
-		fprintf(aFile, "%s %s %u\n", theError.c_str(), _strtime(aBuf), GetTickCount());
-		fclose(aFile);
-	}
-}
-
 void SexyAppBase::BeginPopup()
 {
 	if (!mIsPhysWindowed)
@@ -2747,46 +2688,32 @@ void SexyAppBase::EndPopup()
 
 int SexyAppBase::MsgBox(const std::string& theText, const std::string& theTitle, int theFlags)
 {
-	//	if (mDDInterface && mDDInterface->mDD)
-	//		mDDInterface->mDD->FlipToGDISurface();
-	if (IsScreenSaver())
-	{
-		LogScreenSaverError(theText);
-		return IDOK;
-	}
-
 	BeginPopup();
-	int aResult = MessageBoxA(mHWnd, theText.c_str(), theTitle.c_str(), theFlags);
+	int fl = 0;
+	if (theFlags & MB_ICONERROR)
+		fl |= SDL_MESSAGEBOX_INFORMATION;
+	else if (theFlags & MB_ICONWARNING)
+		fl |= SDL_MESSAGEBOX_WARNING;
+	else
+		fl |= SDL_MESSAGEBOX_ERROR;
 	EndPopup();
-
-	return aResult;
+	return IDOK;
 }
 
 int SexyAppBase::MsgBox(const std::wstring& theText, const std::wstring& theTitle, int theFlags)
 {
-	//	if (mDDInterface && mDDInterface->mDD)
-	//		mDDInterface->mDD->FlipToGDISurface();
-	if (IsScreenSaver())
-	{
-		LogScreenSaverError(WStringToString(theText));
-		return IDOK;
-	}
-
+#ifdef SDL_PLATFORM_WINDOWS
 	BeginPopup();
 	int aResult = MessageBoxW(mHWnd, theText.c_str(), theTitle.c_str(), theFlags);
 	EndPopup();
 
 	return aResult;
+#endif
+	return IDOK;
 }
 
 void SexyAppBase::Popup(const std::string& theString)
 {
-	if (IsScreenSaver())
-	{
-		LogScreenSaverError(theString);
-		return;
-	}
-
 	BeginPopup();
 	if (!mShutdown)
 		::MessageBoxA(mHWnd, theString.c_str(), SexyStringToString(GetString("FATAL_ERROR", _S("FATAL ERROR"))).c_str(), MB_APPLMODAL | MB_ICONSTOP);
@@ -2795,12 +2722,6 @@ void SexyAppBase::Popup(const std::string& theString)
 
 void SexyAppBase::Popup(const std::wstring& theString)
 {
-	if (IsScreenSaver())
-	{
-		LogScreenSaverError(WStringToString(theString));
-		return;
-	}
-
 	BeginPopup();
 	if (!mShutdown)
 		::MessageBoxW(mHWnd, theString.c_str(), SexyStringToWString(GetString("FATAL_ERROR", _S("FATAL ERROR"))).c_str(), MB_APPLMODAL | MB_ICONSTOP);
@@ -2991,6 +2912,7 @@ static int ListDemoMarkers()
 	return ret;
 }
 
+#ifdef SDL_PLATFORM_WINDOWS 
 static INT_PTR CALLBACK JumpToTimeDialogProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
 	switch (msg)
@@ -3062,9 +2984,11 @@ static INT_PTR CALLBACK JumpToTimeDialogProc(HWND hwnd, UINT msg, WPARAM wParam,
 
 	return FALSE;
 }
+#endif
 
 static int DemoJumpToTime()
 {
+#ifdef SDL_PLATFORM_WINDOWS 
 	HGLOBAL hgbl;
 	LPDLGTEMPLATE lpdt;
 	LPDLGITEMTEMPLATE lpdit;
@@ -3154,6 +3078,9 @@ static int DemoJumpToTime()
 	GlobalFree(hgbl);
 
 	gSexyAppBase->mLastTime = timeGetTime();
+#else
+	int ret = 1;
+#endif
 
 	return ret;
 }
@@ -3177,185 +3104,8 @@ static void ToggleDemoSoundVolume()
 	}
 }
 
-static DWORD gPowerSaveTick = 0;
-static bool ScreenSaverWindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, LRESULT& theResult)
-{
-	static bool gCreated = false;
-	static int gMouseMoveCount = 0;
-	static int gLastMouseX = 0, gLastMouseY = 0;
-	static bool gClosed = false;
-	typedef BOOL(WINAPI* VERIFYPWDPROC)(HWND);
-	static VERIFYPWDPROC aPasswordFunc = NULL;
-	HMODULE aPasswordLib = NULL;
-
-	if (gClosed)
-		return false;
-
-	switch (uMsg)
-	{
-	case WM_CREATE:
-	{
-		if (gCreated)
-			return false;
-
-		gCreated = true;
-		POINT aMousePoint;
-		GetCursorPos(&aMousePoint);
-		gLastMouseX = aMousePoint.x;
-		gLastMouseY = aMousePoint.y;
-		return false;
-	}
-	break;
-
-	case WM_SYSCOMMAND:
-	{
-		switch (wParam)
-		{
-		case SC_CLOSE:
-		case SC_SCREENSAVE:
-		case SC_NEXTWINDOW:
-		case SC_PREVWINDOW:
-			theResult = FALSE;
-			return true;
-
-		default:
-			return false;
-		}
-	}
-	break;
-
-	case WM_MOUSEMOVE:
-	{
-		int aMouseX = LOWORD(lParam);
-		int aMouseY = HIWORD(lParam);
-		//			SEXY_TRACE(StrFormat("SCR MouseMove: %d %d",aMouseX,aMouseY).c_str());
-		if (aMouseX != gLastMouseX || aMouseY != gLastMouseY)
-		{
-			gLastMouseX = aMouseX;
-			gLastMouseY = aMouseY;
-			gMouseMoveCount++;
-		}
-
-		if (gMouseMoveCount < 4)
-		{
-			theResult = 0;
-			return true;
-		}
-	}
-	break;
-
-	case WM_NCACTIVATE:
-	case WM_ACTIVATE:
-	case WM_ACTIVATEAPP:
-	{
-		if (wParam != FALSE)
-			return false;
-	}
-	break;
-
-	case WM_CLOSE:
-	case WM_LBUTTONDOWN:
-	case WM_RBUTTONDOWN:
-	case WM_MBUTTONDOWN:
-	case WM_KEYDOWN:
-	case WM_SYSKEYDOWN:
-		break;
-
-	default:
-		return false;
-	}
-
-	if (gSexyAppBase != NULL && gSexyAppBase->mHWnd != hWnd) // wrong window
-		return false;
-
-	if (GetTickCount() - gPowerSaveTick < 1000) // powersave just went on so ignore certain messages that seem to come on certain os's at that time
-	{
-		switch (uMsg)
-		{
-		case WM_MOUSEMOVE:
-		case WM_NCACTIVATE:
-		case WM_ACTIVATE:
-		case WM_ACTIVATEAPP:
-		case WM_CLOSE:
-			return false;
-		}
-	}
-
-	if (aPasswordFunc && gSexyAppBase != NULL && gSexyAppBase->mInitialized) // need to verify password before closing
-	{
-		if (gSexyAppBase != NULL && gSexyAppBase->mDDInterface != NULL && gSexyAppBase->mDDInterface->mDD != NULL)
-		{
-			gSexyAppBase->mDDInterface->mDD->FlipToGDISurface();	// so we can see the password dialog
-			gSexyAppBase->mNoDefer = true;							// so the app doesn't draw over the password dialog
-		}
-
-		gClosed = true; // prevent this function from doing anything while in the password dialog
-		BOOL aPasswordResult = aPasswordFunc(hWnd);
-		gClosed = false; // let this functino work again
-
-		if (gSexyAppBase != NULL)
-		{
-			gSexyAppBase->mNoDefer = false;
-			gSexyAppBase->ClearUpdateBacklog();
-		}
-
-		if (!aPasswordResult) // bad password
-		{
-			// Get new mouse coordinate
-			POINT aMousePoint;
-			GetCursorPos(&aMousePoint);
-			gLastMouseX = aMousePoint.x;
-			gLastMouseY = aMousePoint.y;
-			gMouseMoveCount = 0;
-
-			return false;
-		}
-
-
-		// can turn this SPI_SCREENSAVERRUNNING off now since screensaver is about to stop
-		int aPrev;
-		SystemParametersInfo(SPI_SCREENSAVERRUNNING, FALSE, &aPrev, 0);
-
-		// good password -> close and unload dll
-		FreeLibrary(aPasswordLib);
-		aPasswordLib = NULL;
-		aPasswordFunc = NULL;
-	}
-
-	// Screen saver should shutdown
-	gClosed = true;
-	PostMessage(hWnd, WM_CLOSE, 0, 0);
-
-	/*	const char *str = "";
-		switch (uMsg)
-		{
-			case WM_CREATE: str="WM_CREATE"; break;
-			case WM_SYSCOMMAND: str="WM_SYSCOMMAND"; break;
-			case WM_MOUSEMOVE: str="WM_MOUSEMOVE"; break;
-			case WM_NCACTIVATE: str="WM_NCACTIVATE"; break;
-			case WM_ACTIVATE: str="WM_ACTIVATE"; break;
-			case WM_ACTIVATEAPP: str="WM_ACTIVATEAPP"; break;
-			case WM_CLOSE: str="WM_CLOSE"; break;
-			case WM_LBUTTONDOWN: str="WM_LBUTTONDOWN"; break;
-			case WM_RBUTTONDOWN: str="WM_RBUTTONDOWN"; break;
-			case WM_MBUTTONDOWN: str="WM_MBUTTONDOWN"; break;
-			case WM_KEYDOWN: str="WM_KEYDOWN"; break;
-			case WM_SYSKEYDOWN: str="WM_SYSKEYDOWN"; break;
-		}
-
-		SEXY_TRACE(StrFormat("Scr shutdown: %s",str).c_str());*/
-	return false;
-}
-
 LRESULT CALLBACK SexyAppBase::WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-	if (gSexyAppBase != NULL && gSexyAppBase->IsScreenSaver())
-	{
-		LRESULT aResult;
-		if (ScreenSaverWindowProc(hWnd, uMsg, wParam, lParam, aResult))
-			return aResult;
-	}
-
 	SexyAppBase* aSexyApp = (SexyAppBase*)global_sexy_handle;
 	switch (uMsg)
 	{
@@ -3670,7 +3420,6 @@ LRESULT CALLBACK SexyAppBase::WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LP
 	case WM_SYSCOMMAND:
 		if (wParam == SC_MONITORPOWER)
 		{
-			gPowerSaveTick = GetTickCount();
 			if (aSexyApp != NULL && (!aSexyApp->mAllowMonitorPowersave || !aSexyApp->mLoaded))
 				return FALSE;
 		}
@@ -3685,18 +3434,6 @@ LRESULT CALLBACK SexyAppBase::WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LP
 		}
 
 		break;
-
-		/*	case WM_DISPLAYCHANGE:
-				SEXY_TRACE("WM_DISPLAYCHANGE 1");
-				if (aSexyApp!=NULL && aSexyApp->mIsWindowed && aSexyApp->mDDInterface!=NULL && aSexyApp->mHWnd==hWnd && aSexyApp->mLoaded)
-				{
-					SEXY_TRACE("WM_DISPLAYCHANGE 2");
-					aSexyApp->mDDInterface->Init(aSexyApp->mHWnd,aSexyApp->mIsWindowed);
-					aSexyApp->mWidgetManager->mImage = aSexyApp->mDDInterface->GetScreenImage();
-					aSexyApp->mWidgetManager->MarkAllDirty();
-				}
-				break;*/
-
 	case WM_DESTROY:
 	{
 		char aStr[256];
@@ -3704,15 +3441,8 @@ LRESULT CALLBACK SexyAppBase::WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LP
 		OutputDebugStringA(aStr);
 	}
 	break;
-	case WM_SETCURSOR:
-		if (!aSexyApp->mSEHOccured)
-			aSexyApp->EnforceCursor();
-		return TRUE;
 	case WM_ERASEBKGND:
 		return TRUE;
-	case WM_ENDSESSION:
-		aSexyApp->Shutdown();
-		break;
 	case WM_PAINT:
 		if ((aSexyApp->mInitialized) && (!gInAssert) && (!aSexyApp->mSEHOccured))
 		{
@@ -4676,93 +4406,31 @@ void SexyAppBase::MakeWindow()
 
 	if ((mPlayingDemoBuffer) || (mIsWindowed && !mFullScreenWindow))
 	{
-		DWORD aWindowStyle = WS_CLIPCHILDREN | WS_POPUP | WS_BORDER | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX;
-		if (mEnableMaximizeButton)
-			aWindowStyle |= WS_MAXIMIZEBOX;
-
-		RECT aRect;
-		aRect.left = 0;
-		aRect.top = 0;
-		aRect.right = mWidth;
-		aRect.bottom = mHeight;
-
-		BOOL worked = AdjustWindowRect(&aRect, aWindowStyle, FALSE);
-
-		int aWidth = aRect.right - aRect.left;
-		int aHeight = aRect.bottom - aRect.top;
-
-		// Get the work area of the desktop to allow us to center
-		RECT aDesktopRect;
-		::SystemParametersInfo(SPI_GETWORKAREA, NULL, &aDesktopRect, NULL);
-
-		int aPlaceX = 64;
-		int aPlaceY = 64;
-
-		if (mPreferredX != -1)
-		{
-			aPlaceX = mPreferredX;
-			aPlaceY = mPreferredY;
-
-			int aSpacing = 4;
-
-			if (aPlaceX < aDesktopRect.left + aSpacing)
-				aPlaceX = aDesktopRect.left + aSpacing;
-
-			if (aPlaceY < aDesktopRect.top + aSpacing)
-				aPlaceY = aDesktopRect.top + aSpacing;
-
-			if (aPlaceX + aWidth >= aDesktopRect.right - aSpacing)
-				aPlaceX = aDesktopRect.right - aWidth - aSpacing;
-
-			if (aPlaceY + aHeight >= aDesktopRect.bottom - aSpacing)
-				aPlaceY = aDesktopRect.bottom - aHeight;
-		}
-
 		win = SDL_CreateWindow(
 			"MainWindow",
-			aWidth,
-			aHeight,
+			mWidth,
+			mHeight,
 			0
 		);
 		mHWnd = (HWND)SDL_GetPointerProperty(SDL_GetWindowProperties(win), SDL_PROP_WINDOW_WIN32_HWND_POINTER, NULL);
-
-		if (mPreferredX == -1)
+		if (mPreferredX == -1 && 0)
 		{
-			::MoveWindow(mHWnd,
+			/*::MoveWindow(mHWnd,
 				aDesktopRect.left + ((aDesktopRect.right - aDesktopRect.left) - aWidth) / 2,
 				aDesktopRect.top + (int)(((aDesktopRect.bottom - aDesktopRect.top) - aHeight) * 0.382),
-				aWidth, aHeight, FALSE);
+				aWidth, aHeight, FALSE);*/
 		}
-
 		mIsPhysWindowed = true;
 	}
 	else
 	{
-		/*
-		mHWnd = CreateWindowEx(
-			WS_EX_TOPMOST,
-			_S("MainWindow"),
-			mTitle.c_str(),
-			WS_POPUP | WS_VISIBLE,
-			0,
-			0,
-			mWidth,
-			mHeight,
-			NULL,
-			NULL,
-			gHInstance,
-			0);
-		*/
-
 		win = SDL_CreateWindow(
 			"MainWindow",
 			mWidth,
 			mHeight,
-			0
+			SDL_WINDOW_FULLSCREEN
 		);
 		mHWnd = (HWND)SDL_GetPointerProperty(SDL_GetWindowProperties(win), SDL_PROP_WINDOW_WIN32_HWND_POINTER, NULL);
-
-
 		mIsPhysWindowed = false;
 	}
 	if (!win) {
@@ -4803,28 +4471,7 @@ void SexyAppBase::MakeWindow()
 	if (mDDInterface->mD3DTester != NULL && mDDInterface->mD3DTester->ResultsChanged())
 		RegistryEraseValue(_S("Is3D"));
 
-	if (0 && (mIsWindowed) && (aResult == DDInterface::RESULT_INVALID_COLORDEPTH))
-	{
-		if (mForceWindowed)
-		{
-			Popup(GetString("PLEASE_SET_COLOR_DEPTH", _S("Please set your desktop color depth to 16 bit.")));
-			DoExit(1);
-		}
-		else
-		{
-			mForceFullscreen = true;
-			SwitchScreenMode(false);
-		}
-		return;
-	}
-	else if (0 && ((!mIsWindowed) &&
-		((aResult == DDInterface::RESULT_EXCLUSIVE_FAIL) ||
-			(aResult == DDInterface::RESULT_DISPCHANGE_FAIL))))
-	{
-		mForceWindowed = true;
-		SwitchScreenMode(true);
-	}
-	else if (0 && aResult == DDInterface::RESULT_3D_FAIL)
+	if (0 && aResult == DDInterface::RESULT_3D_FAIL)
 	{
 		//Set3DAcclerated(false);
 		return;
@@ -5479,40 +5126,6 @@ bool SexyAppBase::Process(bool allowSleep)
 	return true;
 }
 
-/*void SexyAppBase::DoMainLoop()
-{
-	Dialog* aDialog = NULL;
-	if (theModalDialogId != -1)
-	{
-		aDialog = GetDialog(theModalDialogId);
-		DBG_ASSERTE(aDialog != NULL);
-		if (aDialog == NULL)
-			return;
-	}
-
-	while (!mShutdown)
-	{
-		MSG msg;
-		while ((PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) && (!mShutdown))
-		{
-			TranslateMessage(&msg);
-			DispatchMessage(&msg);
-		}
-
-		ProcessDemo();
-		ProcessDeferredMessages();
-
-		if ((aDialog != NULL) && (aDialog->mResult != -1))
-			return;
-
-		if (!mShutdown)
-		{
-			//++aCount;
-			Process();
-		}
-	}
-}*/
-
 void SexyAppBase::DoMainLoop()
 {
 	while (!mShutdown)
@@ -5540,11 +5153,9 @@ bool SexyAppBase::UpdateAppStep(bool* updated)
 	//  condition has already been met by processing windows messages		
 	if (mUpdateAppState == UPDATESTATE_MESSAGES)
 	{
-		MSG msg;
-		while ((PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) && (!mShutdown))
-		{
-			TranslateMessage(&msg);
-			DispatchMessage(&msg);
+		SDL_Event ev;
+		while (SDL_PollEvent(&ev) && !mShutdown) {
+			// TODO
 		}
 
 		ProcessDemo();
@@ -5560,7 +5171,7 @@ bool SexyAppBase::UpdateAppStep(bool* updated)
 		{
 			if (mStepMode == 2)
 			{
-				Sleep(mFrameTime);
+				SDL_Delay(mFrameTime);
 				mUpdateAppState = UPDATESTATE_PROCESS_DONE; // skip actual update until next step
 			}
 			else
@@ -6009,10 +5620,6 @@ void SexyAppBase::HandleCmdLineParam(const std::string& theParamName, const std:
 		char* a = 0;
 		*a = '!';
 	}
-	else if (theParamName == "-screensaver")
-	{
-		mIsScreenSaver = true;
-	}
 	else if (theParamName == "-changedir")
 	{
 		mChangeDirTo = theParamValue;
@@ -6105,10 +5712,6 @@ void SexyAppBase::Init()
 
 	if (!mCmdLineParsed)
 		DoParseCmdLine();
-
-	if (IsScreenSaver())
-		mOnlyAllowOneCopyToRun = false;
-
 
 	if (gHInstance == NULL)
 		gHInstance = (HINSTANCE)GetModuleHandle(NULL);
@@ -6212,11 +5815,6 @@ void SexyAppBase::Init()
 	mMusicInterface = CreateMusicInterface(NULL);
 
 	SetMusicVolume(mMusicVolume);
-
-	if (IsScreenSaver())
-	{
-		SetCursor(CURSOR_NONE);
-	}
 
 	InitHook();
 

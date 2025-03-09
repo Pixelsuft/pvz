@@ -571,7 +571,7 @@ void SexyApp::PreDisplayHook()
 void SexyApp::InitPropertiesHook()
 {
 	// Load properties if we need to
-	bool checkSig = !IsScreenSaver();
+	bool checkSig = false;
 	LoadProperties("properties\\partner.xml", false, checkSig);
 
 	// Check to see if this build is unlocked.
@@ -603,9 +603,6 @@ void SexyApp::Init()
 	OutputDebugString(StrFormat("BuildDate: %s\r\n", mBuildDate.c_str()).c_str());	
 
 	SexyAppBase::Init();
-
-	if (IsScreenSaver())	
-		mSkipAd = true;	
 
 	mTimesExecuted++;
 }

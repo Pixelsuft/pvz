@@ -175,7 +175,6 @@ namespace Sexy
 		SDL_Window*             win;
 		HWND					mHWnd;
 		HWND					mInvisHWnd;
-		bool					mIsScreenSaver;
 		bool					mAllowMonitorPowersave;
 		WindowsMessageList		mDeferredMessages;
 		bool					mNoDefer;
@@ -406,7 +405,6 @@ namespace Sexy
 		virtual int				MsgBox(const std::wstring& theText, const std::wstring& theTitle = L"Message", int theFlags = MB_OK);
 		virtual void			Popup(const std::string& theString);
 		virtual void			Popup(const std::wstring& theString);
-		virtual void			LogScreenSaverError(const std::string& theError);
 		virtual void			SafeDeleteWidget(Widget* theWidget);
 
 		virtual void			URLOpenFailed(const std::string& theURL);
@@ -582,7 +580,6 @@ namespace Sexy
 		virtual bool			UpdateApp();
 		int						InitDDInterface();
 		void					ClearUpdateBacklog(bool relaxForASecond = false);
-		bool					IsScreenSaver();
 		virtual bool			AppCanRestore();
 		virtual void			ShowFPS(bool show);
 		static LRESULT CALLBACK	WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
