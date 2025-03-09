@@ -3420,11 +3420,14 @@ bool SexyAppBase::ChangeDirHook(const char* theIntendedPath)
 
 MusicInterface* SexyAppBase::CreateMusicInterface(HWND theWindow)
 {
+	if (mNoSoundNeeded)
+		return new MusicInterface;
 	/*if (mNoSoundNeeded)
 		return new MusicInterface;
 	else if (mWantFMod)
 		return new FModMusicInterface(mInvisHWnd);
 	else*/
+	return new FModMusicInterface(NULL);
 	return new BassMusicInterface(NULL);
 }
 
