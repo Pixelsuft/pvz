@@ -23,7 +23,6 @@ class ProfileMgr;
 class PlayerInfo;
 class Music;
 class TitleScreen;
-class PopDRMComm;
 class ChallengeScreen;
 class StoreScreen;
 class AlmanacDialog;
@@ -104,8 +103,7 @@ public:
 	int								mCrazyDaveMessageIndex;							
 	SexyString						mCrazyDaveMessageText;							
 	int								mAppRandSeed;									
-	SDL_Cursor*						mBigArrowCursor;								
-	PopDRMComm*						mDRM;											
+	SDL_Cursor*						mBigArrowCursor;							
 	int								mSessionID;										
 	int								mPlayTimeActiveSession;							
 	int								mPlayTimeInactiveSession;						
@@ -309,9 +307,6 @@ public:
 	int								GetNumTrophies(ChallengePage thePage);
 	int								GetTotalTrophies(ChallengePage thePage);
 	/*inline*/ bool					EarnedGoldTrophy();
-	inline bool						IsRegistered() { return false; }
-	inline bool						IsExpired() { return false; }
-	inline bool						IsDRMConnected() { return false; }
 	/*inline*/ bool					IsScaryPotterLevel();
 	static /*inline*/ bool			IsEndlessScaryPotter(GameMode theGameMode);
 	/*inline*/ bool					IsSquirrelLevel();

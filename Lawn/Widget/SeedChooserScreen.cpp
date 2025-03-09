@@ -1150,10 +1150,6 @@ void SeedChooserScreen::MouseDown(int x, int y, int theClickCount)
 					Dialog::BUTTONS_YES_NO
 				) == Dialog::ID_YES)
 				{
-					if (mApp->mDRM)
-					{
-						mApp->mDRM->BuyGame();
-					}
 					mApp->DoBackToMain();
 				}
 			}

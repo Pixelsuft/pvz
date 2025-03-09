@@ -4598,10 +4598,6 @@ void Board::MouseUp(int x, int y, int theClickCount)
 			}
 			else if (mApp->mGameMode == GameMode::GAMEMODE_UPSELL)
 			{
-				if (mApp->mDRM)
-				{
-					mApp->mDRM->BuyGame();
-				}
 				mApp->DoBackToMain();
 			}
 		}

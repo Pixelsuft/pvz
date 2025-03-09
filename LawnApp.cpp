@@ -165,7 +165,6 @@ LawnApp::LawnApp()
 		mBigArrowCursor = SDL_CreateColorCursor(surf, 1, 1);
 		SDL_DestroySurface(surf);
 	}
-	mDRM = nullptr;
 	mPlayedQuickplay = false;
 	this->cursors[15] = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_DEFAULT);
 	this->cursors[CURSOR_POINTER] = mBigArrowCursor;
@@ -366,12 +365,6 @@ void LawnApp::Shutdown()
 		FreeGlobalAllocators();
 		UpdateRegisterInfo();
 		SexyAppBase::Shutdown();
-
-		if (mDRM)
-		{
-			delete mDRM;
-		}
-		mDRM = nullptr;
 	}
 }
 
@@ -3531,29 +3524,11 @@ bool LawnApp::IsTrialStageLocked()
 	if (mDebugTrialLocked)
 		return true;
 
-	if (mDRM && mDRM->QueryData())
-		return false;
-
 	return mTrialType == TrialType::TRIALTYPE_STAGELOCKED;
 }
 
 void LawnApp::InitHook()
 {
-#ifdef _DEBUG
-	mDRM = nullptr;
-#else
-	mDRM = new PopDRMComm();
-	mDRM->DoIPC();
-	if (sexystricmp(GetString("MarketingMode", _S("")).c_str(), _S("StageLocked")) == 0)
-	{
-		mTrialType = TrialType::TRIALTYPE_STAGELOCKED;
-		mDRM->EnableLocking();
-	}
-	else
-	{
-		mTrialType = TrialType::TRIALTYPE_NONE;
-	}
-#endif
 }
 
 SexyString LawnApp::GetMoneyString(int theAmount)

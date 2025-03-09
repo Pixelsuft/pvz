@@ -1113,7 +1113,6 @@ void StoreScreen::MouseDown(int x, int y, int theClickCount)
                 mWaitForDialog = false;
                 if (aResult == ID_OK)
                 {
-                    if (mApp->mDRM) mApp->mDRM->BuyGame();
                 }
             }
             else if (!IsItemSoldOut(aItemType) && !IsItemUnavailable(aItemType) && !IsComingSoon(aItemType))

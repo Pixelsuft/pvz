@@ -3525,6 +3525,7 @@ void SexyAppBase::Init()
 
 	mWidgetManager->Resize(Rect(0, 0, mWidth, mHeight), Rect(0, 0, mWidth, mHeight));
 
+#if defined(SDL_PLATFORM_WINDOWS) && 1
 	if (mFullScreenWindow) // change resoultion using ChangeDisplaySettings
 	{
 		EnumWindows(ChangeDisplayWindowEnumProc, 0); // record window pos
@@ -3551,6 +3552,7 @@ void SexyAppBase::Init()
 			}
 		}
 	}
+#endif
 
 	MakeWindow();
 
@@ -3582,56 +3584,15 @@ void SexyAppBase::HandleGameAlreadyRunning()
 
 void SexyAppBase::CopyToClipboard(const std::string& theString)
 {
-	HGLOBAL				aGlobalHandle;
-	char* theData;
-	WCHAR* theWData;
-
-	if (OpenClipboard(mHWnd))
-	{
-		EmptyClipboard();
-
-		aGlobalHandle = GlobalAlloc(GMEM_MOVEABLE | GMEM_DDESHARE, theString.length() + 1);
-		theData = (char*)GlobalLock(aGlobalHandle);
-		strcpy(theData, theString.c_str());
-		GlobalUnlock(aGlobalHandle);
-		SetClipboardData(CF_TEXT, aGlobalHandle);
-		SetClipboardData(CF_OEMTEXT, aGlobalHandle);
-		SetClipboardData(CF_LOCALE, aGlobalHandle);
-
-		int aSize = MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, theString.c_str(), (int)theString.length(), NULL, 0);
-		aGlobalHandle = GlobalAlloc(GMEM_MOVEABLE | GMEM_DDESHARE, (aSize + 1) * sizeof(WCHAR));
-		theWData = (WCHAR*)GlobalLock(aGlobalHandle);
-		MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, theString.c_str(), (int)theString.length(), theWData, aSize);
-		theWData[aSize] = '\0';
-		GlobalUnlock(aGlobalHandle);
-		SetClipboardData(CF_UNICODETEXT, aGlobalHandle);
-
-		CloseClipboard();
-	}
+	SDL_SetClipboardText(theString.c_str());
 }
 
 std::string	SexyAppBase::GetClipboard()
 {
-	HGLOBAL				aGlobalHandle;
-	std::string			aString;
-
-	if (OpenClipboard(mHWnd))
-	{
-		aGlobalHandle = GetClipboardData(CF_TEXT);
-		if (aGlobalHandle != NULL)
-		{
-			char* theData = (char*)GlobalLock(aGlobalHandle);
-			if (theData != NULL)
-			{
-				aString = theData;
-				GlobalUnlock(aGlobalHandle);
-			}
-		}
-
-		CloseClipboard();
-	}
-
-	return aString;
+	char* data = SDL_GetClipboardText();
+	std::string ret(data);
+	SDL_free(data);
+	return ret;
 }
 
 void SexyAppBase::SetCursor(int theCursorNum)
