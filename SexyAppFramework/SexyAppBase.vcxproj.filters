@@ -560,7 +560,7 @@
     <ClCompile Include="CursorWidget.cpp">
       <Filter>Sexy\Widget\Widget Source</Filter>
     </ClCompile>
-    <ClCompile Include="..\ImageLib\miniz.c">
+    <ClCompile Include="..\ImageLib\miniz\miniz.c">
       <Filter>ImageLib</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1164,7 +1164,7 @@
     <ClInclude Include="..\ImageLib\PS_ImageLib.h">
       <Filter>ImageLib</Filter>
     </ClInclude>
-    <ClInclude Include="..\ImageLib\miniz.h">
+    <ClInclude Include="..\ImageLib\miniz\miniz.h">
       <Filter>ImageLib</Filter>
     </ClInclude>
   </ItemGroup>

@@ -3,6 +3,7 @@ __pycache__
 .idea
 .vs
 .vscode
+miniz
 Debug
 Release
 x64

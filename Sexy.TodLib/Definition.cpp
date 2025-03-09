@@ -2,7 +2,7 @@
 #include <assert.h>
 #include "TodDebug.h"
 #include "Definition.h"
-#include "../../ImageLib/miniz.h"
+#include "../../ImageLib/miniz/miniz.h"
 #include "../PakLib/PakInterface.h"
 #include "../SexyAppFramework/PerfTimer.h"
 #include "../SexyAppFramework/XMLParser.h"

@@ -9,7 +9,7 @@
 #include "../../ConstEnums.h"
 #include "../MessageWidget.h"
 #include "../../Sexy.TodLib/Trail.h"
-#include "../../ImageLib/miniz.h"
+#include "../../ImageLib/miniz/miniz.h"
 #include "../../Sexy.TodLib/Attachment.h"
 #include "../../Sexy.TodLib/Reanimator.h"
 #include "../../Sexy.TodLib/TodParticle.h"
