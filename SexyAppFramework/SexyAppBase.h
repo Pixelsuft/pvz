@@ -439,7 +439,7 @@ namespace Sexy
 		virtual void			GotFocus();
 		virtual void			LostFocus();
 		virtual bool			IsAltKeyUsed(WPARAM wParam);
-		virtual bool			DebugKeyDown(int theKey);
+		virtual bool			DebugKeyDown(SDL_Scancode theKey);
 		virtual bool			DebugKeyDownAsync(int theKey, bool ctrlDown, bool altDown);
 		virtual void			CloseRequestAsync();
 		bool					Is3DAccelerated();

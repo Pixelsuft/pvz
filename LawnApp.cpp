@@ -1474,7 +1474,7 @@ void LawnApp::StartDiscord()
 	Discord_Initialize(CLIENT_ID, &handlers, 1, NULL);
 }
 
-bool LawnApp::DebugKeyDown(int theKey)
+bool LawnApp::DebugKeyDown(SDL_Scancode theKey)
 {
 	return SexyAppBase::DebugKeyDown(theKey);
 }

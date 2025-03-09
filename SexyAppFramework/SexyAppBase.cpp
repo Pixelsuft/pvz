@@ -2188,21 +2188,19 @@ void SexyAppBase::ShowFPS(bool show)
 	}
 }
 
-bool SexyAppBase::DebugKeyDown(int theKey)
+bool SexyAppBase::DebugKeyDown(SDL_Scancode theKey)
 {
-	if ((theKey == 'R') && (mWidgetManager->mKeyDown[KEYCODE_MENU]))
+	if ((theKey == SDL_SCANCODE_R) && (mWidgetManager->mKeyDown[KEYCODE_MENU]))
 	{
 #ifndef RELEASEFINAL
-		if (ReparseModValues())
-			PlaySoundA("c:\\windows\\media\\Windows XP Menu Command.wav", NULL, SND_ASYNC);
-		else
+		if (!ReparseModValues())
 		{
 			for (int aKeyNum = 0; aKeyNum < 0xFF; aKeyNum++) // prevent alt from getting stuck
 				mWidgetManager->mKeyDown[aKeyNum] = false;
 		}
 #endif
 	}
-	else if (theKey == VK_F3)
+	else if (theKey == SDL_SCANCODE_F3)
 	{
 		if (mWidgetManager->mKeyDown[KEYCODE_SHIFT])
 		{
@@ -2213,7 +2211,7 @@ bool SexyAppBase::DebugKeyDown(int theKey)
 		else
 			ShowFPS(!mShowFPS);
 	}
-	else if (theKey == VK_F8)
+	else if (theKey == SDL_SCANCODE_F8)
 	{
 		if (mWidgetManager->mKeyDown[KEYCODE_SHIFT])
 		{
@@ -2229,7 +2227,7 @@ bool SexyAppBase::DebugKeyDown(int theKey)
 
 		return true;
 	}
-	else if (theKey == VK_F10)
+	else if (theKey == SDL_SCANCODE_F10)
 	{
 #ifndef RELEASEFINAL
 		if (mWidgetManager->mKeyDown[KEYCODE_CONTROL])
@@ -2250,7 +2248,7 @@ bool SexyAppBase::DebugKeyDown(int theKey)
 
 		return true;
 	}
-	else if (theKey == VK_F11)
+	else if (theKey == SDL_SCANCODE_F11)
 	{
 		if (mWidgetManager->mKeyDown[KEYCODE_SHIFT])
 			DumpProgramInfo();
@@ -2259,7 +2257,7 @@ bool SexyAppBase::DebugKeyDown(int theKey)
 
 		return true;
 	}
-	else if (theKey == VK_F2)
+	else if (theKey == SDL_SCANCODE_F2)
 	{
 		bool isPerfOn = !SexyPerf::IsPerfOn();
 		if (isPerfOn)
@@ -2908,6 +2906,59 @@ void SexyAppBase::DoMainLoop()
 	}
 }
 
+Sexy::KeyCode ScancodeToSexyCode(SDL_Scancode c) {
+	// TODO
+	if ((int)SDL_SCANCODE_F1 <= (int)c && (int)c <= (int)SDL_SCANCODE_F24)
+		return (Sexy::KeyCode)((int)c - (int)SDL_SCANCODE_F1 + (int)Sexy::KeyCode::KEYCODE_F1);
+	if ((int)SDL_SCANCODE_1 <= (int)c && (int)c <= (int)SDL_SCANCODE_0)
+		return (Sexy::KeyCode)((int)c - (int)SDL_SCANCODE_1 + (int)Sexy::KeyCode::KEYCODE_NUMPAD1);
+	switch (c) {
+	case SDL_SCANCODE_LSHIFT: {
+		return Sexy::KeyCode::KEYCODE_SHIFT;
+	}
+	case SDL_SCANCODE_LCTRL: {
+		return Sexy::KeyCode::KEYCODE_CONTROL;
+	}
+	case SDL_SCANCODE_LALT: {
+		return Sexy::KeyCode::KEYCODE_MENU;
+	}
+	case SDL_SCANCODE_RETURN: {
+		return Sexy::KeyCode::KEYCODE_RETURN;
+	}
+	case SDL_SCANCODE_TAB: {
+		return Sexy::KeyCode::KEYCODE_TAB;
+	}
+	case SDL_SCANCODE_SPACE: {
+		return Sexy::KeyCode::KEYCODE_SPACE;
+	}
+	case SDL_SCANCODE_ESCAPE: {
+		return Sexy::KeyCode::KEYCODE_ESCAPE;
+	}
+	case SDL_SCANCODE_UP: {
+		return Sexy::KeyCode::KEYCODE_UP;
+	}
+	case SDL_SCANCODE_DOWN: {
+		return Sexy::KeyCode::KEYCODE_DOWN;
+	}
+	case SDL_SCANCODE_LEFT: {
+		return Sexy::KeyCode::KEYCODE_LEFT;
+	}
+	case SDL_SCANCODE_RIGHT: {
+		return Sexy::KeyCode::KEYCODE_RIGHT;
+	}
+	case SDL_SCANCODE_DELETE: {
+		return Sexy::KeyCode::KEYCODE_DELETE;
+	}
+	case SDL_SCANCODE_INSERT: {
+		return Sexy::KeyCode::KEYCODE_INSERT;
+	}
+	case SDL_SCANCODE_BACKSPACE: {
+		return Sexy::KeyCode::KEYCODE_BACK;
+	}
+	}
+	return Sexy::KeyCode::KEYCODE_UNKNOWN;
+}
+
 void SexyAppBase::ProcessDeferMessage(SDL_Event* ev) {
 	switch (ev->type) {
 	case SDL_EVENT_MOUSE_BUTTON_DOWN:
@@ -2952,6 +3003,52 @@ void SexyAppBase::ProcessDeferMessage(SDL_Event* ev) {
 		else if (ev->type == SDL_EVENT_MOUSE_BUTTON_UP && ev->button.button == SDL_BUTTON_MIDDLE) {
 			mWidgetManager->MouseUp(x, y, 3);
 		}
+		break;
+	}
+	case SDL_EVENT_MOUSE_WHEEL: {
+		mWidgetManager->MouseWheel((int)ev->wheel.y);
+		break;
+	}
+	case SDL_EVENT_KEY_DOWN: {
+		mLastUserInputTick = mLastTimerTime;
+
+		if (ev->key.scancode == SDL_SCANCODE_RETURN && gSexyAppBase->mAltDown && !mForceFullscreen && !mForceWindowed)
+		{
+			SwitchScreenMode(!mIsWindowed);
+			ClearKeysDown();
+			break;
+		}
+		else if ((ev->key.scancode == SDL_SCANCODE_D) && (mWidgetManager != NULL) && (mWidgetManager->mKeyDown[KEYCODE_CONTROL]) && (mWidgetManager->mKeyDown[KEYCODE_MENU]))
+		{
+			// PlaySoundA("c:\\windows\\media\\Windows XP Menu Command.wav", NULL, SND_ASYNC);
+			mDebugKeysEnabled = !mDebugKeysEnabled;
+		}
+
+		if (mDebugKeysEnabled)
+		{
+			if (DebugKeyDown(ev->key.scancode))
+				break;
+		}
+
+		mWidgetManager->KeyDown(ScancodeToSexyCode(ev->key.scancode));
+		break;
+	}
+	case SDL_EVENT_KEY_UP: {
+		mWidgetManager->KeyUp(ScancodeToSexyCode(ev->key.scancode));
+		break;
+	}
+	case SDL_EVENT_TEXT_INPUT: {
+		// mWidgetManager->KeyChar((SexyChar)ev->text.);
+		break;
+	}
+	case SDL_EVENT_TEXT_EDITING: {
+		// mWidgetManager->KeyChar((SexyChar)ev->text.);
+		break;
+	}
+	case SDL_EVENT_WINDOW_MOVED: {
+		break;
+	}
+	case SDL_EVENT_WINDOW_RESIZED: {
 		break;
 	}
 	}
