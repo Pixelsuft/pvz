@@ -1163,31 +1163,24 @@ void D3DTester::SetVidMemoryConstraints(DWORD theMin, DWORD theRecommended)
 ///////////////////////////////////////////////////////////////////////////////
 void D3DTester::TestD3D(HWND theHWND, LPDIRECTDRAW7 theDDraw)
 {
-	if (!gSexyAppBase->mPlayingDemoBuffer)
+	mShouldWriteToRegistry = false;
+	if (Init(theHWND, theDDraw))
 	{
-		mShouldWriteToRegistry = false;
-		if (Init(theHWND, theDDraw))
+		DoTest();
+	}
+	else
+	{
+		if ((mCheckRegistry) && (!mShouldWriteToRegistry))
 		{
-			DoTest();
+			mResultsChanged = RegQueryValueExA(mRegKey, "FailureReason", 0, NULL, NULL, NULL) != ERROR_SUCCESS;
+			mShouldWriteToRegistry = true;
 		}
-		else
-		{
-			if ((mCheckRegistry) && (!mShouldWriteToRegistry))
-			{
-				mResultsChanged = RegQueryValueExA(mRegKey, "FailureReason", 0, NULL, NULL, NULL) != ERROR_SUCCESS;
-				mShouldWriteToRegistry = true;
-			}
-		}
-
-		if (mShouldWriteToRegistry)
-			WriteToRegistry();
-
-		Cleanup();
 	}
 
-	gSexyAppBase->DemoSyncString(&mFailureReason);
-	gSexyAppBase->DemoSyncString(&mWarning);
-	gSexyAppBase->DemoSyncBool(&mResultsChanged);
+	if (mShouldWriteToRegistry)
+		WriteToRegistry();
+
+	Cleanup();
 }
 
 
