@@ -2908,11 +2908,56 @@ void SexyAppBase::DoMainLoop()
 	}
 }
 
-void ProcessDeferMessage(SDL_Event* ev) {
+void SexyAppBase::ProcessDeferMessage(SDL_Event* ev) {
+	switch (ev->type) {
+	case SDL_EVENT_MOUSE_BUTTON_DOWN:
+	case SDL_EVENT_MOUSE_BUTTON_UP:
+	case SDL_EVENT_MOUSE_MOTION: {
+		int x, y;
+		if (ev->type == SDL_EVENT_MOUSE_MOTION) {
+			x = ev->motion.x;
+			y = ev->motion.y;
+		}
+		else {
+			x = ev->button.x;
+			y = ev->button.y;
+		}
+		mWidgetManager->RemapMouse(x, y);
 
+		mLastUserInputTick = mLastTimerTime;
+
+		mWidgetManager->MouseMove(x, y);
+
+		if (!mMouseIn)
+		{
+			mMouseIn = true;
+			EnforceCursor();
+		}
+
+		if (ev->type == SDL_EVENT_MOUSE_BUTTON_DOWN && ev->button.button == SDL_BUTTON_LEFT) {
+			mWidgetManager->MouseDown(x, y, 1);
+		}
+		else if (ev->type == SDL_EVENT_MOUSE_BUTTON_DOWN && ev->button.button == SDL_BUTTON_RIGHT) {
+			mWidgetManager->MouseDown(x, y, -1);
+		}
+		else if (ev->type == SDL_EVENT_MOUSE_BUTTON_DOWN && ev->button.button == SDL_BUTTON_MIDDLE) {
+			mWidgetManager->MouseDown(x, y, 3);
+		}
+		else if (ev->type == SDL_EVENT_MOUSE_BUTTON_UP && ev->button.button == SDL_BUTTON_LEFT) {
+			mWidgetManager->MouseUp(x, y, 1);
+		}
+		else if (ev->type == SDL_EVENT_MOUSE_BUTTON_UP && ev->button.button == SDL_BUTTON_RIGHT) {
+			mWidgetManager->MouseUp(x, y, -1);
+		}
+		else if (ev->type == SDL_EVENT_MOUSE_BUTTON_UP && ev->button.button == SDL_BUTTON_MIDDLE) {
+			mWidgetManager->MouseUp(x, y, 3);
+		}
+		break;
+	}
+	}
 }
 
-void HandleEvent(SDL_Event* ev) {
+void SexyAppBase::HandleEvent(SDL_Event* ev) {
 	SexyAppBase* aSexyApp = (SexyAppBase*)global_sexy_handle;
 	switch (ev->type) {
 	case SDL_EVENT_WINDOW_RESIZED:
@@ -2945,6 +2990,7 @@ void HandleEvent(SDL_Event* ev) {
 			aSexyApp->CloseRequestAsync();
 			return;
 		}
+		break;
 	}
 	}
 	ProcessDeferMessage(ev);

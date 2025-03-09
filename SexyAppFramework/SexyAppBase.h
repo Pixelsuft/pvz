@@ -289,6 +289,8 @@ namespace Sexy
 	protected:
 		void					RehupFocus();
 		void					ClearKeysDown();
+		void                    ProcessDeferMessage(SDL_Event* ev);
+		void                    HandleEvent(SDL_Event* ev);
 		void					UpdateFTimeAcc();
 		virtual bool			Process(bool allowSleep = true);
 		virtual void			UpdateFrames();
