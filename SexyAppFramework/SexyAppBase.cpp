@@ -2022,7 +2022,7 @@ BOOL CALLBACK EnumCloseThing2(HWND hwnd, LPARAM lParam)
 
 BOOL CALLBACK EnumCloseThing(HWND hwnd, LPARAM lParam)
 {
-	//CloseWindow(hwnd);
+	// CloseWindow(hwnd);
 	char aClassName[256];
 	if (GetClassNameA(hwnd, aClassName, 256) != 0)
 	{
@@ -2037,6 +2037,7 @@ BOOL CALLBACK EnumCloseThing(HWND hwnd, LPARAM lParam)
 
 void SexyAppBase::HandleNotifyGameMessage(int theType, int theParam)
 {
+	/*
 	if (theType == 0) // bring to front message
 	{
 		WINDOWPLACEMENT aWindowPlacement;
@@ -2048,6 +2049,7 @@ void SexyAppBase::HandleNotifyGameMessage(int theType, int theParam)
 
 		::SetForegroundWindow(mHWnd);
 	}
+	*/
 }
 
 void SexyAppBase::RehupFocus()
@@ -2286,263 +2288,6 @@ bool SexyAppBase::DebugKeyDownAsync(int theKey, bool ctrlDown, bool altDown)
 
 void SexyAppBase::CloseRequestAsync()
 {
-}
-
-bool SexyAppBase::ProcessDeferredMessages(bool singleMessage)
-{
-	while (mDeferredMessages.size() > 0)
-	{
-		MSG aMsg = mDeferredMessages.front();
-		mDeferredMessages.pop_front();
-
-		UINT uMsg = aMsg.message;
-		LPARAM lParam = aMsg.lParam;
-		WPARAM wParam = aMsg.wParam;
-		HWND hWnd = aMsg.hwnd;
-
-		if (1)
-		{
-			switch (uMsg)
-			{
-			case WM_ACTIVATEAPP:
-				if ((hWnd == mHWnd) && (!gInAssert) && (!mSEHOccured) && (!mShutdown))
-				{
-					//					mActive = uMsg==WM_SETFOCUS;
-
-					RehupFocus();
-
-					if ((mActive) && (!mIsWindowed))
-						mWidgetManager->MarkAllDirty();
-
-					if ((mIsOpeningURL) && (!mActive))
-						URLOpenSucceeded(mOpeningURL);
-				}
-				break;
-			case WM_LBUTTONDOWN:
-			case WM_RBUTTONDOWN:
-			case WM_MBUTTONDOWN:
-			case WM_LBUTTONDBLCLK:
-			case WM_RBUTTONDBLCLK:
-			case WM_LBUTTONUP:
-			case WM_RBUTTONUP:
-			case WM_MBUTTONUP:
-			case WM_MOUSEMOVE:
-				if ((!gInAssert) && (!mSEHOccured))
-				{
-					int x = (short)LOWORD(lParam);
-					int y = (short)HIWORD(lParam);
-					mWidgetManager->RemapMouse(x, y);
-
-					mLastUserInputTick = mLastTimerTime;
-
-					mWidgetManager->MouseMove(x, y);
-
-					if (!mMouseIn)
-					{
-						mMouseIn = true;
-						EnforceCursor();
-					}
-
-					switch (uMsg)
-					{
-					case WM_LBUTTONDOWN:
-						SetCapture(hWnd);
-						mWidgetManager->MouseDown(x, y, 1);
-						break;
-					case WM_RBUTTONDOWN:
-						SetCapture(hWnd);
-						mWidgetManager->MouseDown(x, y, -1);
-						break;
-					case WM_MBUTTONDOWN:
-						SetCapture(hWnd);
-						mWidgetManager->MouseDown(x, y, 3);
-						break;
-					case WM_LBUTTONDBLCLK:
-						SetCapture(hWnd);
-						mWidgetManager->MouseDown(x, y, 2);
-						break;
-					case WM_RBUTTONDBLCLK:
-						SetCapture(hWnd);
-						mWidgetManager->MouseDown(x, y, -2);
-						break;
-					case WM_LBUTTONUP:
-						if ((mWidgetManager->mDownButtons & ~1) == 0)
-							ReleaseCapture();
-						mWidgetManager->MouseUp(x, y, 1);
-						break;
-					case WM_RBUTTONUP:
-						if ((mWidgetManager->mDownButtons & ~2) == 0)
-							ReleaseCapture();
-						mWidgetManager->MouseUp(x, y, -1);
-						break;
-					case WM_MBUTTONUP:
-						if ((mWidgetManager->mDownButtons & ~4) == 0)
-							ReleaseCapture();
-						mWidgetManager->MouseUp(x, y, 3);
-						break;
-					}
-				}
-				break;
-			case WM_MOUSEWHEEL:
-			{
-				char aZDelta = ((short)HIWORD(wParam)) / 120;
-				mWidgetManager->MouseWheel(aZDelta);
-			}
-			break;
-			case WM_KEYDOWN:
-			case WM_SYSKEYDOWN:
-				mLastUserInputTick = mLastTimerTime;
-
-				if (wParam == VK_RETURN && uMsg == WM_SYSKEYDOWN && !mForceFullscreen && !mForceWindowed)
-				{
-					SwitchScreenMode(!mIsWindowed);
-					ClearKeysDown();
-					break;
-				}
-				else if ((wParam == 'D') && (mWidgetManager != NULL) && (mWidgetManager->mKeyDown[KEYCODE_CONTROL]) && (mWidgetManager->mKeyDown[KEYCODE_MENU]))
-				{
-					PlaySoundA("c:\\windows\\media\\Windows XP Menu Command.wav", NULL, SND_ASYNC);
-					mDebugKeysEnabled = !mDebugKeysEnabled;
-				}
-
-				if (mDebugKeysEnabled)
-				{
-					if (DebugKeyDown(wParam))
-						break;
-				}
-
-				mWidgetManager->KeyDown((KeyCode)wParam);
-				break;
-
-			case WM_KEYUP:
-			case WM_SYSKEYUP:
-				mLastUserInputTick = mLastTimerTime;
-				mWidgetManager->KeyUp((KeyCode)wParam);
-				break;
-			case WM_CHAR:
-				mLastUserInputTick = mLastTimerTime;
-				mWidgetManager->KeyChar((SexyChar)wParam);
-				break;
-			case WM_MOVE:
-			{
-				if ((hWnd == mHWnd) && (mIsWindowed))
-				{
-					WINDOWPLACEMENT aWindowPlacment;
-					aWindowPlacment.length = sizeof(aWindowPlacment);
-
-					GetWindowPlacement(hWnd, &aWindowPlacment);
-					if ((aWindowPlacment.showCmd == SW_SHOW) ||
-						(aWindowPlacment.showCmd == SW_SHOWNORMAL))
-					{
-						mPreferredX = aWindowPlacment.rcNormalPosition.left;
-						mPreferredY = aWindowPlacment.rcNormalPosition.top;
-					}
-				}
-			}
-			break;
-			case WM_SIZE:
-			{
-				bool isMinimized = wParam == SIZE_MINIMIZED;
-
-				if ((hWnd == mHWnd) && (!mShutdown) && (isMinimized != mMinimized))
-				{
-					mMinimized = isMinimized;
-
-					// We don't want any sounds (or music) playing while its minimized
-					if (mMinimized)
-					{
-						if (mMuteOnLostFocus)
-							Mute(true);
-					}
-					else
-					{
-						if (mMuteOnLostFocus)
-							Unmute(true);
-
-						mWidgetManager->MarkAllDirty();
-					}
-				}
-
-				RehupFocus();
-				if (wParam == SIZE_MAXIMIZED)
-					SwitchScreenMode(false);
-			}
-			break;
-			case WM_TIMER:
-				if ((!gInAssert) && (!mSEHOccured) && (mRunning))
-				{
-					DWORD aTimeNow = SDL_GetTicks();
-					if (aTimeNow - mLastTimerTime > 500)
-						mLastBigDelayTime = aTimeNow;
-
-					mLastTimerTime = aTimeNow;
-
-					if ((mIsOpeningURL) &&
-						(aTimeNow - mLastBigDelayTime > 5000))
-					{
-						if ((aTimeNow - mOpeningURLTime > 8000) && (!mActive))
-						{
-							URLOpenSucceeded(mOpeningURL);
-						}
-						else if ((aTimeNow - mOpeningURLTime > 12000) && (mActive))
-						{
-							URLOpenFailed(mOpeningURL);
-						}
-					}
-
-					POINT aULCorner = { 0, 0 };
-					::ClientToScreen(hWnd, &aULCorner);
-
-					POINT aBRCorner = { mDDInterface->mDisplayWidth, mDDInterface->mDisplayHeight };
-					::ClientToScreen(hWnd, &aBRCorner);
-
-					POINT aPoint;
-					::GetCursorPos(&aPoint);
-
-					HWND aWindow = ::WindowFromPoint(aPoint);
-					bool isMouseIn = (aWindow == hWnd) &&
-						(aPoint.x >= aULCorner.x) && (aPoint.y >= aULCorner.y) &&
-						(aPoint.x < aBRCorner.x) && (aPoint.y < aBRCorner.y);
-
-					if (mMouseIn != isMouseIn)
-					{
-						if (!isMouseIn)
-						{
-							int x = aPoint.x - aULCorner.x;
-							int y = aPoint.y - aULCorner.y;
-							mWidgetManager->RemapMouse(x, y);
-							mWidgetManager->MouseExit(x, y);
-						}
-
-						mMouseIn = isMouseIn;
-						EnforceCursor();
-					}
-				}
-				break;
-
-			case WM_SYSCOLORCHANGE:
-			case WM_DISPLAYCHANGE:
-				mWidgetManager->SysColorChangedAll();
-				mWidgetManager->MarkAllDirty();
-				break;
-			}
-		}
-
-		switch (uMsg)
-		{
-		case WM_CLOSE:
-			if ((hWnd == mHWnd) || (hWnd == mInvisHWnd))
-			{
-				Shutdown();
-			}
-			break;
-		}
-
-		if (singleMessage)
-			break;
-	}
-
-	return (mDeferredMessages.size() > 0);
 }
 
 void SexyAppBase::Done3dTesting()
@@ -3163,6 +2908,48 @@ void SexyAppBase::DoMainLoop()
 	}
 }
 
+void ProcessDeferMessage(SDL_Event* ev) {
+
+}
+
+void HandleEvent(SDL_Event* ev) {
+	SexyAppBase* aSexyApp = (SexyAppBase*)global_sexy_handle;
+	switch (ev->type) {
+	case SDL_EVENT_WINDOW_RESIZED:
+	case SDL_EVENT_WINDOW_MOVED:
+	case SDL_EVENT_MOUSE_BUTTON_DOWN:
+	case SDL_EVENT_MOUSE_BUTTON_UP:
+	case SDL_EVENT_MOUSE_MOTION:
+	case SDL_EVENT_KEY_DOWN:
+	case SDL_EVENT_KEY_UP:
+	case SDL_EVENT_TEXT_INPUT:
+	case SDL_EVENT_QUIT:
+	case SDL_EVENT_MOUSE_WHEEL: {
+		bool keyDown = ev->type == SDL_EVENT_KEY_DOWN;
+
+		if ((keyDown) || (ev->type == SDL_EVENT_KEY_UP))
+		{
+			if (ev->key.scancode == SDL_SCANCODE_LCTRL)
+				aSexyApp->mCtrlDown = keyDown;
+			if (ev->key.scancode == SDL_SCANCODE_LALT)
+				aSexyApp->mAltDown = keyDown;
+		}
+
+		bool pushMessage = true;
+		if (ev->type == SDL_EVENT_WINDOW_MINIMIZED || ev->type == SDL_EVENT_WINDOW_RESTORED)
+		{
+			aSexyApp->mPhysMinimized = ev->type == SDL_EVENT_WINDOW_MINIMIZED;
+		}
+		else if (ev->type == SDL_EVENT_QUIT)
+		{
+			aSexyApp->CloseRequestAsync();
+			return;
+		}
+	}
+	}
+	ProcessDeferMessage(ev);
+}
+
 bool SexyAppBase::UpdateAppStep(bool* updated)
 {
 	if (updated != NULL)
@@ -3181,26 +2968,11 @@ bool SexyAppBase::UpdateAppStep(bool* updated)
 	if (mUpdateAppState == UPDATESTATE_MESSAGES)
 	{
 		SDL_Event ev;
+		global_sexy_handle->mIsDisabled = false;
 		while (SDL_PollEvent(&ev) && !mShutdown) {
-			switch (ev.type) {
-			case SDL_EVENT_WINDOW_RESIZED:
-			case SDL_EVENT_WINDOW_MOVED:
-			case SDL_EVENT_MOUSE_BUTTON_DOWN:
-			case SDL_EVENT_MOUSE_BUTTON_UP:
-			case SDL_EVENT_MOUSE_MOTION:
-			case SDL_EVENT_KEY_DOWN:
-			case SDL_EVENT_KEY_UP:
-			case SDL_EVENT_TEXT_INPUT:
-			case SDL_EVENT_QUIT: 
-			case SDL_EVENT_MOUSE_WHEEL: {
-
-			}
-			}
+			HandleEvent(&ev);
 		}
-		if (!ProcessDeferredMessages(true))
-		{
-			mUpdateAppState = UPDATESTATE_PROCESS_1;
-		}
+		global_sexy_handle->mUpdateAppState = UPDATESTATE_PROCESS_1;
 	}
 	else
 	{

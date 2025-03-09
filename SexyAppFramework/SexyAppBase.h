@@ -289,7 +289,6 @@ namespace Sexy
 	protected:
 		void					RehupFocus();
 		void					ClearKeysDown();
-		bool					ProcessDeferredMessages(bool singleMessage);
 		void					UpdateFTimeAcc();
 		virtual bool			Process(bool allowSleep = true);
 		virtual void			UpdateFrames();
