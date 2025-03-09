@@ -107,6 +107,7 @@ static DDImage* gFPSImage = NULL;
 
 //////////////////////////////////////////////////////////////////////////
 
+/*
 typedef HRESULT(WINAPI* SHGetFolderPathFunc)(HWND, int, HANDLE, DWORD, LPTSTR);
 void* GetSHGetFolderPath(const char* theDLL, HMODULE* theMod)
 {
@@ -126,6 +127,7 @@ void* GetSHGetFolderPath(const char* theDLL, HMODULE* theMod)
 	*theMod = aMod;
 	return aFunc;
 }
+*/
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -157,10 +159,12 @@ SexyAppBase::SexyAppBase()
 #endif
 
 	// Extract product version
-	char aPath[_MAX_PATH];
-	GetModuleFileNameA(NULL, aPath, 256);
-	mProductVersion = GetProductVersion(aPath);
-	mChangeDirTo = GetFileDir(aPath);
+	mProductVersion = "1.0.0";
+	const char* app_dir = SDL_GetBasePath();
+	if (!app_dir) {
+		app_dir = "";
+	}
+	mChangeDirTo = SexyString(app_dir);
 
 	mNoDefer = false;
 	mFullScreenPageFlip = true; // should we page flip in fullscreen?
@@ -645,7 +649,7 @@ bool SexyAppBase::OpenURL(const std::string& theURL, bool shutdownOnOpen)
 		mOpeningURL = theURL;
 		mOpeningURLTime = SDL_GetTicks();
 
-		if ((int)ShellExecuteA(NULL, "open", theURL.c_str(), NULL, NULL, (int)SW_SHOWNORMAL) > 32)
+		if (SDL_OpenURL(theURL.c_str()))
 		{
 			return true;
 		}
@@ -661,50 +665,7 @@ bool SexyAppBase::OpenURL(const std::string& theURL, bool shutdownOnOpen)
 
 std::string SexyAppBase::GetProductVersion(const std::string& thePath)
 {
-	// Dynamically Load Version.dll
-	typedef DWORD(APIENTRY* GetFileVersionInfoSizeFunc)(LPSTR lptstrFilename, LPDWORD lpdwHandle);
-	typedef BOOL(APIENTRY* GetFileVersionInfoFunc)(LPSTR lptstrFilename, DWORD dwHandle, DWORD dwLen, LPVOID lpData);
-	typedef BOOL(APIENTRY* VerQueryValueFunc)(const LPVOID pBlock, LPSTR lpSubBlock, LPVOID* lplpBuffer, PUINT puLen);
-
-	static GetFileVersionInfoSizeFunc aGetFileVersionInfoSizeFunc = NULL;
-	static GetFileVersionInfoFunc aGetFileVersionInfoFunc = NULL;
-	static VerQueryValueFunc aVerQueryValueFunc = NULL;
-
-	if (aGetFileVersionInfoSizeFunc == NULL)
-	{
-		aGetFileVersionInfoSizeFunc = (GetFileVersionInfoSizeFunc)GetProcAddress(gVersionDLL, "GetFileVersionInfoSizeA");
-		aGetFileVersionInfoFunc = (GetFileVersionInfoFunc)GetProcAddress(gVersionDLL, "GetFileVersionInfoA");
-		aVerQueryValueFunc = (VerQueryValueFunc)GetProcAddress(gVersionDLL, "VerQueryValueA");
-	}
-
-	// Get Product Version
-	std::string aProductVersion;
-
-	uint aSize = aGetFileVersionInfoSizeFunc((char*)thePath.c_str(), 0);
-	if (aSize > 0)
-	{
-		uchar* aVersionBuffer = new uchar[aSize];
-		aGetFileVersionInfoFunc((char*)thePath.c_str(), 0, aSize, aVersionBuffer);
-		char* aBuffer;
-		if (aVerQueryValueFunc(aVersionBuffer,
-			"\\StringFileInfo\\040904B0\\ProductVersion",
-			(void**)&aBuffer,
-			&aSize))
-		{
-			aProductVersion = aBuffer;
-		}
-		else if (aVerQueryValueFunc(aVersionBuffer,
-			"\\StringFileInfo\\040904E4\\ProductVersion",
-			(void**)&aBuffer,
-			&aSize))
-		{
-			aProductVersion = aBuffer;
-		}
-
-		delete aVersionBuffer;
-	}
-
-	return aProductVersion;
+	return "1.0.0";
 }
 
 void SexyAppBase::WaitForLoadingThread()
@@ -3492,7 +3453,7 @@ void SexyAppBase::Init()
 	ReadFromRegistry();
 
 	//  	if (CheckForVista())
-	{
+	/* {
 		HMODULE aMod;
 		SHGetFolderPathFunc aFunc = (SHGetFolderPathFunc)GetSHGetFolderPath("shell32.dll", &aMod);
 		if (aFunc == NULL || aMod == NULL)
@@ -3504,11 +3465,12 @@ void SexyAppBase::Init()
 			aFunc(NULL, CSIDL_COMMON_APPDATA, NULL, SHGFP_TYPE_CURRENT, aPath);
 
 			std::string aDataPath = RemoveTrailingSlash(aPath) + "\\" + mFullCompanyName + "\\" + mProdName;
-			SetAppDataFolder("savefiles\\");
 
 			FreeLibrary(aMod);
 		}
-	}
+	}*/
+
+	SetAppDataFolder("savefiles\\");
 
 	if (!mCmdLineParsed)
 		DoParseCmdLine();
