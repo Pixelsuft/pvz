@@ -1217,7 +1217,6 @@
     <None Include="MI_SlowStretchBlt.inc">
       <Filter>Sexy\Graphics\Inc Routines</Filter>
     </None>
-    <None Include="..\Cursor13.cur" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="LawnProject.rc" />

@@ -53,6 +53,7 @@
 #include "SexyAppFramework/BassMusicInterface.h"
 #include "SexyAppFramework/Dialog.h"
 #include "SexyAppFramework/resource.h"
+#include "SexyAppFramework/BigArrowCursor.h"
 
 bool gIsPartnerBuild = false;
 bool gSlowMo = false;  
@@ -159,11 +160,15 @@ LawnApp::LawnApp()
 	mCrazyDaveBlinkCounter = 0;
 	mCrazyDaveBlinkReanimID = ReanimationID::REANIMATIONID_NULL;
 	mCrazyDaveMessageIndex = -1;
-	mBigArrowCursor = LoadCursor(GetModuleHandle(nullptr), MAKEINTRESOURCE(IDC_CURSOR1));
+	SDL_Surface* surf = SDL_LoadBMP_IO(SDL_IOFromConstMem(PS_BigArrowCursorData, 4234), 1);
+	if (surf) {
+		mBigArrowCursor = SDL_CreateColorCursor(surf, 1, 1);
+		SDL_DestroySurface(surf);
+	}
 	mDRM = nullptr;
 	mPlayedQuickplay = false;
 	this->cursors[15] = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_DEFAULT);
-	this->cursors[CURSOR_POINTER] = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_DEFAULT);
+	this->cursors[CURSOR_POINTER] = mBigArrowCursor;
 	this->cursors[CURSOR_TEXT] = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_TEXT);
 	this->cursors[CURSOR_CIRCLE_SLASH] = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_NOT_ALLOWED);
 	this->cursors[CURSOR_SIZEALL] = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_MOVE);
@@ -293,8 +298,12 @@ LawnApp::~LawnApp()
 	delete mLastLevelStats;
 
 	mResourceManager->DeleteResources("");
+	if (mBigArrowCursor) {
+		SDL_DestroyCursor(mBigArrowCursor);
+		mBigArrowCursor = NULL;
+	}
 #ifdef _DEBUG
-	BetaSubmit(true);
+	// BetaSubmit(true);
 #endif
 }
 
