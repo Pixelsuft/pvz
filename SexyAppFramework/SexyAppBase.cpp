@@ -166,7 +166,7 @@ SexyAppBase::SexyAppBase()
 
 	mNoDefer = false;
 	mFullScreenPageFlip = true; // should we page flip in fullscreen?
-	mTimeLoaded = GetTickCount();
+	mTimeLoaded = SDL_GetTicks();
 	mSEHOccured = false;
 	mProdName = "Product";
 	mTitle = _S("SexyApp");
@@ -255,7 +255,7 @@ SexyAppBase::SexyAppBase()
 	mMuteOnLostFocus = true;
 	mCurHandleNum = 0;
 	mFPSTime = 0;
-	mFPSStartTick = GetTickCount();
+	mFPSStartTick = SDL_GetTicks();
 	mFPSFlipCount = 0;
 	mFPSCount = 0;
 	mFPSDirtyCount = 0;
@@ -1036,7 +1036,7 @@ bool SexyAppBase::OpenURL(const std::string& theURL, bool shutdownOnOpen)
 		mShutdownOnURLOpen = shutdownOnOpen;
 		mIsOpeningURL = true;
 		mOpeningURL = theURL;
-		mOpeningURLTime = GetTickCount();
+		mOpeningURLTime = SDL_GetTicks();
 
 		if ((int)ShellExecuteA(NULL, "open", theURL.c_str(), NULL, NULL, SW_SHOWNORMAL) > 32)
 		{
@@ -2096,7 +2096,7 @@ void SexyAppBase::SEHOccured()
 
 std::string SexyAppBase::GetGameSEHInfo()
 {
-	int aSecLoaded = (GetTickCount() - mTimeLoaded) / 1000;
+	int aSecLoaded = (SDL_GetTicks() - mTimeLoaded) / 1000;
 
 	char aTimeStr[16];
 	sprintf(aTimeStr, "%02d:%02d:%02d", (aSecLoaded / 60 / 60), (aSecLoaded / 60) % 60, aSecLoaded % 60);
@@ -2277,7 +2277,7 @@ void SexyAppBase::Redraw(Rect* theClipRect)
 		gD3DInterfacePreDrawError = false; // this predraw error happens naturally when ddraw is failing
 		if (!gIsFailing)
 		{
-			//gDebugStream << GetTickCount() << " Redraw failed!" << std::endl;
+			//gDebugStream << SDL_GetTicks() << " Redraw failed!" << std::endl;
 			gIsFailing = true;
 		}
 
@@ -2286,7 +2286,7 @@ void SexyAppBase::Redraw(Rect* theClipRect)
 		aWindowPlacement.length = sizeof(aWindowPlacement);
 		::GetWindowPlacement(mHWnd, &aWindowPlacement);
 
-		DWORD aTick = GetTickCount();
+		DWORD aTick = SDL_GetTicks();
 		if ((mActive || (aTick - aRetryTick > 1000 && mIsPhysWindowed)) && (aWindowPlacement.showCmd != SW_SHOWMINIMIZED) && (!mMinimized))
 		{
 			aRetryTick = aTick;
@@ -2295,11 +2295,11 @@ void SexyAppBase::Redraw(Rect* theClipRect)
 
 			int aResult = InitDDInterface();
 
-			//gDebugStream << GetTickCount() << " ReInit..." << std::endl;
+			//gDebugStream << SDL_GetTicks() << " ReInit..." << std::endl;
 
 			if (0 && (mIsWindowed) && (aResult == DDInterface::RESULT_INVALID_COLORDEPTH))
 			{
-				//gDebugStream << GetTickCount() << "ReInit Invalid Colordepth" << std::endl;
+				//gDebugStream << SDL_GetTicks() << "ReInit Invalid Colordepth" << std::endl;
 				if (!mActive) // don't switch to full screen if not active app
 					return;
 
@@ -2314,7 +2314,7 @@ void SexyAppBase::Redraw(Rect* theClipRect)
 			}
 			else if (0 && aResult != DDInterface::RESULT_OK)
 			{
-				//gDebugStream << GetTickCount() << " ReInit Failed" << std::endl;
+				//gDebugStream << SDL_GetTicks() << " ReInit Failed" << std::endl;
 				//Fail("Failed to initialize DirectDraw");
 				//Sleep(1000);				
 
@@ -2333,7 +2333,7 @@ void SexyAppBase::Redraw(Rect* theClipRect)
 	{
 		if (gIsFailing)
 		{
-			//gDebugStream << GetTickCount() << " Redraw succeeded" << std::endl;
+			//gDebugStream << SDL_GetTicks() << " Redraw succeeded" << std::endl;
 			gIsFailing = false;
 			aRetryTick = 0;
 		}
@@ -2433,7 +2433,7 @@ static void CalculateDemoTimeLeft()
 		gDemoTimeLeftImage->PurgeBits();
 	}
 
-	DWORD aTick = GetTickCount();
+	DWORD aTick = SDL_GetTicks();
 	if (aTick - aLastTick < 1000 / gSexyAppBase->mUpdateMultiplier)
 		return;
 
@@ -2616,7 +2616,7 @@ bool SexyAppBase::DrawDirtyStuff()
 #ifdef _DEBUG
 		/*if (mFPSTime >= 5000) // Show FPS about every 5 seconds
 		{
-			ulong aTickNow = GetTickCount();
+			ulong aTickNow = SDL_GetTicks();
 
 			OutputDebugString(StrFormat(_S("Theoretical FPS: %d\r\n"), (int) (mFPSCount * 1000 / mFPSTime)).c_str());
 			OutputDebugString(StrFormat(_S("Actual      FPS: %d\r\n"), (mFPSFlipCount * 1000) / max((aTickNow - mFPSStartTick), 1)).c_str());
@@ -4285,7 +4285,7 @@ bool SexyAppBase::ProcessDeferredMessages(bool singleMessage)
 			case WM_TIMER:
 				if ((!gInAssert) && (!mSEHOccured) && (mRunning))
 				{
-					DWORD aTimeNow = GetTickCount();
+					DWORD aTimeNow = SDL_GetTicks();
 					if (aTimeNow - mLastTimerTime > 500)
 						mLastBigDelayTime = aTimeNow;
 
@@ -4565,7 +4565,7 @@ void SexyAppBase::LoadingThreadProcStub(void* theArg)
 	aSexyApp->LoadingThreadProc();
 
 	char aStr[256];
-	sprintf(aStr, "Resource Loading Time: %d\r\n", (GetTickCount() - aSexyApp->mTimeLoaded));
+	sprintf(aStr, "Resource Loading Time: %i\r\n", (int)(SDL_GetTicks() - aSexyApp->mTimeLoaded));
 	OutputDebugStringA(aStr);
 
 	aSexyApp->mLoadingThreadCompleted = true;
@@ -4859,7 +4859,7 @@ void SexyAppBase::UpdateFTimeAcc()
 
 bool SexyAppBase::Process(bool allowSleep)
 {
-	/*DWORD aTimeNow = GetTickCount();
+	/*DWORD aTimeNow = SDL_GetTicks();
 	if (aTimeNow - aLastCheck >= 10000)
 	{
 		OutputDebugString(StrFormat(_S("FUpdates: %d\n"), aNumCalls).c_str());
@@ -4897,7 +4897,7 @@ bool SexyAppBase::Process(bool allowSleep)
 				Mute(true);
 			}
 
-			static DWORD aTick = GetTickCount();
+			static DWORD aTick = SDL_GetTicks();
 			while (mUpdateCount < mFastForwardToUpdateNum || mFastForwardToMarker)
 			{
 				ClearUpdateBacklog();
@@ -4941,11 +4941,11 @@ bool SexyAppBase::Process(bool allowSleep)
 				if (aLastUpdateCount == mUpdateCount)
 					return true;
 
-				DWORD aNewTick = GetTickCount();
+				DWORD aNewTick = SDL_GetTicks();
 				if (aNewTick - aTick >= 1000 || mFastForwardStep) // let the app draw some
 				{
 					mFastForwardStep = false;
-					aTick = GetTickCount();
+					aTick = SDL_GetTicks();
 					DrawDirtyStuff();
 					return true;
 				}
@@ -5730,7 +5730,7 @@ void SexyAppBase::Init()
 	if (::GetLastError() == ERROR_ALREADY_EXISTS)
 		HandleGameAlreadyRunning();
 
-	mRandSeed = GetTickCount();
+	mRandSeed = SDL_GetTicks();
 	SRand(mRandSeed);
 
 	// Set up demo recording stuff
@@ -5746,7 +5746,7 @@ void SexyAppBase::Init()
 	}
 
 
-	srand(GetTickCount());
+	srand(SDL_GetTicks());
 
 	mIsWideWindow = sizeof(SexyChar) == sizeof(wchar_t);
 	mInvisHWnd = NULL;

@@ -171,7 +171,7 @@ namespace Sexy
 		bool					mForceWindowed;
 		bool					mInitialized;
 		bool					mProcessInTimer;
-		DWORD					mTimeLoaded;
+		uint64_t				mTimeLoaded;
 		SDL_Window*             win;
 		HWND					mHWnd;
 		HWND					mInvisHWnd;

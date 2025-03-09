@@ -1230,4 +1230,7 @@
       <Filter>DiscordRPC</Filter>
     </Text>
   </ItemGroup>
+  <ItemGroup>
+    <Manifest Include="..\settings.manifest" />
+  </ItemGroup>
 </Project>

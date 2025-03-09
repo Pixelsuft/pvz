@@ -264,7 +264,7 @@ void SyncParticleEmitter(TodParticleSystem* theParticleSystem, TodParticleEmitte
 	}
 	else
 	{
-		aEmitterDefIndex = ((int)theParticleEmitter->mEmitterDef - (int)theParticleSystem->mParticleDef->mEmitterDefs) / sizeof(TodEmitterDefinition);
+		aEmitterDefIndex = (int)((size_t)theParticleEmitter->mEmitterDef - (size_t)theParticleSystem->mParticleDef->mEmitterDefs) / sizeof(TodEmitterDefinition);
 		theContext.SyncInt(aEmitterDefIndex);
 	}
 

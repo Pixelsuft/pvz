@@ -11,9 +11,9 @@ static char gDebugDataFolder[MAX_PATH];
 
 void TodErrorMessageBox(const char* theMessage, const char* theTitle)
 {
-	HWND hWnd = (gSexyAppBase && gSexyAppBase->mHWnd) ? gSexyAppBase->mHWnd : GetActiveWindow();
+	SDL_Window* wn = (gSexyAppBase && gSexyAppBase->win) ? gSexyAppBase->win : NULL;
 	TodTraceAndLog("%s.%s", theMessage, theTitle);
-	MessageBoxA(hWnd, theMessage, theTitle, MB_ICONEXCLAMATION);
+	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, theTitle, theMessage, wn);
 }
 
 void TodTraceMemory()
