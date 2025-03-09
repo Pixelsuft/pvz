@@ -200,8 +200,8 @@ namespace Sexy
 
 		int						mCursorNum;
 		SoundManager* mSoundManager;
-		HCURSOR					mHandCursor;
-		HCURSOR					mDraggingCursor;
+		SDL_Cursor*				mHandCursor;
+		SDL_Cursor*             mDraggingCursor;
 		WidgetSafeDeleteList	mSafeDeleteList;
 		bool					mMouseIn;
 		bool					mRunning;

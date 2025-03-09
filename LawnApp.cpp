@@ -163,13 +163,8 @@ LawnApp::LawnApp()
 	mDRM = nullptr;
 	mPlayedQuickplay = false;
 	this->cursors[15] = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_DEFAULT);
-	// TODO
 	this->cursors[CURSOR_POINTER] = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_DEFAULT);
-	// TODO
-	this->cursors[CURSOR_HAND] = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_DEFAULT);
 	this->cursors[CURSOR_TEXT] = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_TEXT);
-	// TODO
-	this->cursors[CURSOR_DRAGGING] = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_DEFAULT);
 	this->cursors[CURSOR_CIRCLE_SLASH] = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_NOT_ALLOWED);
 	this->cursors[CURSOR_SIZEALL] = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_MOVE);
 	this->cursors[CURSOR_SIZENESW] = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_NESW_RESIZE);
@@ -3438,10 +3433,18 @@ void LawnApp::EnforceCursor()
 
 	switch (mCursorNum)
 	{
+	case CURSOR_HAND: {
+		SDL_SetCursor(mHandCursor);
+		SDL_ShowCursor();
+		break;
+	}
+	case CURSOR_DRAGGING: {
+		SDL_SetCursor(mDraggingCursor);
+		SDL_ShowCursor();
+		break;
+	}
 	case CURSOR_POINTER:
-	case CURSOR_HAND:
 	case CURSOR_TEXT:
-	case CURSOR_DRAGGING:
 	case CURSOR_CIRCLE_SLASH:
 	case CURSOR_SIZEALL:
 	case CURSOR_SIZENESW:
@@ -3451,6 +3454,7 @@ void LawnApp::EnforceCursor()
 	case CURSOR_WAIT:
 	case CURSOR_CUSTOM: {
 		SDL_SetCursor(cursors[mCursorNum]);
+		// MessageBoxA(NULL, SDL_GetError(), "", 0);
 		SDL_ShowCursor();
 		return;
 	}

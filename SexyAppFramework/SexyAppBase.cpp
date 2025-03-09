@@ -423,8 +423,8 @@ SexyAppBase::~SexyAppBase()
 		}
 	}
 
-	DestroyCursor(mHandCursor);
-	DestroyCursor(mDraggingCursor);
+	SDL_DestroyCursor(mHandCursor);
+	SDL_DestroyCursor(mDraggingCursor);
 
 	gSexyAppBase = NULL;
 
@@ -3539,8 +3539,20 @@ void SexyAppBase::Init()
 
 	global_sexy_handle = this;
 
-	mHandCursor = CreateCursor(gHInstance, 11, 4, 32, 32, gFingerCursorData, gFingerCursorData + sizeof(gFingerCursorData) / 2);
-	mDraggingCursor = CreateCursor(gHInstance, 15, 10, 32, 32, gDraggingCursorData, gDraggingCursorData + sizeof(gDraggingCursorData) / 2);
+	// SDL port hack
+	// https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createcursor
+	// https://wiki.libsdl.org/SDL3/SDL_CreateCursor
+	for (int i = 0; i < sizeof(gFingerCursorData) / 2; i++) {
+		if (gFingerCursorData[i] > 0 && gFingerCursorData[i + sizeof(gFingerCursorData) / 2] < 0xff / 2)
+			gFingerCursorData[i] = 0x00;
+	}
+	for (int i = 0; i < sizeof(gDraggingCursorData) / 2; i++) {
+		if (gDraggingCursorData[i] > 0 && gDraggingCursorData[i + sizeof(gDraggingCursorData) / 2] < 0xff / 2)
+			gDraggingCursorData[i] = 0x00;
+	}
+	mHandCursor = SDL_CreateCursor(gFingerCursorData, gFingerCursorData + sizeof(gFingerCursorData) / 2, 32, 32, 11, 4);
+	mDraggingCursor = SDL_CreateCursor(gDraggingCursorData, gDraggingCursorData + sizeof(gDraggingCursorData) / 2, 32, 32, 15, 10);
+	
 
 	// Let app do something before showing window, or switching to fullscreen mode
 	// NOTE: Moved call to PreDisplayHook above mIsWindowed and GetSystemsMetrics
