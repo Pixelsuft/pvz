@@ -3539,16 +3539,17 @@ void SexyAppBase::Init()
 
 	global_sexy_handle = this;
 
-	// SDL port hack
-	// https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createcursor
-	// https://wiki.libsdl.org/SDL3/SDL_CreateCursor
 	for (int i = 0; i < sizeof(gFingerCursorData) / 2; i++) {
-		if (gFingerCursorData[i] > 0 && gFingerCursorData[i + sizeof(gFingerCursorData) / 2] < 0xff / 2)
-			gFingerCursorData[i] = 0x00;
+		char temp = (~gFingerCursorData[i]) & (~gFingerCursorData[i + sizeof(gFingerCursorData) / 2]);
+		gFingerCursorData[i] |= temp;
+		gFingerCursorData[i] &= temp;
+		gFingerCursorData[i + sizeof(gFingerCursorData) / 2] |= temp;
 	}
 	for (int i = 0; i < sizeof(gDraggingCursorData) / 2; i++) {
-		if (gDraggingCursorData[i] > 0 && gDraggingCursorData[i + sizeof(gDraggingCursorData) / 2] < 0xff / 2)
-			gDraggingCursorData[i] = 0x00;
+		char temp = (~gDraggingCursorData[i]) & (~gDraggingCursorData[i + sizeof(gDraggingCursorData) / 2]);
+		gDraggingCursorData[i] |= temp;
+		gDraggingCursorData[i] &= temp;
+		gDraggingCursorData[i + sizeof(gDraggingCursorData) / 2] |= temp;
 	}
 	mHandCursor = SDL_CreateCursor(gFingerCursorData, gFingerCursorData + sizeof(gFingerCursorData) / 2, 32, 32, 11, 4);
 	mDraggingCursor = SDL_CreateCursor(gDraggingCursorData, gDraggingCursorData + sizeof(gDraggingCursorData) / 2, 32, 32, 15, 10);
