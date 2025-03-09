@@ -143,7 +143,6 @@ namespace Sexy
 		uint64_t				mTimeLoaded;
 		SDL_Window*             win;
 		HWND					mHWnd;
-		HWND					mInvisHWnd;
 		bool					mAllowMonitorPowersave;
 		WindowsMessageList		mDeferredMessages;
 		bool					mNoDefer;

@@ -132,6 +132,7 @@ void* GetSHGetFolderPath(const char* theDLL, HMODULE* theMod)
 SexyAppBase::SexyAppBase()
 {
 	gSexyAppBase = this;
+	SDL_SetHint("SDL_DISABLE_WINDOWS_IME ", "1");
 	if (!SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS)) {
 #ifdef SDL_PLATFORM_WINDOWS
 		MessageBoxA(NULL, "Failed to init SDL", "Error!", MB_ICONERROR);
@@ -182,7 +183,6 @@ SexyAppBase::SexyAppBase()
 	mHWnd = NULL;
 	mDDInterface = NULL;
 	mMusicInterface = NULL;
-	mInvisHWnd = NULL;
 	mFrameTime = 10;
 	mNonDrawCount = 0;
 	mDrawCount = 0;
@@ -387,14 +387,6 @@ SexyAppBase::~SexyAppBase()
 	mDialogMap.clear();
 	mDialogList.clear();
 
-	if (mInvisHWnd != NULL)
-	{
-		HWND aWindow = mInvisHWnd;
-		mInvisHWnd = NULL;
-		global_sexy_handle = NULL;
-		DestroyWindow(aWindow);
-	}
-
 	delete mWidgetManager;
 	delete mResourceManager;
 	delete gFPSImage;
@@ -415,18 +407,11 @@ SexyAppBase::~SexyAppBase()
 
 	if (mHWnd != NULL)
 	{
-		HWND aWindow = mHWnd;
 		mHWnd = NULL;
-
 		global_sexy_handle = NULL;
-
-		/*char aStr[256];
-		sprintf(aStr, "HWND: %d\r\n", aWindow);
-		OutputDebugString(aStr);*/
-
-		// DestroyWindow(aWindow);
 	}
 	if (win != NULL) {
+		SDL_StopTextInput(win);
 		SDL_DestroyWindow(win);
 		win = NULL;
 	}
@@ -2322,7 +2307,7 @@ void SexyAppBase::MakeWindow()
 	if ((mIsWindowed && !mFullScreenWindow))
 	{
 		win = SDL_CreateWindow(
-			"MainWindow",
+			"Plants vs. Zombies",
 			mWidth,
 			mHeight,
 			0
@@ -2340,7 +2325,7 @@ void SexyAppBase::MakeWindow()
 	else
 	{
 		win = SDL_CreateWindow(
-			"MainWindow",
+			"Plants vs. Zombies",
 			mWidth,
 			mHeight,
 			SDL_WINDOW_FULLSCREEN
@@ -2352,6 +2337,7 @@ void SexyAppBase::MakeWindow()
 		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error!", "Failed to create window!", win);
 		exit(0);
 	}
+	SDL_StartTextInput(win);
 
 	/*char aStr[256];
 	sprintf(aStr, "HWND: %d\r\n", mHWnd);
@@ -3041,7 +3027,12 @@ void SexyAppBase::ProcessDeferMessage(SDL_Event* ev) {
 		break;
 	}
 	case SDL_EVENT_TEXT_INPUT: {
-		// mWidgetManager->KeyChar((SexyChar)ev->text.);
+		size_t cid = SDL_strlen(ev->text.text);
+		if (cid == 1) {
+			cid--;
+			if (32 <= ev->text.text[cid] && ev->text.text[cid] < 128)
+				mWidgetManager->KeyChar((SexyChar)ev->text.text[cid]);
+		}
 		break;
 	}
 	case SDL_EVENT_TEXT_EDITING: {
@@ -3528,12 +3519,12 @@ bool SexyAppBase::ChangeDirHook(const char* theIntendedPath)
 
 MusicInterface* SexyAppBase::CreateMusicInterface(HWND theWindow)
 {
-	if (mNoSoundNeeded)
+	/*if (mNoSoundNeeded)
 		return new MusicInterface;
 	else if (mWantFMod)
 		return new FModMusicInterface(mInvisHWnd);
-	else
-		return new BassMusicInterface(mInvisHWnd);
+	else*/
+	return new BassMusicInterface(NULL);
 }
 
 void SexyAppBase::InitPropertiesHook()
@@ -3608,7 +3599,6 @@ void SexyAppBase::Init()
 	srand(SDL_GetTicks());
 
 	mIsWideWindow = sizeof(SexyChar) == sizeof(wchar_t);
-	mInvisHWnd = NULL;
 
 	global_sexy_handle = this;
 
