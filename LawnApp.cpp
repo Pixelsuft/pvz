@@ -162,6 +162,21 @@ LawnApp::LawnApp()
 	mBigArrowCursor = LoadCursor(GetModuleHandle(nullptr), MAKEINTRESOURCE(IDC_CURSOR1));
 	mDRM = nullptr;
 	mPlayedQuickplay = false;
+	this->cursors[15] = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_DEFAULT);
+	// TODO
+	this->cursors[CURSOR_POINTER] = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_DEFAULT);
+	// TODO
+	this->cursors[CURSOR_HAND] = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_DEFAULT);
+	this->cursors[CURSOR_TEXT] = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_TEXT);
+	// TODO
+	this->cursors[CURSOR_DRAGGING] = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_DEFAULT);
+	this->cursors[CURSOR_CIRCLE_SLASH] = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_NOT_ALLOWED);
+	this->cursors[CURSOR_SIZEALL] = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_MOVE);
+	this->cursors[CURSOR_SIZENESW] = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_NESW_RESIZE);
+	this->cursors[CURSOR_SIZENS] = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_NS_RESIZE);
+	this->cursors[CURSOR_SIZENWSE] = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_NWSE_RESIZE);
+	this->cursors[CURSOR_SIZEWE] = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_EW_RESIZE);
+	this->cursors[CURSOR_WAIT] = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_WAIT);
 	StartDiscord();
 }
 
@@ -371,7 +386,7 @@ void LawnApp::KillBoard()
 		mBoard = nullptr;
 	}
 
-	SetCursor(CURSOR_POINTER);
+	// SetCursor(CURSOR_POINTER);
 }
 
 bool LawnApp::CanPauseNow()
@@ -1377,12 +1392,6 @@ void LawnApp::Init()
 	mWidgetManager->SetFocus(mTitleScreen);
 	mAchievements = new Achievements(this);
 	mAchievements->InitAchievement();
-	if (HAS_CUSTOM_CURSOR)
-	{
-		mCursor = new CursorWidget(this);
-		mWidgetManager->AddWidget(mCursor);
-		mWidgetManager->BringToFront(mCursor);
-	}
 #ifdef _DEBUG
 	int aDuration = mTimer.GetDuration();
 	TodTrace("loading: 'profiles' %d ms", aDuration);
@@ -1825,12 +1834,6 @@ void LawnApp::UpdateFrames()
 		}
 
 		CheckForGameEnd();
-
-		if (mCursor && HAS_CUSTOM_CURSOR)
-		{
-			mCursor->SetImage(IMAGE_MOUSE_CURSOR);
-			mWidgetManager->BringToFront(mCursor);
-		}
 	}
 
 	static time_t lastUpdateTime = time(NULL);
@@ -3419,12 +3422,7 @@ void LawnApp::PreloadForUser()
 
 void LawnApp::EnforceCursor()
 {
-	if (HAS_CUSTOM_CURSOR)
-	{
-		::SetCursor(NULL);
-		return;
-	}
-
+	/*
 	if (mSEHOccured || !mMouseIn)
 	{
 		::SetCursor(LoadCursor(NULL, IDC_ARROW));
@@ -3436,63 +3434,33 @@ void LawnApp::EnforceCursor()
 		::SetCursor(mOverrideCursor);
 		return;
 	}
+	*/
 
 	switch (mCursorNum)
 	{
 	case CURSOR_POINTER:
-		::SetCursor(LoadCursor(GetModuleHandle(NULL), MAKEINTRESOURCE(IDC_CURSOR1)));
-		return;
-
 	case CURSOR_HAND:
-		::SetCursor(mHandCursor);
-		return;
-
 	case CURSOR_TEXT:
-		::SetCursor(LoadCursor(NULL, IDC_IBEAM));
-		return;
-
 	case CURSOR_DRAGGING:
-		::SetCursor(mDraggingCursor);
-		return;
-
 	case CURSOR_CIRCLE_SLASH:
-		::SetCursor(LoadCursor(NULL, IDC_NO));
-		return;
-
 	case CURSOR_SIZEALL:
-		::SetCursor(LoadCursor(NULL, IDC_SIZEALL));
-		return;
-
 	case CURSOR_SIZENESW:
-		::SetCursor(LoadCursor(NULL, IDC_SIZENESW));
-		return;
-
 	case CURSOR_SIZENS:
-		::SetCursor(LoadCursor(NULL, IDC_SIZENS));
-		return;
-
 	case CURSOR_SIZENWSE:
-		::SetCursor(LoadCursor(NULL, IDC_SIZENWSE));
-		return;
-
 	case CURSOR_SIZEWE:
-		::SetCursor(LoadCursor(NULL, IDC_SIZEWE));
-		return;
-
 	case CURSOR_WAIT:
-		::SetCursor(LoadCursor(NULL, IDC_WAIT));
+	case CURSOR_CUSTOM: {
+		SDL_SetCursor(cursors[mCursorNum]);
+		SDL_ShowCursor();
 		return;
-
-	case CURSOR_CUSTOM:
-		::SetCursor(NULL);
-		return;
-
+	}
 	case CURSOR_NONE:
-		::SetCursor(NULL);
+		SDL_HideCursor();
 		return;
 
 	default:
-		::SetCursor(LoadCursor(NULL, IDC_ARROW));
+		SDL_SetCursor(this->cursors[15]);
+		SDL_ShowCursor();
 		return;
 	}
 }

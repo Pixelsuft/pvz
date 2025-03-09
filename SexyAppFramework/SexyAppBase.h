@@ -155,6 +155,7 @@ namespace Sexy
 		std::string				mRegisterLink;
 		std::string				mProductVersion;
 		Image* mCursorImages[NUM_CURSORS];
+		SDL_Cursor*             cursors[16];
 		HCURSOR					mOverrideCursor;
 		bool					mIsOpeningURL;
 		bool					mShutdownOnURLOpen;

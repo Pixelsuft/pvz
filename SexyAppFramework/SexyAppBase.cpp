@@ -295,10 +295,8 @@ SexyAppBase::SexyAppBase()
 	mIs3dAccel = true;
 	mCrazySeeds = false;
 
+	SDL_memset(this->cursors, 0, sizeof(cursors));
 	int i;
-
-	for (i = 0; i < NUM_CURSORS; i++)
-		mCursorImages[i] = NULL;
 
 	for (i = 0; i < 256; i++)
 		mAdd8BitMaxTable[i] = i;
@@ -417,6 +415,13 @@ SexyAppBase::~SexyAppBase()
 	}
 
 	WaitForLoadingThread();
+
+	for (int i = 0; i < 16; i++) {
+		if (cursors[i]) {
+			SDL_DestroyCursor(cursors[i]);
+			cursors[i] = NULL;
+		}
+	}
 
 	DestroyCursor(mHandCursor);
 	DestroyCursor(mDraggingCursor);
@@ -2596,71 +2601,6 @@ void SexyAppBase::SetAlphaDisabled(bool isDisabled)
 
 void SexyAppBase::EnforceCursor()
 {
-	bool wantSysCursor = true;
-
-	if (mDDInterface == NULL)
-		return;
-
-	if ((mSEHOccured) || (!mMouseIn))
-	{
-		::SetCursor(::LoadCursor(NULL, IDC_ARROW));
-		if (mDDInterface->SetCursorImage(NULL))
-			mCustomCursorDirty = true;
-	}
-	else
-	{
-		if ((mCursorImages[mCursorNum] == NULL) ||
-			((!mCustomCursorsEnabled) && (mCursorNum != CURSOR_CUSTOM)))
-		{
-			if (mOverrideCursor != NULL)
-				::SetCursor(mOverrideCursor);
-			else if (mCursorNum == CURSOR_POINTER)
-				::SetCursor(::LoadCursor(NULL, IDC_ARROW));
-			else if (mCursorNum == CURSOR_HAND)
-				::SetCursor(mHandCursor);
-			else if (mCursorNum == CURSOR_TEXT)
-				::SetCursor(::LoadCursor(NULL, IDC_IBEAM));
-			else if (mCursorNum == CURSOR_DRAGGING)
-				::SetCursor(mDraggingCursor);
-			else if (mCursorNum == CURSOR_CIRCLE_SLASH)
-				::SetCursor(::LoadCursor(NULL, IDC_NO));
-			else if (mCursorNum == CURSOR_SIZEALL)
-				::SetCursor(::LoadCursor(NULL, IDC_SIZEALL));
-			else if (mCursorNum == CURSOR_SIZENESW)
-				::SetCursor(::LoadCursor(NULL, IDC_SIZENESW));
-			else if (mCursorNum == CURSOR_SIZENS)
-				::SetCursor(::LoadCursor(NULL, IDC_SIZENS));
-			else if (mCursorNum == CURSOR_SIZENWSE)
-				::SetCursor(::LoadCursor(NULL, IDC_SIZENWSE));
-			else if (mCursorNum == CURSOR_SIZEWE)
-				::SetCursor(::LoadCursor(NULL, IDC_SIZEWE));
-			else if (mCursorNum == CURSOR_WAIT)
-				::SetCursor(::LoadCursor(NULL, IDC_WAIT));
-			else if (mCursorNum == CURSOR_CUSTOM)
-				::SetCursor(NULL); // Default to not showing anything
-			else if (mCursorNum == CURSOR_NONE)
-				::SetCursor(NULL);
-			else
-				::SetCursor(::LoadCursor(NULL, IDC_ARROW));
-
-			if (mDDInterface->SetCursorImage(NULL))
-				mCustomCursorDirty = true;
-		}
-		else
-		{
-			if (mDDInterface->SetCursorImage(mCursorImages[mCursorNum]))
-				mCustomCursorDirty = true;
-
-			::SetCursor(NULL);
-
-			wantSysCursor = false;
-		}
-	}
-
-	if (wantSysCursor != mSysCursor)
-	{
-		mSysCursor = wantSysCursor;
-	}
 }
 
 void SexyAppBase::ProcessSafeDeleteList()
