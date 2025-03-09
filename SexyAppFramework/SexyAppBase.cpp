@@ -1795,6 +1795,9 @@ static void UpdateScreenSaverInfo(DWORD theTick)
 
 bool SexyAppBase::DrawDirtyStuff()
 {
+	// TODO: hack
+	mSoftVSyncWait = true;
+	mWaitForVSync = true;
 	SEXY_AUTO_PERF("SexyAppBase::DrawDirtyStuff");
 	MTAutoDisallowRand aDisallowRand;
 
