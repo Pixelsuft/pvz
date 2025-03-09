@@ -300,7 +300,7 @@ bool DSoundManager::LoadWAVSound(unsigned int theSfxID, const std::string& theFi
 				return false;
 			}
 
-			int aReadSize = p_fread(lpvPtr, 1, aDataSize, fp);
+			int aReadSize = (int)p_fread(lpvPtr, 1, aDataSize, fp);
 			p_fclose(fp);
 
 			for (int i = 0; i < aDataSize; i++)
@@ -656,7 +656,7 @@ bool DSoundManager::LoadAUSound(unsigned int theSfxID, const std::string& theFil
 
 	uchar* aSrcBuffer = new uchar[aDataSize];
 	
-	int aReadSize = p_fread(aSrcBuffer, 1, aDataSize, fp);
+	int aReadSize = (int)p_fread(aSrcBuffer, 1, aDataSize, fp);
 	p_fclose(fp);
 
 	if (ulaw)

@@ -556,7 +556,7 @@ bool SexyAppBase::KillDialog(Dialog* theDialog)
 
 int SexyAppBase::GetDialogCount()
 {
-	return mDialogMap.size();
+	return (int)mDialogMap.size();
 }
 
 void SexyAppBase::AddDialog(int theDialogId, Dialog* theDialog)
@@ -640,7 +640,7 @@ bool SexyAppBase::OpenURL(const std::string& theURL, bool shutdownOnOpen)
 		mOpeningURL = theURL;
 		mOpeningURLTime = SDL_GetTicks();
 
-		if ((int)ShellExecuteA(NULL, "open", theURL.c_str(), NULL, NULL, SW_SHOWNORMAL) > 32)
+		if ((int)ShellExecuteA(NULL, "open", theURL.c_str(), NULL, NULL, (int)SW_SHOWNORMAL) > 32)
 		{
 			return true;
 		}
@@ -1081,7 +1081,7 @@ bool SexyAppBase::RegistryWrite(const std::string& theValueName, ulong theType, 
 
 bool SexyAppBase::RegistryWriteString(const std::string& theValueName, const std::string& theString)
 {
-	return RegistryWrite(theValueName, REG_SZ, (uchar*)theString.c_str(), theString.length());
+	return RegistryWrite(theValueName, REG_SZ, (uchar*)theString.c_str(), (ulong)theString.length());
 }
 
 bool SexyAppBase::RegistryWriteInteger(const std::string& theValueName, int theValue)
@@ -3683,10 +3683,10 @@ void SexyAppBase::CopyToClipboard(const std::string& theString)
 		SetClipboardData(CF_OEMTEXT, aGlobalHandle);
 		SetClipboardData(CF_LOCALE, aGlobalHandle);
 
-		int aSize = MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, theString.c_str(), theString.length(), NULL, 0);
+		int aSize = MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, theString.c_str(), (int)theString.length(), NULL, 0);
 		aGlobalHandle = GlobalAlloc(GMEM_MOVEABLE | GMEM_DDESHARE, (aSize + 1) * sizeof(WCHAR));
 		theWData = (WCHAR*)GlobalLock(aGlobalHandle);
-		MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, theString.c_str(), theString.length(), theWData, aSize);
+		MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, theString.c_str(), (int)theString.length(), theWData, aSize);
 		theWData[aSize] = '\0';
 		GlobalUnlock(aGlobalHandle);
 		SetClipboardData(CF_UNICODETEXT, aGlobalHandle);

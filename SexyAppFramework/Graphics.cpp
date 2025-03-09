@@ -1303,7 +1303,7 @@ int	Graphics::WriteWordWrapped(const Rect& theRect, const SexyString& theLine, i
 	if(aLineStartPos<(int)theLine.length()) // write the last piece
 	{
 		int aWrittenWidth = WriteWordWrappedHelper(this, theLine, theRect.mX + anIndentX, theRect.mY + aYOffset, theRect.mWidth, 
-			theJustification, true, aLineStartPos, theLine.length()-aLineStartPos, anOrigColorInt, theMaxChars);
+			theJustification, true, aLineStartPos, (int)theLine.length()-aLineStartPos, anOrigColorInt, theMaxChars);
 
 		if (aWrittenWidth>=0)
 		{

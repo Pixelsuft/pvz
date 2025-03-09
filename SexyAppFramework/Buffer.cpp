@@ -391,14 +391,14 @@ void Buffer::WriteBytes(const uchar* theByte, int theCount)
 void Buffer::SetData(const ByteVector& theBuffer)
 {
 	mData = theBuffer;
-	mDataBitSize = mData.size() * 8;
+	mDataBitSize = (int)mData.size() * 8;
 }
 
 void Buffer::SetData(uchar* thePtr, int theCount)
 {
 	mData.clear();
 	mData.insert(mData.begin(), thePtr, thePtr + theCount);
-	mDataBitSize = mData.size() * 8;
+	mDataBitSize = (int)mData.size() * 8;
 }
 
 uchar Buffer::ReadByte() const

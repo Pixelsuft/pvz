@@ -204,7 +204,7 @@ std::string Sexy::Trim(const std::string& theString)
 	while ( aStartPos < (int) theString.length() && isspace((unsigned char)theString[aStartPos]) )
 		aStartPos++;
 
-	int anEndPos = theString.length() - 1;
+	int anEndPos = (int)theString.length() - 1;
 	while ( anEndPos >= 0 && isspace((unsigned char)theString[anEndPos]) )
 		anEndPos--;
 
@@ -217,7 +217,7 @@ std::wstring Sexy::Trim(const std::wstring& theString)
 	while ( aStartPos < (int) theString.length() && iswspace(theString[aStartPos]) )
 		aStartPos++;
 
-	int anEndPos = theString.length() - 1;
+	int anEndPos = (int)theString.length() - 1;
 	while ( anEndPos >= 0 && iswspace(theString[anEndPos]) )
 		anEndPos--;
 
@@ -506,8 +506,8 @@ std::string Sexy::GetPathFrom(const std::string& theRelPath, const std::string& 
 		if (aNewPath.length() == 0)
 			break;
 
-		int aFirstSlash = aTempRelPath.find('\\');
-		int aFirstForwardSlash = aTempRelPath.find('/');
+		int aFirstSlash = (int)aTempRelPath.find('\\');
+		int aFirstForwardSlash = (int)aTempRelPath.find('/');
 
 		if ((aFirstSlash == -1) || ((aFirstForwardSlash != -1) && (aFirstForwardSlash < aFirstSlash)))
 			aFirstSlash = aFirstForwardSlash;
@@ -521,7 +521,7 @@ std::string Sexy::GetPathFrom(const std::string& theRelPath, const std::string& 
 
 		if (aChDir.compare("..") == 0)
 		{			
-			int aLastDirStart = aNewPath.length() - 1;
+			int aLastDirStart = (int)aNewPath.length() - 1;
 			while ((aLastDirStart > 0) && (aNewPath[aLastDirStart-1] != '\\') && (aNewPath[aLastDirStart-1] != '/'))
 				aLastDirStart--;
 
@@ -554,7 +554,7 @@ std::string Sexy::GetPathFrom(const std::string& theRelPath, const std::string& 
 	{
 		for (;;)
 		{
-			int aSlashPos = aNewPath.find('\\');
+			int aSlashPos = (int)aNewPath.find('\\');
 			if (aSlashPos == -1)
 				break;
 			aNewPath[aSlashPos] = '/';
@@ -564,7 +564,7 @@ std::string Sexy::GetPathFrom(const std::string& theRelPath, const std::string& 
 	{
 		for (;;)
 		{
-			int aSlashPos = aNewPath.find('/');
+			int aSlashPos = (int)aNewPath.find('/');
 			if (aSlashPos == -1)
 				break;
 			aNewPath[aSlashPos] = '\\';
@@ -640,7 +640,7 @@ void Sexy::MkDir(const std::string& theDir)
 	int aCurPos = 0;
 	for (;;)
 	{
-		int aSlashPos = aPath.find_first_of("\\/", aCurPos);
+		int aSlashPos = (int)aPath.find_first_of("\\/", aCurPos);
 		if (aSlashPos == -1)
 		{
 			_mkdir(aPath.c_str());
@@ -688,7 +688,7 @@ std::string Sexy::GetFileDir(const std::string& thePath, bool withSlash)
 
 std::string Sexy::RemoveTrailingSlash(const std::string& theDirectory)
 {
-	int aLen = theDirectory.length();
+	int aLen = (int)theDirectory.length();
 	
 	if ((aLen > 0) && ((theDirectory[aLen-1] == '\\') || (theDirectory[aLen-1] == '/')))
 		return theDirectory.substr(0, aLen - 1);
@@ -873,12 +873,12 @@ std::string Sexy::Evaluate(const std::string& theString, const DefinesMap& theDe
 
 	for (;;)
 	{
-		int aPercentPos = anEvaluatedString.find('%');
+		int aPercentPos = (int)anEvaluatedString.find('%');
 
 		if (aPercentPos == std::string::npos)
 			break;
 		
-		int aSecondPercentPos = anEvaluatedString.find('%', aPercentPos + 1);
+		int aSecondPercentPos = (int)anEvaluatedString.find('%', aPercentPos + 1);
 		if (aSecondPercentPos == std::string::npos)
 			break;
 
@@ -911,7 +911,7 @@ std::string Sexy::XMLDecodeString(const std::string& theString)
 
 		if (c == '&')
 		{
-			int aSemiPos = theString.find(';', i);
+			int aSemiPos = (int)theString.find(';', i);
 
 			if (aSemiPos != -1)
 			{
@@ -954,7 +954,7 @@ std::wstring Sexy::XMLDecodeString(const std::wstring& theString)
 
 		if (c == L'&')
 		{
-			int aSemiPos = theString.find(L';', i);
+			int aSemiPos = (int)theString.find(L';', i);
 
 			if (aSemiPos != -1)
 			{
@@ -1199,7 +1199,7 @@ SexyString Sexy::exec_getStr(const char* cmd) {
 	if (!pipe) {
 		throw std::runtime_error("popen() failed!");
 	}
-	while (fgets(buffer.data(), buffer.size(), pipe.get()) != nullptr) {
+	while (fgets(buffer.data(), (int)buffer.size(), pipe.get()) != nullptr) {
 		result += buffer.data();
 	}
 	return result;

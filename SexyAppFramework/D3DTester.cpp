@@ -541,12 +541,12 @@ void D3DTester::WriteToRegistry()
 
 	// Write failure reason
 	aType = REG_SZ;
-	aSize = mFailureReason.length()+1;
+	aSize = (DWORD)mFailureReason.length()+1;
 	RegSetValueExA(mRegKey, "FailureReason", 0, aType, (uchar*) mFailureReason.c_str(), aSize);
 
 	// Write warining
 	aType = REG_SZ;
-	aSize = mWarning.length()+1;
+	aSize = (DWORD)mWarning.length()+1;
 	RegSetValueExA(mRegKey, "Warning", 0, aType, (uchar*) mWarning.c_str(), aSize);
 }
 

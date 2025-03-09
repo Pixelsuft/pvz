@@ -61,7 +61,7 @@ void SexyTrace(const char *theStr)
 	fprintf(gTraceFile,"%s\n",theStr);
 	fflush(gTraceFile);
 
-	gTraceFileLen += strlen(theStr);
+	gTraceFileLen += (int)strlen(theStr);
 	if (gTraceFileLen > 100000)
 	{
 		fclose(gTraceFile);
@@ -95,7 +95,7 @@ void SexyTraceFmt(const SexyChar* fmt ...)
 	fprintf(gTraceFile,"%s",result.c_str());
 	fflush(gTraceFile);
 
-	gTraceFileLen += result.length();
+	gTraceFileLen += (int)result.length();
 	if (gTraceFileLen > 100000)
 	{
 		fclose(gTraceFile);

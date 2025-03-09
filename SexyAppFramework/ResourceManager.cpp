@@ -1075,7 +1075,7 @@ bool ResourceManager::LoadResources(const std::string &theGroup)
 int	ResourceManager::GetNumResources(const std::string &theGroup, ResMap &theMap)
 {
 	if (theGroup.empty())
-		return theMap.size();
+		return (int)theMap.size();
 
 	int aCount = 0;
 	for (ResMap::iterator anItr = theMap.begin(); anItr != theMap.end(); ++anItr)

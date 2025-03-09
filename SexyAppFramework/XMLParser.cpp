@@ -303,7 +303,7 @@ void XMLParser::SetStringSource(const std::wstring& theString)
 {
 	Init();
 
-	int aSize = theString.size();
+	int aSize = (int)theString.size();
 
 	mBufferedText.resize(aSize);	
 	for (int i = 0; i < aSize; i++)
@@ -388,7 +388,7 @@ bool XMLParser::NextElement(XMLElement* theElement)
 					
 					*aStrPtr += (SexyChar)c;					
 
-					int aLen = aStrPtr->length();
+					int aLen = (int)aStrPtr->length();
 
 					if ((c == L'>') && (aLen >= 3) && ((*aStrPtr)[aLen - 2] == L'-') && ((*aStrPtr)[aLen - 3] == L'-'))
 					{
@@ -407,7 +407,7 @@ bool XMLParser::NextElement(XMLElement* theElement)
 					
 					*aStrPtr += (SexyChar)c;					
 
-					int aLen = aStrPtr->length();
+					int aLen = (int)aStrPtr->length();
 
 					if ((c == L'>') && (aLen >= 2) && ((*aStrPtr)[aLen - 2] == L'?'))
 					{
@@ -483,7 +483,7 @@ bool XMLParser::NextElement(XMLElement* theElement)
 									{
 										SexyString aVal = theElement->mAttributes[WStringToSexyString(aLastAttributeKey)];
 
-										int aLen = aVal.length();
+										int aLen = (int)aVal.length();
 
 										if ((aLen > 0) && (aVal[aLen-1] == '/'))
 										{
@@ -497,7 +497,7 @@ bool XMLParser::NextElement(XMLElement* theElement)
 									}
 									else
 									{
-										int aLen = theElement->mValue.length();
+										int aLen = (int)theElement->mValue.length();
 
 										if ((aLen > 0) && (theElement->mValue[aLen-1] == '/'))
 										{
@@ -513,8 +513,8 @@ bool XMLParser::NextElement(XMLElement* theElement)
 								{									
 									SexyString anAddString = _S("</") + theElement->mValue + _S(">");
 
-									int anOldSize = mBufferedText.size();
-									int anAddLength = anAddString.length();
+									int anOldSize = (int)mBufferedText.size();
+									int anAddLength = (int)anAddString.length();
 
 									mBufferedText.resize(anOldSize + anAddLength);
 
@@ -537,7 +537,7 @@ bool XMLParser::NextElement(XMLElement* theElement)
 							}
 							else if (theElement->mType == XMLElement::TYPE_END)
 							{
-								int aLastSlash = mSection.rfind(_S('/'));
+								int aLastSlash = (int)mSection.rfind(_S('/'));
 								if ((aLastSlash == -1) && (mSection.length() == 0))
 								{
 									Fail(_S("Unexpected End"));
