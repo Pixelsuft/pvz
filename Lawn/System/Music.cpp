@@ -10,6 +10,7 @@
 #include "../../SexyAppFramework/FModMusicInterface.h"
 #define MUS_FMOD
 #define FMOD_HAS_ERROR(res) ((res) != FMOD_OK)
+#define f_sys (((FModMusicInterface*)mApp->mMusicInterface)->sys)
 
 using namespace Sexy;
 
@@ -101,6 +102,7 @@ bool Music::TodLoadMusic(MusicFile theMusicFile, const std::string& theFileName)
 
 	FModMusicInfo aMusicInfo;
 	aMusicInfo.mHMusic = aHMusic;
+	aMusicInfo.ch = NULL;
 	aBass->mMusicMap.insert(FModMusicMap::value_type(theMusicFile, aMusicInfo));
 	return true;
 }
@@ -245,7 +247,6 @@ void* Music::GetBassMusicHandle(MusicFile theMusicFile)
 void Music::PlayFromOffset(MusicFile theMusicFile, int theOffset, double theVolume)
 {
 	// TODO
-	return;
 	if (mApp == nullptr) mApp = (LawnApp*)gSexyApp;
 	FModMusicInterface* aBass = (FModMusicInterface*)mApp->mMusicInterface;
 	auto anItr = aBass->mMusicMap.find((int)theMusicFile);
@@ -260,12 +261,15 @@ void Music::PlayFromOffset(MusicFile theMusicFile, int theOffset, double theVolu
 	}
 	else
 	{
-		// gBass->BASS_ChannelStop(aMusicInfo->mHMusic);  
+		gFMod->FMOD_Channel_Stop(aMusicInfo->ch);
 		SetupMusicFileForTune(theMusicFile, mCurMusicTune);  
 		aMusicInfo->mStopOnFade = false;
 		aMusicInfo->mVolume = aMusicInfo->mVolumeCap * theVolume;
 		aMusicInfo->mVolumeAdd = 0.0;
-		// gBass->BASS_ChannelSetAttributes(aMusicInfo->mHMusic, -1, aMusicInfo->mVolume * 100.0, -101);  
+		// TODO: pause, set vals, resume
+		gFMod->FMOD_System_PlaySound(f_sys, aMusicInfo->mHMusic, NULL, 0, &aMusicInfo->ch);
+		gFMod->FMOD_Channel_SetVolume(aMusicInfo->ch, aMusicInfo->mVolume);
+		gFMod->FMOD_Channel_SetPosition(aMusicInfo->ch, theOffset | 0x80000000, FMOD_TIMEUNIT_MS);
 		// gBass->BASS_ChannelSetFlags(aMusicInfo->mHMusic, BASS_MUSIC_POSRESET | BASS_MUSIC_RAMP | BASS_MUSIC_LOOP);
 		// gBass->BASS_ChannelSetPosition(aMusicInfo->mHMusic, theOffset | 0x80000000);  
 		// gBass->BASS_ChannelPlay(aMusicInfo->mHMusic, false);  
@@ -274,8 +278,6 @@ void Music::PlayFromOffset(MusicFile theMusicFile, int theOffset, double theVolu
 
 void Music::PlayMusic(MusicTune theMusicTune, int theOffset, int theDrumsOffset)
 {
-	// TODO
-	return;
 	if (mMusicDisabled)
 		return;
 
@@ -406,6 +408,7 @@ void Music::PlayMusic(MusicTune theMusicTune, int theOffset, int theDrumsOffset)
 
 	if (aRestartingSong)
 	{
+		// TODO
 		/*
 		if (mCurMusicFileMain != MusicFile::MUSIC_FILE_NONE)
 		{
