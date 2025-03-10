@@ -5,6 +5,7 @@
 #include "DSoundInstance.h"
 #include "FModLoader.h"
 #include <math.h>
+#include <SDL3/SDL.h>
 #include "..\PakLib\PakInterface.h"
 
 using namespace Sexy;
@@ -42,9 +43,9 @@ DSoundManager::DSoundManager(HWND theHWnd, bool haveFMod)
 
 	if (theHWnd != NULL)
 	{
-		extern HMODULE gDSoundDLL;
+		extern SDL_SharedObject* gDSoundDLL;
 		typedef HRESULT (WINAPI *DirectSoundCreateFunc)(LPCGUID lpcGuid, LPDIRECTSOUND * ppDS, LPUNKNOWN  pUnkOuter);
-		DirectSoundCreateFunc aDirectSoundCreateFunc = (DirectSoundCreateFunc)GetProcAddress(gDSoundDLL,"DirectSoundCreate");
+		DirectSoundCreateFunc aDirectSoundCreateFunc = (DirectSoundCreateFunc)SDL_LoadFunction(gDSoundDLL,"DirectSoundCreate");
 
 		if (aDirectSoundCreateFunc != NULL && aDirectSoundCreateFunc(NULL, &mDirectSound, NULL) == DS_OK)
 		{

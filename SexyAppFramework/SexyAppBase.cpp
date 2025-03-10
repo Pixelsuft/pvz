@@ -44,9 +44,8 @@ using namespace Sexy;
 SexyAppBase* global_sexy_handle = NULL;
 SexyAppBase* Sexy::gSexyAppBase = NULL;
 
-HMODULE gDDrawDLL = NULL;
-HMODULE gDSoundDLL = NULL;
-HMODULE gVersionDLL = NULL;
+SDL_SharedObject* gDDrawDLL = NULL;
+SDL_SharedObject* gDSoundDLL = NULL;
 
 //typedef struct { UINT cbSize; DWORD dwTime; } LASTINPUTINFO;
 typedef BOOL(WINAPI* GetLastInputInfoFunc)(LASTINPUTINFO* plii);
@@ -142,9 +141,8 @@ SexyAppBase::SexyAppBase()
 		exit(0);
 	}
 
-	gVersionDLL = LoadLibraryA("version.dll");
-	gDDrawDLL = LoadLibraryA("ddraw.dll");
-	gDSoundDLL = LoadLibraryA("dsound.dll");
+	gDDrawDLL = SDL_LoadObject("ddraw.dll");
+	gDSoundDLL = SDL_LoadObject("dsound.dll");
 	gGetLastInputInfoFunc = (GetLastInputInfoFunc)GetProcAddress(GetModuleHandleA("user32.dll"), "GetLastInputInfo");
 
 	ImageLib::InitJPEG2000();
@@ -435,9 +433,8 @@ SexyAppBase::~SexyAppBase()
 	if (mMutex != NULL)
 		::CloseHandle(mMutex);
 
-	FreeLibrary(gDDrawDLL);
-	FreeLibrary(gDSoundDLL);
-	FreeLibrary(gVersionDLL);
+	SDL_UnloadObject(gDDrawDLL);
+	SDL_UnloadObject(gDSoundDLL);
 	SDL_Quit();
 }
 
@@ -3427,6 +3424,7 @@ MusicInterface* SexyAppBase::CreateMusicInterface(HWND theWindow)
 	else if (mWantFMod)
 		return new FModMusicInterface(mInvisHWnd);
 	else*/
+	return new BassMusicInterface(NULL);
 	return new FModMusicInterface(NULL);
 	return new BassMusicInterface(NULL);
 }

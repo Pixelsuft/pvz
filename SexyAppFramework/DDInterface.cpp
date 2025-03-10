@@ -17,7 +17,7 @@ using namespace Sexy;
 typedef HRESULT (WINAPI *DirectDrawCreateFunc)(GUID FAR *lpGUID, LPDIRECTDRAW FAR *lplpDD, IUnknown FAR *pUnkOuter);
 typedef HRESULT (WINAPI *DirectDrawCreateExFunc)(GUID FAR *lpGUID, LPVOID *lplpDD, REFIID iid, IUnknown FAR *pUnkOuter);
 
-extern HMODULE gDDrawDLL;
+extern SDL_SharedObject* gDDrawDLL;
 static DirectDrawCreateFunc gDirectDrawCreateFunc = NULL;
 static DirectDrawCreateExFunc gDirectDrawCreateExFunc = NULL;
 
@@ -66,8 +66,8 @@ DDInterface::DDInterface(SexyAppBase* theApp)
 
 	mD3DTester = NULL;
 
-	gDirectDrawCreateFunc = (DirectDrawCreateFunc)GetProcAddress(gDDrawDLL,"DirectDrawCreate");
-	gDirectDrawCreateExFunc = (DirectDrawCreateExFunc)GetProcAddress(gDDrawDLL,"DirectDrawCreateEx");
+	gDirectDrawCreateFunc = (DirectDrawCreateFunc)SDL_LoadFunction(gDDrawDLL,"DirectDrawCreate");
+	gDirectDrawCreateExFunc = (DirectDrawCreateExFunc)SDL_LoadFunction(gDDrawDLL,"DirectDrawCreateEx");
 }
 
 DDInterface::~DDInterface()

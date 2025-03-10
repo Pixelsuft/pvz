@@ -628,10 +628,10 @@ bool D3DTester::Init(HWND theHWND, LPDIRECTDRAW7 theDDraw)
 
 		if (theDDraw==NULL)
 		{
-			extern HMODULE gDDrawDLL;
+			extern SDL_SharedObject* gDDrawDLL;
 
 			typedef HRESULT (WINAPI *DirectDrawCreateExFunc)(GUID FAR *lpGUID, LPVOID *lplpDD, REFIID iid, IUnknown FAR *pUnkOuter);
-			DirectDrawCreateExFunc aDirectDrawCreateExFunc = (DirectDrawCreateExFunc)GetProcAddress(gDDrawDLL,"DirectDrawCreateEx");
+			DirectDrawCreateExFunc aDirectDrawCreateExFunc = (DirectDrawCreateExFunc)SDL_LoadFunction(gDDrawDLL,"DirectDrawCreateEx");
 			if (aDirectDrawCreateExFunc == NULL)							
 				return Fail("No DirectDrawCreateEx"); 			
 
