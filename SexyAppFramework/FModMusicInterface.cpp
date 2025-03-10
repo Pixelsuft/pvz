@@ -109,22 +109,45 @@ void FModMusicInterface::PlayMusic(int theSongId, int theOffset, bool noLoop)
 
 void FModMusicInterface::PauseMusic(int theSongId)
 {
-	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error!", "not impl", NULL);
+	FModMusicMap::iterator anItr = mMusicMap.find(theSongId);
+	if (anItr != mMusicMap.end())
+	{
+		FModMusicInfo* aMusicInfo = &anItr->second;
+		gFMod->FMOD_Channel_SetPaused(aMusicInfo->ch, TRUE);
+	}
 }
 
 void FModMusicInterface::ResumeMusic(int theSongId)
 {
-	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error!", "not impl", NULL);
+	FModMusicMap::iterator anItr = mMusicMap.find(theSongId);
+	if (anItr != mMusicMap.end())
+	{
+		FModMusicInfo* aMusicInfo = &anItr->second;
+		gFMod->FMOD_Channel_SetPaused(aMusicInfo->ch, FALSE);
+	}
 }
 
 void FModMusicInterface::StopMusic(int theSongId)
 {
-	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error!", "not impl", NULL);
+	FModMusicMap::iterator anItr = mMusicMap.find(theSongId);
+	if (anItr != mMusicMap.end())
+	{
+		FModMusicInfo* aMusicInfo = &anItr->second;
+		gFMod->FMOD_Channel_Stop(aMusicInfo->ch);
+	}
 }
 
 void FModMusicInterface::StopAllMusic()
 {
-	// TODO
+	FModMusicMap::iterator anItr = mMusicMap.begin();
+	while (anItr != mMusicMap.end())
+	{
+		FModMusicInfo* aMusicInfo = &anItr->second;
+		aMusicInfo->mVolume = 0.0;
+		gFMod->FMOD_Channel_Stop(aMusicInfo->ch);
+
+		++anItr;
+	}
 }
 
 void FModMusicInterface::FadeIn(int theSongId, int theOffset, double theSpeed, bool noLoop)
@@ -144,7 +167,17 @@ void FModMusicInterface::FadeOutAll(bool stopSong, double theSpeed)
 
 void FModMusicInterface::SetVolume(double theVolume)
 {
-	// TODO
+	mMasterVolume = theVolume;
+
+	FModMusicMap::iterator anItr = mMusicMap.begin();
+	while (anItr != mMusicMap.end())
+	{
+		FModMusicInfo* aMusicInfo = &anItr->second;
+
+		// TODO
+
+		++anItr;
+	}
 }
 
 void FModMusicInterface::SetSongVolume(int theSongId, double theVolume)
@@ -154,8 +187,15 @@ void FModMusicInterface::SetSongVolume(int theSongId, double theVolume)
 
 bool FModMusicInterface::IsPlaying(int theSongId)
 {
-	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error!", "not impl", NULL);
-	return false;
+	FModMusicMap::iterator anItr = mMusicMap.find(theSongId);
+	if (anItr != mMusicMap.end())
+	{
+		FModMusicInfo* aMusicInfo = &anItr->second;
+
+		return aMusicInfo->ch && 1;
+	}
+	else
+		return false;
 }
 
 void FModMusicInterface::Update()
