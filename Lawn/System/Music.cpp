@@ -6,8 +6,10 @@
 #include "../../Sexy.TodLib/TodDebug.h"
 #include "../../Sexy.TodLib/TodCommon.h"
 #include "../../SexyAppFramework/BassLoader.h"
-#include "../../SexyAppFramework/BassMusicInterface.h"
+#include "../../SexyAppFramework/FModLoader.h"
+#include "../../SexyAppFramework/FModMusicInterface.h"
 #define MUS_FMOD
+#define FMOD_HAS_ERROR(res) ((res) != FMOD_OK)
 
 using namespace Sexy;
 
@@ -37,9 +39,10 @@ MusicFileData gMusicFileData[MusicFile::NUM_MUSIC_FILES];
 
 bool Music::TodLoadMusic(MusicFile theMusicFile, const std::string& theFileName)
 {
-	void* aHMusic = NULL;
+	FMOD_SOUND* aHMusic = NULL;
+	FMOD_RESULT err;
 	HSTREAM aStream = NULL;
-	BassMusicInterface* aBass = (BassMusicInterface*)mApp->mMusicInterface;
+	FModMusicInterface* aBass = (FModMusicInterface*)mApp->mMusicInterface;
 	std::string anExt;
 
 	int aDot = (int)theFileName.rfind('.');
@@ -59,11 +62,14 @@ bool Music::TodLoadMusic(MusicFile theMusicFile, const std::string& theFileName)
 		p_fread(aData, sizeof(char), aSize, pFile);  
 		p_fclose(pFile);  
 
-#if 0
-		if (gBass->mVersion2)
-			aHMusic = gBass->BASS_MusicLoad2(true, aData, 0, 0, aBass->mMusicLoadFlags, 0);
-		else
-			aHMusic = gBass->BASS_MusicLoad(true, aData, 0, 0, aBass->mMusicLoadFlags);
+#ifdef MUS_FMOD
+		FMOD_CREATESOUNDEXINFO exinfo;
+		SDL_memset(&exinfo, 0, sizeof(FMOD_CREATESOUNDEXINFO));
+		exinfo.cbsize = sizeof(FMOD_CREATESOUNDEXINFO);
+		exinfo.length = aSize;
+		if (FMOD_HAS_ERROR(err = gFMod->FMOD_System_CreateSound(aBass->sys, (const char*)aData, FMOD_OPENMEMORY, &exinfo, &aHMusic))) {
+			SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error!", (SexyString("Failed to load FMOD music: ") + FMOD_ErrorString(err)).c_str(), NULL);
+		}
 #endif
 		delete[] aData;
 
@@ -81,8 +87,8 @@ bool Music::TodLoadMusic(MusicFile theMusicFile, const std::string& theFileName)
 		p_fseek(pFile, 0, SEEK_SET);  
 		void* aData = operator new[](aSize);
 		p_fread(aData, sizeof(char), aSize, pFile);  
-		p_fclose(pFile);  
-
+		p_fclose(pFile);
+		// TODO (.ogg music)
 #if 0
 		aStream = gBass->BASS_StreamCreateFile(true, aData, 0, aSize, 0);
 #endif
@@ -93,10 +99,9 @@ bool Music::TodLoadMusic(MusicFile theMusicFile, const std::string& theFileName)
 			return false;
 	}
 
-	BassMusicInfo aMusicInfo;
-	aMusicInfo.mHStream = (void*)aStream;
-	aMusicInfo.mHMusic = (void*)aHMusic;
-	aBass->mMusicMap.insert(BassMusicMap::value_type(theMusicFile, aMusicInfo));  
+	FModMusicInfo aMusicInfo;
+	aMusicInfo.mHMusic = aHMusic;
+	aBass->mMusicMap.insert(FModMusicMap::value_type(theMusicFile, aMusicInfo));
 	return true;
 }
 
@@ -198,7 +203,7 @@ void Music::MusicInit()
 void Music::MusicCreditScreenInit()
 {
 #ifndef _DEBUG
-	BassMusicInterface* aBass = (BassMusicInterface*)mApp->mMusicInterface;
+	FModMusicInterface* aBass = (FModMusicInterface*)mApp->mMusicInterface;
 	if (aBass->mMusicMap.find((int)MusicFile::MUSIC_FILE_CREDITS_ZOMBIES_ON_YOUR_LAWN) == aBass->mMusicMap.end())  
 		LoadSong(MusicFile::MUSIC_FILE_CREDITS_ZOMBIES_ON_YOUR_LAWN, "sounds\\ZombiesOnYourLawn.ogg");
 #endif
@@ -231,7 +236,7 @@ void Music::StopAllMusic()
 
 void* Music::GetBassMusicHandle(MusicFile theMusicFile)
 {
-	BassMusicInterface* aBass = (BassMusicInterface*)mApp->mMusicInterface;
+	FModMusicInterface* aBass = (FModMusicInterface*)mApp->mMusicInterface;
 	auto anItr = aBass->mMusicMap.find((int)theMusicFile);
 	TOD_ASSERT(anItr != aBass->mMusicMap.end());
 	return anItr->second.mHMusic;
@@ -242,15 +247,16 @@ void Music::PlayFromOffset(MusicFile theMusicFile, int theOffset, double theVolu
 	// TODO
 	return;
 	if (mApp == nullptr) mApp = (LawnApp*)gSexyApp;
-	BassMusicInterface* aBass = (BassMusicInterface*)mApp->mMusicInterface;
+	FModMusicInterface* aBass = (FModMusicInterface*)mApp->mMusicInterface;
 	auto anItr = aBass->mMusicMap.find((int)theMusicFile);
 	TOD_ASSERT(anItr != aBass->mMusicMap.end());
-	BassMusicInfo* aMusicInfo = &anItr->second;
+	FModMusicInfo* aMusicInfo = &anItr->second;
 
-	if (aMusicInfo->mHStream)
+	//if (aMusicInfo->mHStream)
+	if (0)
 	{
-		bool aNoLoop = theMusicFile == MusicFile::MUSIC_FILE_CREDITS_ZOMBIES_ON_YOUR_LAWN;  
-		mMusicInterface->PlayMusic(theMusicFile, theOffset, aNoLoop);
+		//bool aNoLoop = theMusicFile == MusicFile::MUSIC_FILE_CREDITS_ZOMBIES_ON_YOUR_LAWN;  
+		//mMusicInterface->PlayMusic(theMusicFile, theOffset, aNoLoop);
 	}
 	else
 	{
@@ -432,7 +438,8 @@ void Music::PlayMusic(MusicTune theMusicTune, int theOffset, int theDrumsOffset)
 unsigned long Music::GetMusicOrder(MusicFile theMusicFile)
 {
 	TOD_ASSERT(theMusicFile != MusicFile::MUSIC_FILE_NONE);
-	return ((BassMusicInterface*)mApp->mMusicInterface)->GetMusicOrder((int)theMusicFile);
+	// return ((FModMusicInterface*)mApp->mMusicInterface)->GetMusicOrder((int)theMusicFile);
+	return 0;
 }
 
 void Music::MusicResyncChannel(MusicFile theMusicFileToMatch, MusicFile theMusicFileToSync)
@@ -721,12 +728,12 @@ void Music::GameMusicPause(bool thePause)
 	{
 		if (!mPaused && mCurMusicTune != MusicTune::MUSIC_TUNE_NONE)
 		{
-			BassMusicInterface* aBass = (BassMusicInterface*)mMusicInterface;
+			FModMusicInterface* aBass = (FModMusicInterface*)mMusicInterface;
 			auto anItr = aBass->mMusicMap.find(mCurMusicFileMain);
 			TOD_ASSERT(anItr != aBass->mMusicMap.end());
-			BassMusicInfo* aMusicInfo = &anItr->second;
+			FModMusicInfo* aMusicInfo = &anItr->second;
 
-			if (aMusicInfo->mHStream)
+			if (0)
 			{
 				//mPauseOffset = gBass->BASS_ChannelGetPosition(aMusicInfo->mHStream);
 				mMusicInterface->StopMusic(mCurMusicFileMain);

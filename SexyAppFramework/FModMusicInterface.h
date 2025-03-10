@@ -19,7 +19,7 @@ class FModMusicInfo
 {
 public:
 	FSOUND_SAMPLE*			mHSample;
-	FMOD_SOUND*	    		mHMusic;
+	FMOD_SOUND* mHMusic;
 	double					mVolume;
 	double					mVolumeAdd;		
 	double					mVolumeCap;		
