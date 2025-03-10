@@ -4,6 +4,8 @@
 #include "SoundInstance.h"
 #include "fmod.h"
 
+typedef void* FSOUND_STREAM;
+
 namespace Sexy
 {
 

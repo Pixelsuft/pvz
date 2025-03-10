@@ -3424,7 +3424,7 @@ MusicInterface* SexyAppBase::CreateMusicInterface(HWND theWindow)
 	else if (mWantFMod)
 		return new FModMusicInterface(mInvisHWnd);
 	else*/
-	return new BassMusicInterface(NULL);
+	// return new BassMusicInterface(NULL);
 	return new FModMusicInterface(NULL);
 	return new BassMusicInterface(NULL);
 }

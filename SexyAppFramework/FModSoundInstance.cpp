@@ -31,7 +31,7 @@ bool FModSoundInstance::Play(bool looping, bool autoRelease)
 	if (mStream == NULL)
 		return false;
 
-	gFMod->FSOUND_Stream_Play(FSOUND_FREE, mStream);
+	// gFMod->FSOUND_Stream_Play(FSOUND_FREE, mStream);
 	return true;
 }
 

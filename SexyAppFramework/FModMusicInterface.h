@@ -4,6 +4,9 @@
 #include "MusicInterface.h"
 #include "fmod.h"
 
+typedef void* FSOUND_SAMPLE;
+typedef void* FMUSIC_MODULE;
+
 namespace Sexy
 {
 
