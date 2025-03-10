@@ -250,7 +250,6 @@
     <ClCompile Include="..\Lawn\MessageWidget.cpp" />
     <ClCompile Include="..\PakLib\PakInterface.cpp" />
     <ClCompile Include="..\Lawn\Plant.cpp" />
-    <ClCompile Include="..\Lawn\System\PopDRMComm.cpp" />
     <ClCompile Include="..\Lawn\Widget\SeedChooserScreen.cpp" />
     <ClCompile Include="..\Lawn\SeedPacket.cpp" />
     <ClCompile Include="..\Lawn\Widget\StoreScreen.cpp" />
@@ -384,12 +383,6 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Flags.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="FlashWidget.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
@@ -699,7 +692,6 @@
     <ClInclude Include="..\Lawn\Plant.h" />
     <ClInclude Include="..\Lawn\System\PlayerInfo.h" />
     <ClInclude Include="..\Lawn\System\PoolEffect.h" />
-    <ClInclude Include="..\Lawn\System\PopDRMComm.h" />
     <ClInclude Include="..\Lawn\Projectile.h" />
     <ClInclude Include="..\Sexy.TodLib\FilterEffect.h" />
     <ClInclude Include="..\Sexy.TodLib\ReanimAtlas.h" />
@@ -744,7 +736,6 @@
     <ClInclude Include="EditListener.h" />
     <ClInclude Include="EditWidget.h" />
     <ClInclude Include="Flags.h" />
-    <ClInclude Include="FlashWidget.h" />
     <ClInclude Include="FModLoader.h" />
     <ClInclude Include="FModMusicInterface.h" />
     <ClInclude Include="FModSoundInstance.h" />

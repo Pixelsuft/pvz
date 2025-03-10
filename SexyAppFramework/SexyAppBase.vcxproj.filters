@@ -315,9 +315,6 @@
     <ClCompile Include="EditWidget.cpp">
       <Filter>Sexy\Widget\Widget Source</Filter>
     </ClCompile>
-    <ClCompile Include="FlashWidget.cpp">
-      <Filter>Sexy\Widget\Widget Source</Filter>
-    </ClCompile>
     <ClCompile Include="HyperlinkWidget.cpp">
       <Filter>Sexy\Widget\Widget Source</Filter>
     </ClCompile>
@@ -402,9 +399,6 @@
     </ClCompile>
     <ClCompile Include="..\Lawn\Widget\AwardScreen.cpp">
       <Filter>Lawn\Widget\Widget Source</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Lawn\System\PopDRMComm.cpp">
-      <Filter>Lawn\System\System Source</Filter>
     </ClCompile>
     <ClCompile Include="..\Lawn\LawnCommon.cpp">
       <Filter>Lawn\Common\Common Source</Filter>
@@ -781,9 +775,6 @@
     <ClInclude Include="EditWidget.h">
       <Filter>Sexy\Widget\Widget Include</Filter>
     </ClInclude>
-    <ClInclude Include="FlashWidget.h">
-      <Filter>Sexy\Widget\Widget Include</Filter>
-    </ClInclude>
     <ClInclude Include="HyperlinkWidget.h">
       <Filter>Sexy\Widget\Widget Include</Filter>
     </ClInclude>
@@ -908,9 +899,6 @@
       <Filter>Lawn\Widget\Widget Include</Filter>
     </ClInclude>
     <ClInclude Include="..\Lawn\System\PoolEffect.h">
-      <Filter>Lawn\System\System Include</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Lawn\System\PopDRMComm.h">
       <Filter>Lawn\System\System Include</Filter>
     </ClInclude>
     <ClInclude Include="..\Lawn\BoardInclude.h">
