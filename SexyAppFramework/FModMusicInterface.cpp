@@ -45,6 +45,7 @@ FModMusicInterface::~FModMusicInterface()
 
 FSOUND_SAMPLE* FModMusicInterface::LoadFMODSample(const std::string& theFileName)
 {
+	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error!", "not impl", NULL);
 	std::string aFilename = theFileName;
 
 	int aLastDotPos = aFilename.rfind('.');
@@ -63,6 +64,7 @@ FSOUND_SAMPLE* FModMusicInterface::LoadFMODSample(const std::string& theFileName
 
 bool FModMusicInterface::LoadSample(int theSongId, const std::string& theFileName, bool repeat)
 {
+	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error!", "not impl", NULL);
 	FSOUND_SAMPLE* aSample = LoadFMODSample(theFileName.c_str());
 
 	if (aSample == NULL)
@@ -78,11 +80,13 @@ bool FModMusicInterface::LoadSample(int theSongId, const std::string& theFileNam
 
 bool FModMusicInterface::LoadSample(int theSongId, const std::string& theIntroFileName, const std::string& theRepeatFileName, bool repeat)
 {
+	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error!", "not impl", NULL);
 	return false;	
 }
 
 bool FModMusicInterface::LoadMusic(int theSongId, const std::string& theFileName)
 {
+	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error!", "not impl", NULL);
 	/*
 	FMOD_RESULT err;
 	FModMusicInfo aMusicInfo;
@@ -100,51 +104,63 @@ bool FModMusicInterface::LoadMusic(int theSongId, const std::string& theFileName
 
 void FModMusicInterface::PlayMusic(int theSongId, int theOffset, bool noLoop)
 {
+	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error!", "not impl", NULL);
 }
 
 void FModMusicInterface::PauseMusic(int theSongId)
 {
+	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error!", "not impl", NULL);
 }
 
 void FModMusicInterface::ResumeMusic(int theSongId)
 {
+	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error!", "not impl", NULL);
 }
 
 void FModMusicInterface::StopMusic(int theSongId)
 {
+	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error!", "not impl", NULL);
 }
 
 void FModMusicInterface::StopAllMusic()
 {
+	// TODO
 }
 
 void FModMusicInterface::FadeIn(int theSongId, int theOffset, double theSpeed, bool noLoop)
 {
+	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error!", "not impl", NULL);
 }
 
 void FModMusicInterface::FadeOut(int theSongId, bool stopSong, double theSpeed)
 {
+	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error!", "not impl", NULL);
 }
 
 void FModMusicInterface::FadeOutAll(bool stopSong, double theSpeed)
 {
+	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error!", "not impl", NULL);
 }
 
 void FModMusicInterface::SetVolume(double theVolume)
 {
+	// TODO
 }
 
 void FModMusicInterface::SetSongVolume(int theSongId, double theVolume)
 {
+	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error!", "not impl", NULL);
 }
 
 bool FModMusicInterface::IsPlaying(int theSongId)
 {
+	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error!", "not impl", NULL);
 	return false;
 }
 
 void FModMusicInterface::Update()
 {
+	// TODO
 	gFMod->FMOD_System_Update(sys);
 }
 
