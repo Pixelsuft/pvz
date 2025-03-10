@@ -173,8 +173,8 @@ void FModMusicInterface::SetVolume(double theVolume)
 	while (anItr != mMusicMap.end())
 	{
 		FModMusicInfo* aMusicInfo = &anItr->second;
-
-		// TODO
+		// FIXME
+		// gFMod->FMOD_Channel_SetVolume(aMusicInfo->ch, mMasterVolume * aMusicInfo->mVolume * (float)(mMaxMusicVolume) / 100.f);
 
 		++anItr;
 	}
@@ -200,7 +200,42 @@ bool FModMusicInterface::IsPlaying(int theSongId)
 
 void FModMusicInterface::Update()
 {
-	// TODO
 	gFMod->FMOD_System_Update(sys);
+	FModMusicMap::iterator anItr = mMusicMap.begin();
+	while (anItr != mMusicMap.end())
+	{
+		// FIXME
+		/*
+		if (1) {
+			++anItr;
+			continue;
+		}
+		*/
+		FModMusicInfo* aMusicInfo = &anItr->second;
+
+		if (aMusicInfo->mVolumeAdd != 0.0)
+		{
+			aMusicInfo->mVolume += aMusicInfo->mVolumeAdd;
+
+			if (aMusicInfo->mVolume > aMusicInfo->mVolumeCap)
+			{
+				aMusicInfo->mVolume = aMusicInfo->mVolumeCap;
+				aMusicInfo->mVolumeAdd = 0.0;
+			}
+			else if (aMusicInfo->mVolume < 0.0)
+			{
+				aMusicInfo->mVolume = 0.0;
+				aMusicInfo->mVolumeAdd = 0.0;
+
+				if (aMusicInfo->mStopOnFade)
+				{
+					// todo
+				}
+			}
+			gFMod->FMOD_Channel_SetVolume(aMusicInfo->ch, mMasterVolume * aMusicInfo->mVolume * (float)(mMaxMusicVolume) / 100.f);
+		}
+
+		++anItr;
+	}
 }
 
