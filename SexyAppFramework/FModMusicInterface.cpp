@@ -37,6 +37,7 @@ FModMusicInterface::FModMusicInterface()
 
 FModMusicInterface::~FModMusicInterface()
 {
+	// TODO: free all music
 	gFMod->FMOD_System_Close(sys);
 	gFMod->FMOD_System_Release(sys);
 	FreeFModDLL();
@@ -65,7 +66,7 @@ bool FModMusicInterface::LoadSample(int theSongId, const std::string& theFileNam
 	FSOUND_SAMPLE* aSample = LoadFMODSample(theFileName.c_str());
 
 	if (aSample == NULL)
-		return false;		
+		return false;
 
 	FModMusicInfo aMusicInfo;
 	aMusicInfo.mHSample = aSample;	
@@ -82,7 +83,18 @@ bool FModMusicInterface::LoadSample(int theSongId, const std::string& theIntroFi
 
 bool FModMusicInterface::LoadMusic(int theSongId, const std::string& theFileName)
 {
-	return false;
+	/*
+	FMOD_RESULT err;
+	FModMusicInfo aMusicInfo;
+	FMOD_SOUND* snd;
+	if (FMOD_HAS_ERROR(err = gFMod->FMOD_System_CreateStream(sys, theFileName.c_str(), FMOD_LOOP_NORMAL | FMOD_2D, NULL, &snd))) {
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error!", (SexyString("Failed to load FMOD music: ") + FMOD_ErrorString(err)).c_str(), NULL);
+		return false;
+	}
+	aMusicInfo.mHMusic = snd;
+	mMusicMap.insert(FModMusicMap::value_type(theSongId, aMusicInfo));
+	*/
+	return true;
 }
 
 

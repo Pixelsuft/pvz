@@ -5,6 +5,7 @@
 
 #ifndef _FMOD_H_
 #define _FMOD_H_
+#include <SDL3/SDL_stdinc.h>
 
 #pragma once
 #define F_CALL SDLCALL

@@ -7,6 +7,7 @@
 #include "../../Sexy.TodLib/TodCommon.h"
 #include "../../SexyAppFramework/BassLoader.h"
 #include "../../SexyAppFramework/BassMusicInterface.h"
+#define MUS_FMOD
 
 using namespace Sexy;
 
@@ -36,7 +37,7 @@ MusicFileData gMusicFileData[MusicFile::NUM_MUSIC_FILES];
 
 bool Music::TodLoadMusic(MusicFile theMusicFile, const std::string& theFileName)
 {
-	HMUSIC aHMusic = NULL;
+	void* aHMusic = NULL;
 	HSTREAM aStream = NULL;
 	BassMusicInterface* aBass = (BassMusicInterface*)mApp->mMusicInterface;
 	std::string anExt;
@@ -93,8 +94,8 @@ bool Music::TodLoadMusic(MusicFile theMusicFile, const std::string& theFileName)
 	}
 
 	BassMusicInfo aMusicInfo;
-	aMusicInfo.mHStream = aStream;
-	aMusicInfo.mHMusic = aHMusic;
+	aMusicInfo.mHStream = (void*)aStream;
+	aMusicInfo.mHMusic = (void*)aHMusic;
 	aBass->mMusicMap.insert(BassMusicMap::value_type(theMusicFile, aMusicInfo));  
 	return true;
 }
@@ -140,7 +141,7 @@ void Music::SetupMusicFileForTune(MusicFile theMusicFile, MusicTune theMusicTune
 		break;
 	}
 
-	HMUSIC aHMusic = GetBassMusicHandle(theMusicFile);
+	void* aHMusic = GetBassMusicHandle(theMusicFile);
 	for (int aTrack = 0; aTrack < aTrackCount; aTrack++)
 	{
 		int aVolume;
@@ -228,7 +229,7 @@ void Music::StopAllMusic()
 	mFadeOutCounter = 0;
 }
 
-HMUSIC Music::GetBassMusicHandle(MusicFile theMusicFile)
+void* Music::GetBassMusicHandle(MusicFile theMusicFile)
 {
 	BassMusicInterface* aBass = (BassMusicInterface*)mApp->mMusicInterface;
 	auto anItr = aBass->mMusicMap.find((int)theMusicFile);
@@ -402,19 +403,19 @@ void Music::PlayMusic(MusicTune theMusicTune, int theOffset, int theDrumsOffset)
 		/*
 		if (mCurMusicFileMain != MusicFile::MUSIC_FILE_NONE)
 		{
-			HMUSIC aHMusic = GetBassMusicHandle(mCurMusicFileMain);
+			void* aHMusic = GetBassMusicHandle(mCurMusicFileMain);
 			gBass->BASS_MusicSetAttribute(aHMusic, BASS_MUSIC_ATTRIB_BPM, mBaseBPM);
 			gBass->BASS_MusicSetAttribute(aHMusic, BASS_MUSIC_ATTRIB_SPEED, mBaseModSpeed);
 		}
 		if (mCurMusicFileDrums != -1)
 		{
-			HMUSIC aHMusic = GetBassMusicHandle(mCurMusicFileDrums);
+			void* aHMusic = GetBassMusicHandle(mCurMusicFileDrums);
 			gBass->BASS_MusicSetAttribute(aHMusic, BASS_MUSIC_ATTRIB_BPM, mBaseBPM);
 			gBass->BASS_MusicSetAttribute(aHMusic, BASS_MUSIC_ATTRIB_SPEED, mBaseModSpeed);
 		}
 		if (mCurMusicFileHihats != -1)
 		{
-			HMUSIC aHMusic = GetBassMusicHandle(mCurMusicFileHihats);
+			void* aHMusic = GetBassMusicHandle(mCurMusicFileHihats);
 			gBass->BASS_MusicSetAttribute(aHMusic, BASS_MUSIC_ATTRIB_BPM, mBaseBPM);
 			gBass->BASS_MusicSetAttribute(aHMusic, BASS_MUSIC_ATTRIB_SPEED, mBaseModSpeed);
 		}
@@ -422,7 +423,7 @@ void Music::PlayMusic(MusicTune theMusicTune, int theOffset, int theDrumsOffset)
 	}
 	else
 	{
-		//HMUSIC aHMusic = GetBassMusicHandle(mCurMusicFileMain);
+		//void* aHMusic = GetBassMusicHandle(mCurMusicFileMain);
 		//mBaseBPM = gBass->BASS_MusicGetAttribute(aHMusic, BASS_MUSIC_ATTRIB_BPM);
 		//mBaseModSpeed = gBass->BASS_MusicGetAttribute(aHMusic, BASS_MUSIC_ATTRIB_SPEED);
 	}
@@ -441,7 +442,7 @@ void Music::MusicResyncChannel(MusicFile theMusicFileToMatch, MusicFile theMusic
 	int aDiff = (aPosToSync >> 16) - (aPosToMatch >> 16);  
 	if (abs(aDiff) <= 128)  
 	{
-		HMUSIC aHMusic = GetBassMusicHandle(theMusicFileToSync);
+		void* aHMusic = GetBassMusicHandle(theMusicFileToSync);
 
 		int aBPM = mBaseBPM;
 		if (aDiff > 2)

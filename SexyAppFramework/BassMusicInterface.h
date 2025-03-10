@@ -12,8 +12,8 @@ class SexyAppBase;
 class BassMusicInfo
 {
 public:
-	HMUSIC					mHMusic;
-	HSTREAM					mHStream;
+	void*					mHMusic;
+	void*					mHStream;
 	double					mVolume;
 	double					mVolumeAdd;
 	double					mVolumeCap;
@@ -22,7 +22,7 @@ public:
 public:
 	BassMusicInfo();
 
-	DWORD GetHandle() { return mHMusic?mHMusic:mHStream; }
+	void* GetHandle() { return mHMusic?mHMusic:mHStream; }
 };
 
 typedef std::map<int, BassMusicInfo> BassMusicMap;

@@ -2,7 +2,7 @@
 #define __MUSIC_H__
 
 #include <string>
-#include "../../SexyAppFramework/bass.h"
+#include "../../SexyAppFramework/FModMusicInterface.h"
 
 class LawnApp;
 namespace Sexy
@@ -95,7 +95,7 @@ public:
 	void						MusicUpdate();
 	void						StopAllMusic();
 	/*inline*/ void				PlayMusic(MusicTune theMusicTune, int theOffset = -1, int theDrumsOffset = -1);
-	/*inline*/ HMUSIC			GetBassMusicHandle(MusicFile theMusicFile);
+	/*inline*/ void*			GetBassMusicHandle(MusicFile theMusicFile);
 	void						StartGameMusic();
 	/*inline*/ void				LoadSong(MusicFile theMusicFile, const std::string& theFileName);
 	void						MusicResync();
