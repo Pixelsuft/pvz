@@ -3422,10 +3422,10 @@ MusicInterface* SexyAppBase::CreateMusicInterface(HWND theWindow)
 	/*if (mNoSoundNeeded)
 		return new MusicInterface;
 	else if (mWantFMod)
-		return new FModMusicInterface(mInvisHWnd);
+		return new FModMusicInterface();
 	else*/
 	// return new BassMusicInterface(NULL);
-	return new FModMusicInterface(NULL);
+	return new FModMusicInterface();
 	return new BassMusicInterface(NULL);
 }
 

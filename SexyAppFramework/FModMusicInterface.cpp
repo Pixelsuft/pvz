@@ -1,6 +1,7 @@
 #include "FModMusicInterface.h"
 #include "SexyAppBase.h"
 #include "FModLoader.h"
+#define FMOD_HAS_ERROR(res) ((res) != FMOD_OK)
 
 using namespace Sexy;
 
@@ -15,9 +16,19 @@ FModMusicInfo::FModMusicInfo()
 	mRepeats = false;
 }
 
-FModMusicInterface::FModMusicInterface(HWND theHWnd)
+FModMusicInterface::FModMusicInterface()
 {	
 	LoadFModDLL();
+
+	FMOD_RESULT err;
+	if (FMOD_HAS_ERROR(err = gFMod->FMOD_System_Create(&sys, FMOD_VER))) {
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error!", (SexyString("Failed to create FMOD system: ") + FMOD_ErrorString(err)).c_str(), NULL);
+		exit(0);
+	}
+	if (FMOD_HAS_ERROR(err = gFMod->FMOD_System_Init(sys, 32, FMOD_INIT_NORMAL, NULL))) {
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error!", (SexyString("Failed to init FMOD system: ") + FMOD_ErrorString(err)).c_str(), NULL);
+		exit(0);
+	}
 
 	mMasterVolume = 1.0;	
 	mMaxMusicVolume = 100;
@@ -26,6 +37,8 @@ FModMusicInterface::FModMusicInterface(HWND theHWnd)
 
 FModMusicInterface::~FModMusicInterface()
 {
+	gFMod->FMOD_System_Close(sys);
+	gFMod->FMOD_System_Release(sys);
 	FreeFModDLL();
 }
 
@@ -120,6 +133,6 @@ bool FModMusicInterface::IsPlaying(int theSongId)
 
 void FModMusicInterface::Update()
 {
-
+	gFMod->FMOD_System_Update(sys);
 }
 

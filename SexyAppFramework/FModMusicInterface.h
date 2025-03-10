@@ -3,6 +3,9 @@
 
 #include "MusicInterface.h"
 #include "fmod.h"
+// #define FMOD_VER 0x00020214
+
+#define FMOD_VER 0x00020306
 
 typedef void* FSOUND_SAMPLE;
 typedef void* FMUSIC_MODULE;
@@ -31,7 +34,8 @@ typedef std::map<int, FModMusicInfo> FModMusicMap;
 
 class FModMusicInterface : public MusicInterface
 {
-public:	
+public:
+	FMOD_SYSTEM* sys;
 	FModMusicMap			mMusicMap;
 	double					mMasterVolume;
 	int						mMaxMusicVolume;
@@ -41,7 +45,7 @@ public:
 	FSOUND_SAMPLE*			LoadFMODSample(const std::string& theFileName);
 
 public:
-	FModMusicInterface(HWND theHWnd);
+	FModMusicInterface();
 	virtual ~FModMusicInterface();
 		
 	virtual bool			LoadMusic(int theSongId, const std::string& theFileName);
