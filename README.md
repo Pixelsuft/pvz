@@ -5,7 +5,7 @@
 - [x] Use gdiplus instead of other image libs
 - [x] Use miniz instead of zlib
 - [ ] Remove Win32 api dependency (partially)
-- [ ] FMOD instead of *harcoded* bass (unfinished)
+- [ ] FMOD instead of *harcoded* bass (partially)
 - [ ] 64-bit support (partially)
 
 # PvZ Quality of the Lawn-Decompile
