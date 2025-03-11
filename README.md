@@ -4,9 +4,9 @@
 [+] SDL3 port <br />
 [+] Use gdiplus instead of other image libs <br />
 [+] Use miniz instead of zlib <br />
-[ ] Remove Win32 api dependency (partially) <br />
-[ ] FMOD instead of *harcoded* bass (unfinished) <br />
-[ ] 64-bit support (partially) <br />
+[*] Remove Win32 api dependency (partially) <br />
+[*] FMOD instead of *harcoded* bass (unfinished) <br />
+[*] 64-bit support (partially) <br />
 
 # PvZ Quality of the Lawn-Decompile
  A edit of the PvZ Decompile that adds QoL features
