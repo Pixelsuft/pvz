@@ -50,7 +50,7 @@ bool Music::TodLoadMusic(MusicFile theMusicFile, const std::string& theFileName)
 	if (aDot != std::string::npos)  
 		anExt = StringToLower(theFileName.substr(aDot + 1));  
 
-	if (anExt.compare("wav") && anExt.compare("ogg") && anExt.compare("mp3"))  
+	if ((anExt.compare("wav") && anExt.compare("ogg") && anExt.compare("mp3")) || 1)  
 	{
 		PFILE* pFile = p_fopen(theFileName.c_str(), "rb");
 		if (pFile == nullptr)
