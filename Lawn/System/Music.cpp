@@ -50,7 +50,7 @@ bool Music::TodLoadMusic(MusicFile theMusicFile, const std::string& theFileName)
 	if (aDot != std::string::npos)  
 		anExt = StringToLower(theFileName.substr(aDot + 1));  
 
-	if ((anExt.compare("wav") && anExt.compare("ogg") && anExt.compare("mp3")) || 1)  
+	if (anExt.compare("wav") && anExt.compare("ogg") && anExt.compare("mp3"))  
 	{
 		PFILE* pFile = p_fopen(theFileName.c_str(), "rb");
 		if (pFile == nullptr)
@@ -68,7 +68,7 @@ bool Music::TodLoadMusic(MusicFile theMusicFile, const std::string& theFileName)
 		SDL_memset(&exinfo, 0, sizeof(FMOD_CREATESOUNDEXINFO));
 		exinfo.cbsize = sizeof(FMOD_CREATESOUNDEXINFO);
 		exinfo.length = aSize;
-		if (FMOD_HAS_ERROR(err = gFMod->FMOD_System_CreateSound(aBass->sys, (const char*)aData, FMOD_OPENMEMORY, &exinfo, &aHMusic))) {
+		if (FMOD_HAS_ERROR(err = gFMod->FMOD_System_CreateSound(aBass->sys, (const char*)aData, FMOD_OPENMEMORY | FMOD_2D | FMOD_LOOP_NORMAL, &exinfo, &aHMusic))) {
 			SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error!", (SexyString("Failed to load FMOD music: ") + FMOD_ErrorString(err)).c_str(), NULL);
 		}
 #endif
@@ -158,7 +158,10 @@ void Music::SetupMusicFileForTune(MusicFile theMusicFile, MusicTune theMusicTune
 			aVolume = 100;
 		else
 			aVolume = 0;
-		// gBass->BASS_MusicSetAttribute(aHMusic, BASS_MUSIC_ATTRIB_VOL_CHAN + aTrack, aVolume);  
+		// SDL_Log("MUSIC      %p %i ", aHMusic, aTrack);
+		// FIXME
+		SDL_Delay(1);
+		gFMod->FMOD_Sound_SetMusicChannelVolume((FMOD_SOUND*)aHMusic, aTrack, aVolume > 52 ? 1.f : 0.f);
 	}
 }
 
@@ -240,6 +243,10 @@ void* Music::GetBassMusicHandle(MusicFile theMusicFile)
 {
 	FModMusicInterface* aBass = (FModMusicInterface*)mApp->mMusicInterface;
 	auto anItr = aBass->mMusicMap.find((int)theMusicFile);
+	if (anItr == aBass->mMusicMap.end()) {
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error!", "Failed to find music handle", NULL);
+		return NULL;
+	}
 	TOD_ASSERT(anItr != aBass->mMusicMap.end());
 	return anItr->second.mHMusic;
 }
