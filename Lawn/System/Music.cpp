@@ -743,7 +743,7 @@ void Music::GameMusicPause(bool thePause)
 
 			if (0)
 			{
-				//mPauseOffset = gBass->BASS_ChannelGetPosition(aMusicInfo->mHStream);
+				// mPauseOffset = gBass->BASS_ChannelGetPosition(aMusicInfo->mHStream);
 				mMusicInterface->StopMusic(mCurMusicFileMain);
 			}
 			else
@@ -770,7 +770,7 @@ void Music::GameMusicPause(bool thePause)
 	}
 	else if (mPaused)
 	{
-		if (mCurMusicTune != MusicTune::MUSIC_TUNE_NONE)
+		if (mCurMusicTune != MusicTune::MUSIC_TUNE_NONE || 1)
 			PlayMusic(mCurMusicTune, mPauseOffset, mPauseOffsetDrums);
 		mPaused = false;
 	}
