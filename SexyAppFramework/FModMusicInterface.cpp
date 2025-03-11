@@ -194,7 +194,17 @@ bool FModMusicInterface::IsPlaying(int theSongId)
 	{
 		FModMusicInfo* aMusicInfo = &anItr->second;
 
-		return aMusicInfo->ch && 1;
+		if (aMusicInfo->ch) {
+			FMOD_BOOL buf = 0;
+			if (gFMod->FMOD_Channel_IsPlaying(aMusicInfo->ch, &buf) == FMOD_OK) {
+				return buf ? true : false;
+			}
+			else {
+				aMusicInfo->ch = NULL;
+			}
+		}
+
+		return false;
 	}
 	else
 		return false;

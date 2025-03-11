@@ -64,6 +64,7 @@ FMOD_INSTANCE::FMOD_INSTANCE(const char *dllName)
 	GETPROC(FMOD_Channel_SetPosition, "FMOD_Channel_SetPosition");
 	GETPROC(FMOD_Channel_GetPosition, "FMOD_Channel_GetPosition");
 	GETPROC(FMOD_Sound_SetMusicChannelVolume, "FMOD_Sound_SetMusicChannelVolume");
+	GETPROC(FMOD_Channel_IsPlaying, "FMOD_Channel_IsPlaying");
 
 #undef GETPROC
 }

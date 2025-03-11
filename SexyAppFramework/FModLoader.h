@@ -49,6 +49,7 @@ struct FMOD_INSTANCE
 	FMOD_RESULT(F_API* FMOD_Channel_GetPosition)(FMOD_CHANNEL*, unsigned int*, FMOD_TIMEUNIT);
 	FMOD_RESULT(F_API* FMOD_Channel_SetCallback)(FMOD_CHANNEL*, FMOD_CHANNELCONTROL_CALLBACK);
 	FMOD_RESULT(F_API* FMOD_Sound_SetMusicChannelVolume)(FMOD_SOUND*, int, float);
+	FMOD_RESULT(F_API* FMOD_Channel_IsPlaying)(FMOD_CHANNEL*, FMOD_BOOL*);
 } ;
 
 

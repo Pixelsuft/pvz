@@ -277,9 +277,6 @@ void Music::PlayFromOffset(MusicFile theMusicFile, int theOffset, double theVolu
 		gFMod->FMOD_System_PlaySound(f_sys, aMusicInfo->mHMusic, NULL, 0, &aMusicInfo->ch);
 		gFMod->FMOD_Channel_SetVolume(aMusicInfo->ch, aMusicInfo->mVolume);
 		gFMod->FMOD_Channel_SetPosition(aMusicInfo->ch, theOffset & (~0x80000000), FMOD_TIMEUNIT_MODORDER);
-		// gBass->BASS_ChannelSetFlags(aMusicInfo->mHMusic, BASS_MUSIC_POSRESET | BASS_MUSIC_RAMP | BASS_MUSIC_LOOP);
-		// gBass->BASS_ChannelSetPosition(aMusicInfo->mHMusic, theOffset | 0x80000000);  
-		// gBass->BASS_ChannelPlay(aMusicInfo->mHMusic, false);  
 	}
 }
 
