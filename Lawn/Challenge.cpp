@@ -2846,7 +2846,8 @@ bool Challenge::UpdateZombieSpawning()
 	if (mApp->IsWhackAZombieLevel())
 	{
 		WhackAZombieSpawning();
-		return false;
+		// FIXME
+		// return false;
 	}
 	else return
 		mApp->IsFinalBossLevel() ||

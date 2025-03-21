@@ -22,8 +22,13 @@ FModMusicInterface::FModMusicInterface()
 
 	FMOD_RESULT err;
 	if (FMOD_HAS_ERROR(err = gFMod->FMOD_System_Create(&sys, FMOD_VER))) {
-		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error!", (SexyString("Failed to create FMOD system: ") + FMOD_ErrorString(err)).c_str(), NULL);
-		exit(0);
+		if (err == FMOD_ERR_HEADER_MISMATCH) {
+			err = gFMod->FMOD_System_Create(&sys, 0x00020223);
+		}
+		if (FMOD_HAS_ERROR(err)) {
+			SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error!", (SexyString("Failed to create FMOD system: ") + FMOD_ErrorString(err)).c_str(), NULL);
+			exit(0);
+		}
 	}
 	if (FMOD_HAS_ERROR(err = gFMod->FMOD_System_Init(sys, 32, FMOD_INIT_NORMAL, NULL))) {
 		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error!", (SexyString("Failed to init FMOD system: ") + FMOD_ErrorString(err)).c_str(), NULL);
